@@ -1,0 +1,185 @@
+doctype html
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		title #{event}
+		link(rel='stylesheet', href='/node/bootstrap/dist/css/bootstrap.min.css')
+		link(href='/themes/yummy/css/overlay-effects/overlay-effects.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/font-awesome.min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/dripicons.min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/animate/animate.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/hover/hover-min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/minicolors/jquery.minicolors.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/stepper/jquery.stepper.min.css', rel='stylesheet', type='text/css')
+		link(rel='stylesheet', href='/themes/yummy/css/styles.css')
+		link(rel='stylesheet', href='/css/annotator.min.css')
+		link(rel='stylesheet', href='/css/fonts.css')
+		link(rel='stylesheet', href='/css/watch.css')
+
+	
+	body(ng-app="Aloft", ng-controller='AloftController' ng-style="{'backgroundColor': bgColor}")
+		header.nav-down
+			nav.navbar.navbar-inverse.navbar-fixed-top.megamenu#header
+				// Brand and toggle get grouped for better mobile display
+				.navbar-header
+					button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#megamenu-collapse')
+						span.sr-only Toggle navigation
+						span.fa.fa-bars
+					a.navbar-brand.banner(href='#')
+						i.fa.fa-cloud(aria-hidden='true')&nbsp;
+						| aloft
+				// Collect the nav links, forms, and other content for toggling
+				#megamenu-collapse.collapse.navbar-collapse
+					ul.nav.navbar-nav.navbar-right
+						li.dropdown.third-width
+							a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+								i.fa.fa-nav.fa-info(aria-hidden='true')
+								span.caret
+							ul.dropdown-menu(role='menu')
+								li
+									h4.margin-top-0.margin-bottom-20px Information
+									.callout.callout-feed
+										h4 Event Name
+										|  #{event}
+									.callout.callout-user
+										h4 Stenographer
+										|  #{user}
+						li.dropdown.third-width
+							a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+								i.fa.fa-nav.fa-font(aria-hidden='true')
+								span.caret
+							ul.dropdown-menu(role='menu')
+								li
+									h4.margin-top-0.margin-bottom-20px Font Style
+									.form-group
+											.col-md-8
+												select(ng-model='fontFamily', ng-options='f as f.name group by f.type for f in fonts track by f.name' ng-change='saveFontFamily()').selectpicker.form-control
+						li.dropdown.third-width
+							a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+								i.fa.fa-nav.fa-text-height(aria-hidden='true')
+								span.caret
+							ul.dropdown-menu(role='menu')
+								li
+									h4.margin-top-0.margin-bottom-20px Text Size
+									span.label.label-info.slider-value
+												span#font-size-value {{fontSize}}
+											#font-size(model='fontSize', setting-slider, min="1", max="300")
+						li.dropdown.third-width
+							a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+								i.fa.fa-nav.fa-align-justify(aria-hidden='true')
+								span.caret
+							ul.dropdown-menu(role='menu')
+								li
+									h4.margin-top-0.margin-bottom-20px Line Height
+									span.label.label-info.slider-value
+												span#line-height-value {{lineHeight}}
+											#line-height(model='lineHeight', setting-slider, min='1', max='200', click='save()')
+						li.dropdown.third-width
+							a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+								i.fa.fa-nav.fa-tint(aria-hidden='true')
+								span.caret
+							ul.dropdown-menu(role='menu')
+								li
+									h4.margin-top-0.margin-bottom-20px Colors
+									.row
+										h5 Text Color
+										.form-group
+											input#fgColor.form-control(type='text', ng-model='fgColor', ng-change='saveFg()' minicolors="minicolorsSettings")
+									.row
+										h5 Background Color
+										.form-group
+											input#bgColor.form-control(type='text', ng-model='bgColor', ng-change='saveBg()' minicolors='minicolorsSettings')
+						li.dropdown.third-width
+							a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+								i.fa.fa-nav.fa-cloud-download(aria-hidden='true')
+								span.caret
+							ul.dropdown-menu(role='menu')
+								li
+									h4.margin-top-0.margin-bottom-20px Download Text
+									.form-group
+										.input-group
+											input#filename-id.form-control(name='filename-id', placeholder='filename.txt', type='text', value='#{event}')
+											span.input-group-addon .txt
+										a.input-group-btn.btn.btn-success.inline(type='submit', onclick='saveForm()') Save
+						li.dropdown.third-width
+							a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+								i.fa.fa-nav.fa-paper-plane(aria-hidden='true')
+								span.caret
+							ul.dropdown-menu(role='menu')
+								li
+									h4.margin-top-0.margin-bottom-20px Email Text
+									.form-group
+										.input-group
+											input#filename-id.form-control(name='filename-id', placeholder='someone@email.com', type='text')
+											span.input-group-addon @
+										a.input-group-btn.btn.btn-success.inline(type='submit', onclick='saveForm()') Send
+						li.dropdown.half-width
+							a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+								| Lists 
+								span.caret
+							ul.dropdown-menu(role='menu')
+								li.col-md-6
+									h4.margin-top-0.margin-bottom-20px Notifications
+									ul.media-list
+										li.media
+											a.pull-left.user-img(href='#')
+												img(src='images/user-blue.png', alt='User')
+											.media-body
+												h5 Natasha S.
+												a.reply.dripicons-message(href='#')
+												.message
+													| Maecenas dapibus ligula ac odio vehicula maximus.
+												.timestamp 22.05.2014
+												.clearfix
+										li.media
+											a.pull-left.user-img(href='#')
+												img(src='images/user-grey.png', alt='User')
+											.media-body
+												h5 Al Cavalera
+												a.reply.dripicons-message(href='#')
+												.message
+													| Maecenas dapibus ligula ac odio vehicula maximus.
+												.timestamp 22.05.2014
+												.clearfix
+										li.media
+											a.pull-left.user-img(href='#')
+												img(src='images/user-khaki.png', alt='User')
+											.media-body
+												h5 Michelle
+												a.reply.dripicons-message(href='#')
+												.message
+													| Maecenas dapibus ligula ac odio vehicula maximus.
+												.timestamp 22.05.2014
+												.clearfix
+		.container-fluid
+			#caption-area(ng-style="{'fontSize': fontSize + 'px', 'lineHeight': lineHeight + '%', 'color': fgColor, 'backgroundColor': bgColor, 'font-family': fontFamily.id}")
+		a#autoscroll.scrollToBottom.pull-right
+				i.scroll-arrow.fa.fa-arrow-down
+		//- jQuery
+		script(src='/node/jquery/dist/jquery.min.js')
+		//- Angular
+		script(src='/node/angular/angular.min.js')
+		//- Angular User Settings
+		script(src='/node/angular-user-settings/dist/angular-user-settings.min.js')
+		script(type='text/javascript', src='/themes/yummy/js/vendors/jquery/jquery-ui.min.js')
+		//- Bootstrap scripts
+		script(src='/node/bootstrap/dist/js/bootstrap.min.js')
+		//- Annotator
+		script(src='/js/annotator-full.min.js')
+		//- ShareDB scripts
+		//- script(src='/sharedb/textarea.js' defer)
+		//- Minicolors
+		script(type='text/javascript', src='/themes/yummy/js/vendors/minicolors/jquery.minicolors.min.js')
+		//- Angular User Settings
+		script(src='/node/angular-minicolors/angular-minicolors.js')
+		//- Angular controller
+		script(src='/js/controller.js')
+		//- My shit
+		script(src='/js/watch.js')
+		//- jQuery UI Touch
+		script(src='/js/jquery-ui-touch.js')
+		//- My scripts
+		script(src='/dist/bundle.js' defer)
+		script.
+			var user = !{JSON.stringify(user)};
+			var event = !{JSON.stringify(event)};

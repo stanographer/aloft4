@@ -1,0 +1,186 @@
+doctype html
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		title #{event}
+		link(rel='stylesheet', href='/css/fonts.css')
+		link(rel='stylesheet', href='/node/bootstrap/dist/css/bootstrap.min.css')
+		link(href='/themes/yummy/css/overlay-effects/overlay-effects.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/font-awesome.min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/dripicons.min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/animate/animate.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/hover/hover-min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/minicolors/jquery.minicolors.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/stepper/jquery.stepper.min.css', rel='stylesheet', type='text/css')
+		link(rel='stylesheet', href='/themes/yummy/css/styles.css')
+		link(rel='stylesheet', href='/css/annotator.min.css')
+		link(rel='stylesheet', href='/css/watch.css')
+
+	
+	body(ng-app="Aloft", ng-controller='AloftController')
+		header.nav-down
+			nav.navbar.navbar-inverse.megamenu
+				// Brand and toggle get grouped for better mobile display
+				.navbar-header
+					button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#megamenu-collapse')
+						span.sr-only Toggle navigation
+						span.fa.fa-bars
+					a.navbar-brand(href='#') ALOFT
+				// Collect the nav links, forms, and other content for toggling
+				#megamenu-collapse.collapse.navbar-collapse
+					ul.nav.navbar-nav
+						li.dropdown.full-width
+							a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+								i.nav-label.fa.fa-cogs(aria-hidden='true')
+								span.caret
+							ul.dropdown-menu.keep_open(role='menu')
+								li.col-md-12
+									h4.margin-top-0 Event: #{event} | Stenographer: #{user}
+								li.clearfix
+								li.col-md-3.col-sm-6.block-unit
+									.row
+										h5 Font Face
+										.form-group
+											.col-md-8
+												select(ng-model='prefs.fontFace').selectpicker.form-control
+													option(value='Sintony') Sintony
+													option(value='Roboto') Roboto
+													option(value='3') Option Three
+													option(value='4') Option Four
+									.row
+										h5 Font Size
+											span.label.label-info.slider-value
+												span#font-size-value #{prefs.fontSize}
+											#font-size
+									.row
+										h5 Line Height
+											span.label.label-info.slider-value
+												span#line-height-value #{prefs.lineHeight}
+											#line-height
+								li.col-md-3.col-sm-6.block-unit
+									.row
+										h5 Text Color
+										.form-group
+											input#fontcolor.form-control(type='text', ng-model='prefs.fgColor')
+									.row
+										h5 Background Color
+										.form-group
+											input#fontcolor.form-control(type='text', ng-model='prefs.bgColor')
+								li.col-md-3.col-sm-6.block-unit
+									.row
+										h5 Save Copy of Text
+										.form-group
+											.input-group
+												input#appendedtext-normal.form-control(name='appendedtext-normal', placeholder='Placeholder', type='text')
+												span.input-group-addon .txt
+					ul.nav.navbar-nav.navbar-right
+						li.dropdown.half-width
+							a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+								i.fa.fa-user
+								span.caret
+							ul.dropdown-menu(role='menu')
+								li
+									h4.margin-top-0 Form Elements
+									form#demo-form(data-parsley-validate='')
+										fieldset
+											.col-md-6
+												.form-group.has-feedback
+													label(for='review-name') Name
+													input#review-name.form-control(type='text', placeholder='Your name', required='')
+													span.fa.icon-coins.form-control-feedback
+											.col-md-6
+												.form-group.has-feedback
+													label(for='review-email') Email
+													input#review-email.form-control(type='email', placeholder='Email', required='')
+													span.fa.icon-coins.form-control-feedback
+											.col-md-12
+												.form-group.has-feedback
+													label(for='message-validation')
+														| Message 
+														small 20 chars min, 100 max
+													textarea#message-validation.form-control(name='message', data-parsley-trigger='keyup', data-parsley-minlength='20', data-parsley-maxlength='100', data-parsley-validation-threshold='10', data-parsley-minlength-message='Come on! You need to enter at least a 20 caracters long comment..', required='')
+											.col-md-12
+												button.btn.btn-primary(type='submit') Submit
+					ul.nav.navbar-nav.navbar-right
+						li.dropdown.third-width
+							a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+								| Quicks 
+								span.caret
+							ul.dropdown-menu.launcher-pad(role='menu')
+								li.col-md-4.col-sm-6.col-xs-4
+									a(href='#')
+										i.fa.fa-cube
+										| Appz
+										span.badge 55
+								li.col-md-4.col-sm-6.col-xs-4
+									a(href='#')
+										i.fa.fa-database
+										|  Database
+										span.badge 19
+								li.col-md-4.col-sm-6.col-xs-4
+									a(href='#')
+										i.fa.fa-android
+										|  Android
+										span.badge 7
+								li.col-md-4.col-sm-6.col-xs-4
+									a(href='#')
+										i.fa.fa-cubes
+										|  Platforms
+										span.badge 2
+								li.col-md-4.col-sm-6.col-xs-4
+									a(href='#')
+										i.fa.fa-life-ring
+										|  Support
+										span.badge 9
+								li.col-md-4.col-sm-6.col-xs-4
+									a(href='#')
+										i.fa.fa-gear
+										|  Settings
+										span.badge 5
+								li.col-md-4.col-sm-6.col-xs-4
+									a(href='#')
+										i.fa.fa-thumbs-up
+										|  Likes
+										span.badge 182
+								li.col-md-4.col-sm-6.col-xs-4
+									a(href='#')
+										i.fa.fa-heart-o
+										|  Lovers
+										span.badge + 21
+								li.col-md-4.col-sm-6.col-xs-4
+									a(href='#')
+										i.fa.fa-thumbs-down
+										|  Dislikes
+										span.badge 20
+
+		.container-fluid
+			textarea#pad(autofocus='')
+			#caption-area
+		a#autoscroll.scrollToBottom.pull-right.tooltiped(data-toggle='tooltip', title='To Bottom')
+				i.scroll-arrow.fa.fa-arrow-down
+		script.
+			var user = !{JSON.stringify(user)};
+			var event = !{JSON.stringify(event)};
+			setTimeout(function () {
+				//- $("#font-size").slider('value', #{prefs.fontSize});
+				//- $("#line-height").slider('value', #{prefs.lineHeight});
+			}, 250);
+		//- Angular
+		script(src='/node/angular/angular.min.js')
+		//- Angular controller
+		script(src='/js/controller.js')
+		//- jQuery
+		script(src='/node/jquery/dist/jquery.min.js')
+		script(type='text/javascript', src='/themes/yummy/js/vendors/jquery/jquery-ui.min.js')
+		//- Bootstrap scripts
+		script(src='/node/bootstrap/dist/js/bootstrap.min.js')
+		//- Annotator
+		//- script(src='/js/annotator-full.min.js')
+		//- ShareDB scripts
+		script(src='/sharedb/textarea.js')
+		//- Stepper
+		script(type='text/javascript', src='/themes/yummy/js/vendors/stepper/jquery.stepper.min.js')
+		//- Minicolors
+		script(type='text/javascript', src='/themes/yummy/js/vendors/minicolors/jquery.minicolors.min.js')
+		//- My scripts
+		script(src='/js/watch.js' defer)

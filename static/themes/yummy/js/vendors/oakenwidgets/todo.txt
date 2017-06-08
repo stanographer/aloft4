@@ -1,0 +1,20 @@
+1. Animate fullscreen                                 DONE
+3. Resizability                                       HOLD
+4. Persistence                                        IN PROGRESS
+  a. Clear
+  b. Delete
+  c. Modals
+  d. Server-side
+  e. Restore widget
+5. Custom controls
+6. Ajax content
+7. Switch content on fullscreen
+8. Cursor pointer only when sortability is enabled    DONE
+2. How can we avoid css file?
+9. Block UI
+10. Better markup validation (bs cols classes)
+11. Validate widgets (ids required for persistence)
+12. Auto assign ids
+13. Persist scroll position
+14. What about sortable dependency? jquery ui.
+15. Structure when $widgets is not a .row

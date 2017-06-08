@@ -1,0 +1,166 @@
+doctype html
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		title #{event}
+		link(rel='stylesheet', href='/node/bootstrap/dist/css/bootstrap.min.css')
+		link(href='/themes/yummy/css/overlay-effects/overlay-effects.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/font-awesome.min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/dripicons.min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/animate/animate.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/hover/hover-min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/minicolors/jquery.minicolors.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/stepper/jquery.stepper.min.css', rel='stylesheet', type='text/css')
+		link(rel='stylesheet', href='/themes/yummy/css/styles.css')
+		link(rel='stylesheet', href='/css/annotator.min.css')
+		link(rel='stylesheet', href='/css/fonts.css')
+		link(rel='stylesheet', href='/css/sidebar.css')
+		link(rel='stylesheet', href='/css/watch.css')
+
+	
+	body(ng-app="Aloft", ng-controller='AloftController' ng-style="{'backgroundColor': bgColor}")
+		header.nav-down
+			#header.navbar.navbar-default.navbar-twitch(role='navigation')
+				.container
+					.navbar-header
+						a.navbar-brand(href='#')
+							span.small-nav 
+								//- span.fa.fa-arrow-up(aria-hidden='true')
+									b
+							span.full-nav Aloft
+					div
+						ul.nav.navbar-nav
+							li.dropdown
+								a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+									span.small-nav
+										span.fa.fa-info-circle(aria-hidden='true')
+									span.full-nav  Info
+								ul.dropdown-menu.absolute-right-dropdown-menu(role='menu')
+									li
+										h4.margin-top-0.margin-bottom-20px Information
+										.callout.callout-feed
+											h4 Event Name
+											|  #{event}
+										.callout.callout-user
+											h4 Stenographer
+											|  #{user}
+							li.dropdown.full-width
+								a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+									span.small-nav
+										span.fa.fa-font(aria-hidden='true')
+										//- span.caret
+									span.full-nav  Font Style
+								ul.dropdown-menu.absolute-right-dropdown-menu(role='menu')
+									li
+										h4.margin-top-0.margin-bottom-20px Font Style
+										.form-group
+												.col-md-8
+													select(ng-model='fontFamily', ng-options='f as f.name group by f.type for f in fonts track by f.name' ng-change='saveFontFamily()').selectpicker.form-control
+							li.dropdown.third-width
+								a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+									span.small-nav
+										span.fa.fa-text-height(aria-hidden='true')
+									span.full-nav  Font Size
+								ul.dropdown-menu.absolute-right-dropdown-menu(role='menu')
+									li
+										h4.margin-top-0.margin-bottom-20px Text Size
+										span.label.label-info.slider-value
+													span#font-size-value {{fontSize}}
+												#font-size(model='fontSize', setting-slider, min="1", max="300")
+							li.dropdown.third-width
+								a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+									span.small-nav
+										span.fa.fa-align-justify(aria-hidden='true')
+									span.full-nav  Font Size
+								ul.dropdown-menu.absolute-right-dropdown-menu(role='menu')
+									li
+										h4.margin-top-0.margin-bottom-20px Line Height
+										span.label.label-info.slider-value
+													span#line-height-value {{lineHeight}}
+												#line-height(model='lineHeight', setting-slider, min='1', max='200', click='save()')
+							li.dropdown.third-width
+								a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+									span.small-nav
+										span.fa.fa-tint(aria-hidden='true')
+									span.full-nav  Font Size
+								ul.dropdown-menu.absolute-right-dropdown-menu(role='menu')
+									li
+										h4.margin-top-0.margin-bottom-20px Colors
+										.row
+											h5 Text Color
+											.form-group
+												input#fgColor.form-control(type='text', ng-model='fgColor', ng-change='saveFg()' minicolors="minicolorsSettings")
+										.row
+											h5 Background Color
+											.form-group
+												input#bgColor.form-control(type='text', ng-model='bgColor', ng-change='saveBg()' minicolors='minicolorsSettings')
+							li.dropdown.third-width
+								a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+									span.small-nav
+										span.fa.fa-cloud-download(aria-hidden='true')
+									span.full-nav  Save Text
+								ul.dropdown-menu.absolute-right-dropdown-menu(role='menu')
+									li
+										h4.margin-top-0.margin-bottom-20px Download Text
+										.form-group
+											.input-group
+												input#filename-id.form-control(name='filename-id', placeholder='filename.txt', type='text', value='#{event}')
+												span.input-group-addon .txt
+											a.input-group-btn.btn.btn-success.inline(type='submit', onclick='saveForm()') Save
+							li.dropdown.third-width
+								a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+									span.small-nav
+										span.fa.fa-paper-plane(aria-hidden='true')
+									span.full-nav  Email Text
+								ul.dropdown-menu.absolute-right-dropdown-menu(role='menu')
+									li
+										h4.margin-top-0.margin-bottom-20px Email Text
+										.form-group
+											.input-group
+												input#filename-id.form-control(name='filename-id', placeholder='someone@email.com', type='text')
+												span.input-group-addon @
+											a.input-group-btn.btn.btn-success.inline(type='submit', onclick='saveForm()') Send
+					// /.nav-collapse
+		button.btn.btn-default.btn-xs.navbar-twitch-toggle(type='button')
+			span.glyphicon.glyphicon-chevron-right.nav-open
+			span.glyphicon.glyphicon-chevron-left.nav-close
+		.container.fluid
+			.row
+				h2 Navbar Styles
+				p Just to show off how easy it is to theme!
+				button.btn.btn-inverse.nav-style-toggle.disabled(type='button', data-type='inverse')  Inverse
+				button.btn.btn-default.nav-style-toggle(type='button', data-type='default')  Default
+				button.btn.btn-purple.nav-style-toggle(type='button', data-type='purple')  Purple
+			.row
+				#caption-area(ng-style="{'fontSize': fontSize + 'px', 'lineHeight': lineHeight + '%', 'color': fgColor, 'backgroundColor': bgColor, 'font-family': fontFamily.id}")
+		a#autoscroll.scrollToBottom.pull-right
+				i.scroll-arrow.fa.fa-arrow-down
+		//- jQuery
+		script(src='/node/jquery/dist/jquery.min.js')
+		//- Angular
+		script(src='/node/angular/angular.min.js')
+		//- Angular User Settings
+		script(src='/node/angular-user-settings/dist/angular-user-settings.min.js')
+		script(type='text/javascript', src='/themes/yummy/js/vendors/jquery/jquery-ui.min.js')
+		//- Bootstrap scripts
+		script(src='/node/bootstrap/dist/js/bootstrap.min.js')
+		//- Annotator
+		script(src='/js/annotator-full.min.js')
+		//- ShareDB scripts
+		//- script(src='/sharedb/textarea.js' defer)
+		//- Minicolors
+		script(type='text/javascript', src='/themes/yummy/js/vendors/minicolors/jquery.minicolors.min.js')
+		//- Angular User Settings
+		script(src='/node/angular-minicolors/angular-minicolors.js')
+		//- Angular controller
+		script(src='/js/controller.js')
+		//- My shit
+		script(src='/js/watch.js')
+		//- jQuery UI Touch
+		script(src='/js/jquery-ui-touch.js')
+		//- My scripts
+		script(src='/dist/bundle.js' defer)
+		script.
+			var user = !{JSON.stringify(user)};
+			var event = !{JSON.stringify(event)};
+			var marker = !{JSON.stringify(marker)};

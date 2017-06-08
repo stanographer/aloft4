@@ -1,0 +1,97 @@
+doctype html
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		title #{event}
+		link(rel='stylesheet', href='/css/fonts.css')
+		link(rel='stylesheet', href='/node/bootstrap/dist/css/bootstrap.min.css')
+		link(href='/themes/yummy/css/overlay-effects/overlay-effects.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/font-awesome.min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/dripicons.min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/animate/animate.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/hover/hover-min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/minicolors/jquery.minicolors.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/stepper/jquery.stepper.min.css', rel='stylesheet', type='text/css')
+		link(rel='stylesheet', href='/themes/yummy/css/styles.css')
+		link(rel='stylesheet', href='/css/watch.css')
+
+	
+	body
+		header.nav-down
+			nav.navbar.navbar-default.navbar-fixed-top#header
+				// Brand and toggle get grouped for better mobile display
+				.navbar-header
+					button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar-default-collapse')
+						span.sr-only Toggle navigation
+						span.fa.fa-bars
+					a.navbar-brand(href='#') Aloft
+				// Collect the nav links, forms, and other content for toggling
+				#navbar-default-collapse.collapse.navbar-collapse
+					ul.nav.navbar-nav
+
+					form.navbar-form.navbar-left(role='search')
+						p.navbar-text
+								i.nav-label.fa.fa-text-height(aria-hidden='true')
+						.form-group
+							//- .input-group
+								span.input-group-addon hey
+							input#fontsize.form-control.numeric(type='text', value='36', data-wheel-step='0.', data-arrow-step='1', name='fontsize')
+					form.navbar-form.navbar-left(role='search')
+						p.navbar-text
+								i.nav-label.fa.fa-font(aria-hidden='true')
+						.form-group
+							.col-md-8
+								select.selectpicker.form-control
+									option(value='1') Sintony
+									option(value='2') Option Two
+									option(value='3') Option Three
+									option(value='4') Option Four
+					form.navbar-form.navbar-left(role='search')
+						p.navbar-text
+								i.nav-label.fa.fa-align-center(aria-hidden='true')
+						.form-group
+							input#fontcolor.form-control(type='text', value='#2c363f')
+					form.navbar-form.navbar-left(role='search')
+						p.navbar-text
+								i.nav-label.fa.fa-file-text(aria-hidden='true')
+						.form-group
+							input#fontcolor.form-control(type='text', value='#f2f3f5')
+				
+					ul.nav.navbar-nav.navbar-right
+						li.dropdown
+							a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+								i.nav-label.fa.fa-cog(aria-hidden='true')
+								span.caret
+							ul.dropdown-menu(role='menu')
+								li
+									a(href='#') Action
+								li
+									a(href='#') Another action
+								li
+									a(href='#') Something else here
+								li.divider
+								li
+									a(href='#') Separated link
+				//- navbar-collapse
+
+		.container-fluid
+			textarea#pad(autofocus='')
+			#caption-area
+		a#autoscroll.scrollToBottom.pull-right.tooltiped(data-toggle='tooltip', title='To Bottom')
+				i.scroll-arrow.fa.fa-arrow-down
+		script.
+			var user = !{JSON.stringify(user)};
+			var event = !{JSON.stringify(event)};
+		//- jQuery
+		script(src='/node/jquery/dist/jquery.min.js')
+		script(type='text/javascript', src='/themes/yummy/js/vendors/jquery/jquery-ui.min.js')
+		//- Bootstrap scripts
+		script(src='/node/bootstrap/dist/js/bootstrap.min.js')
+		//- ShareDB scripts
+		script(src='/sharedb/textarea.js' defer)
+		//- Stepper
+		script(type='text/javascript', src='/themes/yummy/js/vendors/stepper/jquery.stepper.min.js')
+		//- Minicolors
+		script(type='text/javascript', src='/themes/yummy/js/vendors/minicolors/jquery.minicolors.min.js')
+		//- My scripts
+		script(src='/js/watch.js' defer)
