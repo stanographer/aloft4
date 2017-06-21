@@ -2,7 +2,11 @@
 
 module.exports = function(app, passport) {
 	app.get('/', function (req, res) {
-		res.render('login');
+		if (req.user) {
+			res.redirect('/dashboard');
+		} else {
+			res.render('login');
+		}
 	});
 
 	app.get('/editor', function (req, res) {
@@ -20,15 +24,20 @@ module.exports = function(app, passport) {
 		});
 	});
 
-	app.get('logout', function (req, res) {
+	app.get('/logout', function (req, res) {
 		req.logout();
 		res.redirect('login');
 	});
 
 	app.get('/signup', function (req, res) {
 		res.render('signup', {
-			token: req.params.token
+			token: req.params.token,
+			message: req.flash('signupMessage')
 		});
+	});
+
+	app.get('/dashboard', isLoggedIn, function (req, res) {
+		res.render('dashboard');
 	});
 
 	app.get('/:user/:event', function (req, res) {
@@ -45,14 +54,16 @@ module.exports = function(app, passport) {
 		});
 	});
 
-	function loggedIn (req, res, next) {
+	app.post('/signup', passport.authenticate('signup', {
+		successRedirect: '/dashboard',
+		failureRedirect: '/signup',
+		failureFlash: true
+	}));
 
-		 // If logged in, proceed.
-		if (req.isAuthenticated) {
-			return next();
+	function isLoggedIn(req, res, next) {
+			if(req.isAuthenticated()) {
+				return next();
+	  		}
+	  		return res.redirect('/login');
 		}
-
-		// Not logged in, go back here.
-		res.redirect('login');
-	}
 }

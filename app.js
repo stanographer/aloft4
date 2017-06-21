@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser')
 	, express = require('express')
 	, flash = require('connect-flash')
 	, passport = require('passport')
+	, methodOverride = require('method-override')
 	, mongoose = require('mongoose')
 	, path = require('path')
 	, session = require('express-session')
@@ -22,39 +23,74 @@ const richText = require('rich-text')
 
 // Modules
 // const routes = require('./controllers/routes')
-const secrets = require('./config/aloftsecrets');
+const config = require('./config/aloft-config');
 
 startServer();
 
 function startServer() {
  	// Create a web server to serve files and listen to WebSocket connections
  	const app = express();
-	const port = process.env.PORT || 4000;
+	const port = config.port;
 	const server = http.createServer(app);
-	const backend = new ShareDB({db: sharedbmongo(secrets.mongo)});
+	const backend = new ShareDB({db: sharedbmongo(config.mongo)});
 	const connection = backend.connect();
 
-	app.set('views', __dirname + '/views');
-	app.set('view engine', 'jade');
-	// app.use(morgan('dev'));
-	app.use(session({
-		name: 'aloft-session',
-		proxy: true,
-		resave: true,
-		saveUninitialized: true,
-		secret: secrets.session
-	}));
+	// Mongoose
+ 	mongoose.connect(config.users);
+ 	mongoose.Promise = global.Promise;
+ 	var udb = mongoose.connection;
+ 	udb.on('error', function () {
+  		console.log("Database error.");
+	});
+
+	udb.once('open', function () {
+ 		server.listen(3030, function () {
+    		console.log('Users server UP & running on port 3030.');
+  		});
+	});
+
+ 	// Passport
+ 	require('./config/passport')(passport);
+
+ 	// Logger
+	app.use(morgan('dev'));
+
 	app.use(cookieParser());
+	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({
 		extended: true
 	}));
+
+	app.set('view engine', 'jade');
+	app.set('views', __dirname + '/views');
  	app.use(express.static(__dirname + '/static'));
  	app.use('/node', express.static(__dirname + '/node_modules'));
+
+	app.use(session({
+		resave: true,
+		saveUninitialized: false,
+		secret: config.session,
+		cookie: {
+			maxAge: 24*60*60*1000,
+			secure: false
+		}
+	}));
+	
+	app.use(methodOverride('_method'));
  	app.use(passport.initialize());
  	app.use(passport.session());
  	app.use(flash());
+ 	app.use(function (req, res, next) {
+	  console.log("======== REQ START =========");
+	  console.log("REQ DOT BODY\n", JSON.stringify(req.body));
+	  console.log("REQ DOT PARAMS\n", JSON.stringify(req.params));
+	  console.log("REQ DOT SESSION\n", JSON.stringify(req.session));
+	  console.log("REQ DOT USER\n", JSON.stringify(req.user));
+	  console.log("======== REQ END =========");
+	  next();
+	});
 
- 	// Passport
+ 	// Routes
  	require('./controllers/routes')(app, passport);
 
  	// Connect any incoming WebSocket connection to ShareDB

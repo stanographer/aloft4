@@ -2,7 +2,7 @@ doctype html
 html(lang='en')
 	head
 		meta(charset='utf-8')
-		meta(name='viewport', content='width=device-width;')
+		meta(name='viewport', content='width=device-width')
 		title Create an Aloft Account
 		link(rel='stylesheet', href='/node/bootstrap/dist/css/bootstrap.min.css')
 		link(href='/themes/yummy/css/overlay-effects/overlay-effects.css', rel='stylesheet', type='text/css')
@@ -20,7 +20,7 @@ html(lang='en')
 		.standalone-page-wrapper.image-background-1
 			.center-wrapper.register-wrapper
 				.login-block
-					form(data-parsley-validate='')
+					form(action='/signup', method='post', data-parsley-validate='')
 						header
 							h2.margin-0 Create an account
 						.row
@@ -53,6 +53,14 @@ html(lang='en')
 							.col-sm-12
 								.form-group
 									input#email.form-control.input-lg(type='text', name='token', placeholder='Sign-up Token', tabindex='7', required='')
+						if (message.length > 0)
+							.row
+								.col-xs-12
+									.alert.alert-danger(role='alert')
+										button.close(type='submit', data-dismiss='alert', aria-label='Close')
+											span(aria-hidden='true')
+												i.fa.fa-times
+										strong !{message}
 							
 						//- .row.margin-top-10px
 						//- 	.col-sm-12

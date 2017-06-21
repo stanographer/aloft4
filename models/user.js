@@ -6,23 +6,52 @@ const Schema = mongoose.Schema;
 
 const userSchema = mongoose.Schema({
 	local: {
-		username: String,
+		username: {
+			type: String,
+			lowercase: true
+		},
 		password: String,
-		email: String,
+		email: {
+			type: String,
+			unique: true,
+			lowercase: true,
+			match: [/.+\@.+\..+/, 'Please enter a valid email']
+		},
 		firstname: String,
 		lastname: String,
 		prefs: {},
-		admin: {
+		role: {
+			type: String,
+			enum: ['admin', 'trial', 'member'],
+			default: 'member'
+		},
+		locale: {
+			type: String,
+			default: 'EN'
+		},
+		dateCreated: {
+			type: Date,
+			default: Date.now,
+		},
+		activated: {
 			type: Boolean,
-			default: false
+			default: true
 		},
 		isNew: {
 			type: Boolean,
-			default: false
+			default: true
 		}
 	},
 	resetPasswordToken: String,
 	resetPasswordExpiration: Date
 });
+
+userSchema.methods.generateHash = function (password) {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+};
+
+userSchema.methods.validPassword = function (password) {
+    return bcrypt.compareSync(password, this.local.password);
+};
 
 module.exports = mongoose.model('User', userSchema);
