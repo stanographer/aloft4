@@ -1,0 +1,10 @@
+@media (max-device-height: 295px) {
+	.center-wrapper {
+		height: 95% !important;
+	}
+}
+.image-background-1 {
+  background-image: url(/themes/yummy/images/backgrounds/1.png);
+  background-size: cover;
+  background-attachment: fixed;
+}

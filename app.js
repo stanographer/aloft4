@@ -1,37 +1,61 @@
 'use strict';
 
 // Dependencies
-const express = require('express')
+const cookieParser = require('cookie-parser')
+	, bodyParser   = require('body-parser')
+	, express = require('express')
+	, flash = require('connect-flash')
+	, passport = require('passport')
+	, mongoose = require('mongoose')
 	, path = require('path')
-	, http = require('http');
+	, session = require('express-session')
+	, http = require('http')
+	, morgan = require('morgan');
 
 // ShareDB
-const ShareDB = require('sharedb');
-const sharedbmongo = require('sharedb-mongo');
-const richText = require('rich-text');
-const WebSocket = require('ws');
-const WebSocketJSONStream = require('websocket-json-stream');
-const types = require('sharedb/lib/types');
+const richText = require('rich-text')
+	, ShareDB = require('sharedb')
+	, sharedbmongo = require('sharedb-mongo')
+	, types = require('sharedb/lib/types')
+	, WebSocket = require('ws')
+	, WebSocketJSONStream = require('websocket-json-stream');
 
 // Modules
-
-var routes = require('./controllers/routes');
+// const routes = require('./controllers/routes')
+const secrets = require('./config/aloftsecrets');
 
 startServer();
 
 function startServer() {
  	// Create a web server to serve files and listen to WebSocket connections
  	const app = express();
-	const port = 4000;
+	const port = process.env.PORT || 4000;
 	const server = http.createServer(app);
-	const backend = new ShareDB({db: sharedbmongo('mongodb://localhost:27017/aloft')});
+	const backend = new ShareDB({db: sharedbmongo(secrets.mongo)});
 	const connection = backend.connect();
 
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'jade');
+	// app.use(morgan('dev'));
+	app.use(session({
+		name: 'aloft-session',
+		proxy: true,
+		resave: true,
+		saveUninitialized: true,
+		secret: secrets.session
+	}));
+	app.use(cookieParser());
+	app.use(bodyParser.urlencoded({
+		extended: true
+	}));
  	app.use(express.static(__dirname + '/static'));
  	app.use('/node', express.static(__dirname + '/node_modules'));
- 	app.use('/', routes);
+ 	app.use(passport.initialize());
+ 	app.use(passport.session());
+ 	app.use(flash());
+
+ 	// Passport
+ 	require('./controllers/routes')(app, passport);
 
  	// Connect any incoming WebSocket connection to ShareDB
  	var wss = new WebSocket.Server({server: server});

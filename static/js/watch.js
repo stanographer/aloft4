@@ -29,7 +29,7 @@ var Autoscroll = (function () {
 			scroller = setTimeout(startScroll, 0);
 		},
 		delayedStart: function () {
-			scroller = setTimeout(startScroll, 2000);
+			scroller = setTimeout(startScroll, 1600);
 		},
 		restart: function () {
 			scroller = setTimeout(startScroll, 3000);
@@ -43,7 +43,7 @@ var Autoscroll = (function () {
 
 function scroller () {
 	var lastScrollTop = 0;
-	var tolerance = 90;
+	var tolerance = 200;
 	var movedMouse = false;
 
 	function follow () {
@@ -66,41 +66,25 @@ function scroller () {
 		Autoscroll.start();
 	});
 
-	// $(window).mousemove(function () {
-	// 	movedMouse = true;
-	// 	console.log('moved mouse ' + movedMouse)
-	// 	setTimeout(function () {
-	// 		movedMouse = false;
-	// 		console.log('moved mouse ' + movedMouse)
-	// 	}, 2500)
-	// });
-
 	$(window).scroll(function(e) {
-    	var body = $('body')[0], scrollTop = body.scrollTop;
+    	var body = $('body')[0];
+    	var scrollTop = body.scrollTop;
+    	// console.log('scrolltop ' + scrollTop)
+    	// console.log('lastscroll ' + lastScrollTop)
+    	// console.log('innerheight ' + window.innerHeight)
+    	// console.log('bodyscrollheight ' + body.scrollHeight)
 	    if (scrollTop > lastScrollTop) {
-	        if (scrollTop >= (body.scrollHeight - window.innerHeight - tolerance)) {
+	        if (scrollTop > (body.scrollHeight - window.innerHeight - tolerance)) {
 	            follow();
 	        }
 	    } else {
-	    	// if (movedMouse) {
-	    		if (scrollTop < (body.scrollHeight - window.innerHeight - tolerance)) {
-	           		pause();
-	        	}
-	    	// }
+    		if (scrollTop < (body.scrollHeight - window.innerHeight - tolerance)) {
+           		pause();
+        	}
     	}
     	lastScrollTop = scrollTop;
 	});
 }
-
-// Tooltips
-
-if ($('.tooltiped').length) {
-	$('.tooltiped').tooltip();
-}
-
-$('.dropdown-menu').click(function (event) {
-	event.stopPropagation();
-});
 
 // Save transcript function
 

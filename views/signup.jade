@@ -1,0 +1,88 @@
+doctype html
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		meta(name='viewport', content='width=device-width;')
+		title Create an Aloft Account
+		link(rel='stylesheet', href='/node/bootstrap/dist/css/bootstrap.min.css')
+		link(href='/themes/yummy/css/overlay-effects/overlay-effects.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/font-awesome.min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/dripicons.min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/animate/animate.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/hover/hover-min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/minicolors/jquery.minicolors.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/stepper/jquery.stepper.min.css', rel='stylesheet', type='text/css')
+		link(rel='stylesheet', href='/themes/yummy/css/styles.css')
+		link(rel='stylesheet', href='/css/annotator.min.css')
+		link(rel='stylesheet', href='/css/fonts.css')
+		link(rel='stylesheet', href='/css/general.css')
+		body
+		.standalone-page-wrapper.image-background-1
+			.center-wrapper.register-wrapper
+				.login-block
+					form(data-parsley-validate='')
+						header
+							h2.margin-0 Create an account
+						.row
+							.col-sm-6
+								.form-group
+									input#firstname.form-control.input-lg(type='text', name='firstname', placeholder='First Name', tabindex='1', required='')
+							.col-sm-6
+								.form-group
+									input#lastname.form-control.input-lg(type='text', name='lastname', placeholder='Last Name', tabindex='2', required='')
+						.row
+							.col-sm-12
+								.form-group
+									input#username.form-control.input-lg(type='text', name='username', placeholder='Username', tabindex='3', required='')
+						.row
+							.col-sm-12
+								.form-group
+									input#email.form-control.input-lg(type='email', name='email', placeholder='Email Address', tabindex='4', required='')
+						.row
+							.col-sm-6
+								.form-group
+									input#password.form-control.input-lg(type='password', name='password', placeholder='Password', tabindex='5', required='')
+							.col-sm-6
+								.form-group
+									input#password_confirmation.form-control.input-lg(type='password', name='password_confirmation', placeholder='Confirm Password', tabindex='6', required='')
+						.row
+							.col-sm-12
+								a.tooltiped(href='#', title="A sign-up token is required to create an account. To inquire, please email support@aloft.nu.", data-toggle='tooltip', data-placement='top') What's a sign-up token?
+
+						.row
+							.col-sm-12
+								.form-group
+									input#email.form-control.input-lg(type='text', name='token', placeholder='Sign-up Token', tabindex='7', required='')
+							
+						//- .row.margin-top-10px
+						//- 	.col-sm-12
+						//- 		| Already have an account? Click&nbsp;
+						//- 		a(href='/login')
+						//- 			strong.label.label-primary here
+						//- 		| &nbsp;to log in instead.
+						footer
+							.row
+								.col-xs-12
+									input.btn.margin-top-20px.btn-primary.btn-block(type='submit', value='Create an account', tabindex='7')
+				.copyrights
+					| Aloft Realtime Text System
+					br
+					| Created by Stanley Sakai
+		//- jQuery
+		script(src='/node/jquery/dist/jquery.min.js')
+		//- Angular
+		script(src='/node/angular/angular.min.js')
+		//- Angular User Settings
+		script(src='/node/angular-user-settings/dist/angular-user-settings.min.js')
+		script(type='text/javascript', src='/themes/yummy/js/vendors/jquery/jquery-ui.min.js')
+		//- Bootstrap scripts
+		script(src='/node/bootstrap/dist/js/bootstrap.min.js')
+		//- Angular controller
+		script(src='/js/controller.js')
+		//- Parsley
+		script(type='text/javascript', src='/themes/yummy/js/vendors/parsley/parsley-config.js')
+		script(type='text/javascript', src='/themes/yummy/js/vendors/parsley/parsley.min.js')
+		//- jQuery UI Touch
+		script(src='/js/jquery-ui-touch.js')
+		//- General scripts
+		script(src='/js/general.js')
