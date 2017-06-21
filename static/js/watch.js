@@ -1,20 +1,23 @@
+'use strict';
+
 var captionArea = document.getElementById('caption-area');
 var previousText
 var idle = true;
-var didScroll, scrollLoop, scroller, mouseOver, count;
-var scrollDelay = 4000;
-var time = (scrollDelay/1000);
+var count;
 
-hasScrolled();
-
+scroller();
 
 var Autoscroll = (function () {
+	var scrollLoop, scroller;
 
 	var scroll = function() {
-		$(document).scrollTop($(document).height());
+		// $(document).scrollTop($(document).height());
+		$('html, body').animate({
+        	scrollTop: $(document).height()
+    	}, 'slow');
 	}
 	var startScroll = function() {
-		scrollLoop = setInterval(scroll, 150);
+		scrollLoop = setInterval(scroll, 1300);
 		console.log('scrolling has started!');
 	}
 	var stopScroll = function() {
@@ -33,83 +36,61 @@ var Autoscroll = (function () {
 		},
 		pause: function () {
 			clearTimeout(scroller);
-			clearInterval(scrollLoop);
 			stopScroll();
 		}
 	}
 })();
 
-function hasScrolled () {
+function scroller () {
 	var lastScrollTop = 0;
-	var tolerance = 59;
+	var tolerance = 90;
+	var movedMouse = false;
+
+	function follow () {
+		$('#header').removeClass('nav-down').addClass('nav-up');
+		// $('#main-content').removeClass('content-nav-open').addClass('content-nav-closed');
+		$('.dropdown').removeClass('open');
+		$('#autoscroll').addClass('invisible').removeClass('visible');
+	}
+
+	function pause () {
+		$('#header').removeClass('nav-up').addClass('nav-down');
+		$('#autoscroll').addClass('visible').removeClass('invisible');
+		// $('#main-content').removeClass('content-nav-closed').addClass('content-nav-open');
+		Autoscroll.pause();
+		clearInterval(count);
+	}
+
+
+	$('#autoscroll').click(function () {
+		Autoscroll.start();
+	});
+
+	// $(window).mousemove(function () {
+	// 	movedMouse = true;
+	// 	console.log('moved mouse ' + movedMouse)
+	// 	setTimeout(function () {
+	// 		movedMouse = false;
+	// 		console.log('moved mouse ' + movedMouse)
+	// 	}, 2500)
+	// });
 
 	$(window).scroll(function(e) {
-    	var body = $('body')[0],
-       		scrollTop = body.scrollTop;
+    	var body = $('body')[0], scrollTop = body.scrollTop;
 	    if (scrollTop > lastScrollTop) {
 	        if (scrollTop >= (body.scrollHeight - window.innerHeight - tolerance)) {
 	            follow();
 	        }
 	    } else {
-	    	if (scrollTop <= (body.scrollHeight - window.innerHeight - tolerance)) {
-	            pause();
-	        }
+	    	// if (movedMouse) {
+	    		if (scrollTop < (body.scrollHeight - window.innerHeight - tolerance)) {
+	           		pause();
+	        	}
+	    	// }
     	}
     	lastScrollTop = scrollTop;
 	});
 }
-
-// function scrollEvent() {
-// 	var lastScrollTop = 0;
-// 	var delta = 4													0;
-// 	// var navBarHeight = $('#header').outerHeight();
-
-// 	$(window).scroll(function(event) {
-// 		didScroll = true;
-// 	});
-
-// 	setInterval(function() {
-// 		if (didScroll) {
-// 			hasScrolled();
-// 			didScroll = false;
-// 		}
-// 	}, 100);
-
-// 	function hasScrolled() {
-// 		var top = $(this).scrollTop();
-	
-// 		if (Math.abs(lastScrollTop - top) <= delta)
-// 			return;
-// 		// scroll down
-// 		if (top > lastScrollTop) {
-// 			follow();
-// 		} else {
-// 			// scroll up
-// 			if (top + $(window).height() - $(document).height() < delta) {
-// 				pause();
-// 			}
-// 		}
-// 	lastScrollTop = top;
-// 	}
-// }
-
-function follow () {
-	$('#header').removeClass('nav-down').addClass('nav-up');
-	$('.dropdown').removeClass('open');
-	$('.scrollToBottom').addClass('invisible').removeClass('visible');
-	$('.navbar-fixed-top').addClass('top-nav-collapse');
-}
-
-function pause () {
-	$('#header').removeClass('nav-up').addClass('nav-down');
-	$('.scrollToBottom').addClass('visible').removeClass('invisible');
-	Autoscroll.pause();
-	clearInterval(count);
-}
-
-$('#autoscroll').click(function () {
-	Autoscroll.start();
-});
 
 // Tooltips
 
@@ -183,9 +164,8 @@ function saveTextAsFile(name)
     downloadLink.click();
 }
 
-function destroyClickedElement(event)
-{
-// remove the link from the DOM
+function destroyClickedElement (event) {
+	// remove the link from the DOM
     document.body.removeChild(event.target);
 }
 
