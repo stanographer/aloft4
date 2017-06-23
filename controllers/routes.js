@@ -37,7 +37,20 @@ module.exports = function(app, passport) {
 	});
 
 	app.get('/dashboard', isLoggedIn, function (req, res) {
-		res.render('dashboard');
+		var userData = {
+			username: req.user.local.username,
+			firstname: req.user.local.firstname,
+			lastname: req.user.local.lastname,
+			email: req.user.local.email,
+			memberSince: req.user.local.dateCreated,
+			locale: req.user.local.locale,
+			role: req.user.local.role,
+			activated: req.user.local.activated,
+			isNew: req.user.local.isNew
+		}
+		res.render('dashboard', {
+			data: userData
+		});
 	});
 
 	app.get('/:user/:event', function (req, res) {
@@ -53,6 +66,13 @@ module.exports = function(app, passport) {
 			marker: '≈'
 		});
 	});
+
+	app.post('/login', passport.authenticate('login', {
+		successRedirect : '/dashboard',
+		failureRedirect : '/login',
+		failureFlash : true
+	}));
+
 
 	app.post('/signup', passport.authenticate('signup', {
 		successRedirect: '/dashboard',

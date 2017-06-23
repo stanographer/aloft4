@@ -4,25 +4,332 @@ html(lang='en')
 		meta(charset='utf-8')
 		title Aloft Dashboard
 		link(rel='stylesheet', href='/node/bootstrap/dist/css/bootstrap.min.css')
-		link(href='/themes/yummy/css/overlay-effects/overlay-effects.css', rel='stylesheet', type='text/css')
 		link(href='/themes/yummy/css/font-awesome.min.css', rel='stylesheet', type='text/css')
 		link(href='/themes/yummy/css/dripicons.min.css', rel='stylesheet', type='text/css')
 		link(href='/themes/yummy/css/animate/animate.css', rel='stylesheet', type='text/css')
 		link(href='/themes/yummy/css/hover/hover-min.css', rel='stylesheet', type='text/css')
 		link(href='/themes/yummy/css/minicolors/jquery.minicolors.css', rel='stylesheet', type='text/css')
 		link(href='/themes/yummy/css/stepper/jquery.stepper.min.css', rel='stylesheet', type='text/css')
-		link(rel='stylesheet', href='/themes/yummy/css/styles.css')
-		link(rel='stylesheet', href='/css/annotator.min.css')
 		link(rel='stylesheet', href='/css/fonts.css')
-		link(rel='stylesheet', href='/css/sidebar.css')
+		link(rel='stylesheet', href='/themes/yummy/css/styles.css')
+		link(href='/themes/yummy/css/overlay-effects/overlay-effects.css', rel='stylesheet', type='text/css')
+		link(rel='stylesheet', href='/css/general.css')
 	body
-		.standalone-page-wrapper.image-background-1
-			.center-wrapper
-				h1 DASHBOARD
-				.copyrights
-					| Aloft Realtime Text System
-					br
-					| Created by Stanley Sakai
+		nav.navbar.navbar-default
+			// Brand and toggle get grouped for better mobile display
+			.navbar-header
+				button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar-default-collapse')
+					span.sr-only Toggle navigation
+					span.fa.fa-bars
+				a.navbar-brand(href='#')
+					i.fa.fa-cloud(aria-hidden='true')
+					| &nbsp;&nbsp;Aloft
+			#navbar-default-collapse.collapse.navbar-collapse
+				ul.nav.navbar-nav.navbar-right
+					li.dropdown.full-width
+						a.dropdown-toggle.navbar-right(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+							img(src='/img/stanavatar.jpg', height='60', width='60')
+							| #{data.firstname} #{data.lastname}&nbsp;&nbsp;
+							span.caret
+						ul.dropdown-menu.launcher-pad(role='menu')
+							li.col-md-4.col-sm-6.col-xs-4
+								a(href='#')
+									i.fa.fa-cube
+									| Appz
+									span.badge 55
+							li.col-md-4.col-sm-6.col-xs-4
+								a(href='#')
+									i.fa.fa-database
+									|  Database
+									span.badge 19
+							li.col-md-4.col-sm-6.col-xs-4
+								a(href='#')
+									i.fa.fa-android
+									|  Android
+									span.badge 7
+							li.col-md-4.col-sm-6.col-xs-4
+								a(href='#')
+									i.fa.fa-cubes
+									|  Platforms
+									span.badge 2
+							li.col-md-4.col-sm-6.col-xs-4
+								a(href='#')
+									i.fa.fa-life-ring
+									|  Support
+									span.badge 9
+							li.col-md-4.col-sm-6.col-xs-4
+								a(href='#')
+									i.fa.fa-gear
+									|  Settings
+									span.badge 5
+							li.col-md-4.col-sm-6.col-xs-4
+								a(href='#')
+									i.fa.fa-thumbs-up
+									|  Likes
+									span.badge 182
+							li.col-md-4.col-sm-6.col-xs-4
+								a(href='#')
+									i.fa.fa-heart-o
+									|  Lovers
+									span.badge + 21
+							li.col-md-4.col-sm-6.col-xs-4
+								a(href='#')
+									i.fa.fa-thumbs-down
+									|  Dislikes
+									span.badge 20
+		.container
+			.col-md-12
+				ul#myTabs.nav.nav-tabs.nav-justified(role='tablist')
+					li.active
+						a(href='#create-tab', data-toggle='tab')
+							span.tab-big-icon.dripicons-blog
+							| Create
+							small New Event
+					li.tab-primary
+						a(href='#repo-tab', data-toggle='tab')
+							span.tab-big-icon.dripicons-folder-open
+							| Repository
+							span.badge 42
+							small Past Events
+					li.tab-success
+						a(href='#template-tab', data-toggle='tab')
+							span.tab-big-icon.dripicons-export
+							| Template
+							small Manager
+					li.tab-info
+						a(href='#preferences-tab', data-toggle='tab')
+							span.tab-big-icon.dripicons-gear
+							| Preferences
+							small User Settings
+					li.tab-warning
+						a(href='#help-tab', data-toggle='tab')
+							span.tab-big-icon.dripicons-help
+							| About
+							small Info &amp; Help
+						ul.dropdown-menu.danger-dropdown(data-dropdown-in='flipInX', data-dropdown-out='flipOutX')
+							li
+								a(href='#warning-tab', data-toggle='tab') Choose Warning
+							li
+								a(href='#danger-tab', data-toggle='tab') Choose Danger
+				#myTabContent2.tab-content
+					#create-tab.tab-pane.active(role='tabpanel')
+						.row
+							.col-md-2
+							.col-md-8
+								.padding-8px.bg-white
+									h2 Create a new event
+						.row
+							.col-md-2
+							.col-md-8
+								.padding-10px.bg-white
+									form#basic-wizard.margin-bottom-10px(data-parsley-validate='')
+										.first.block1.show
+											.form-group.has-feedback
+												label.control-label(for='url') URL
+											.input-group
+												span#basic-addon3.input-group-addon aloft.nu/#{data.username}/
+												input#url.form-control(type='text', aria-describedby='url-field', placeholder='i.e. srccon', data-parsley-group='block1')
+											.form-group.has-feedback
+												label.control-label.make-room(for='firstname') Title
+												input#firstname.form-control.form-spacer(type='text', placeholder='i.e. SRCCON 2016, Portland, OR', data-parsley-group='block1')
+											button.btn.btn-default.btn-circle.btn-lg.tooltiped(type='button', data-toggle='tooltip', data-placement='bottom', title='Collaborative: Allow viewers make edits.')
+												i.fa.fa-users(aria-hidden='true')
+											button.btn.btn-primary.btn-circle.btn-lg.tooltiped(type='button', data-toggle='tooltip', data-placement='bottom', title='Hidden: Hide event from public listing.')
+												i.fa.fa-eye-slash(aria-hidden='true')
+											button.btn.btn-success.btn-circle.btn-lg.tooltiped(type='button', data-toggle='tooltip', data-placement='bottom', title='Send on End: Text file of the event will automatically be sent to specified email address.')
+												i.fa.fa-paper-plane(aria-hidden='true')
+											button.btn.btn-info.btn-circle.btn-lg.tooltiped(type='button', data-toggle='tooltip', data-placement='bottom', title='Tweet: Share this event via Twitter post.')
+												i.fa.fa-twitter(aria-hidden='true')
+											span.next.btn.btn-info.pull-right(data-current-block='1', data-next-block='2')
+												| Begin Event!
+											.clearfix
+										.second.block2.hidden
+											.form-group.has-feedback
+												label.control-label(for='nick') Nick Name:
+												input#nick.form-control(type='text', data-parsley-group='block2', required='')
+											.form-group.has-feedback
+												label.control-label(for='email') Email:
+												input#email.form-control(type='email', data-parsley-type='email', data-parsley-group='block2', required='')
+											span.next.btn.btn-primary.pull-left(data-current-block='2', data-next-block='1')
+												i.fa.fa-arrow-left
+												|  Previous
+											button.btn.btn-default.pull-right(type='submit') Send Request
+											.clearfix
+							.col-md-2
+					#repo-tab.tab-pane.tab-pane-primary(role='tabpanel')
+						p
+							| tdbstdhsdhstdhdhdhsstdhet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
+					#template-tab.tab-pane.tab-pane-success(role='tabpanel')
+						p
+							| Loremrstrtrs ipsum dolor sit amet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
+					#info-tab.tab-pane.tab-pane-info(role='tabpanel')
+						p
+							| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
+					#preferences-tab.tab-pane.tab-pane-info(role='tabpanel')
+						p
+							| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
+					#help-tab.tab-pane.tab-pane-warning(role='tabpanel')
+						p
+							| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
+			//- p.lead
+				| Organize your workspace easily — get Bootstrap's panels extended by adding to them portlets fuctionality. Just add portlets class to your container and enjoy panel's new features such as collapsing, extending and deleting. Portlets data stored in HTML5 LocalStorage.
+			//- .callout.callout-warning
+				h4 Library required
+				|                 Please be sure that for portlets functionality additional jQuery library is required. Moreover some more additional features for portlets such as 
+				code sortability
+				|  require special markup (to get LocalStorage works correctly be sure every panel has a unique id). Please read documentation for all details.
+			.row.oakenwidgets
+				.col-md-4
+					#panels-widgets-showcase-1.panel.panel-default.panel-filled
+						.panel-heading
+							.panel-title
+								| Panel
+								small No context
+						.panel-body
+							p
+								| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ipsum lectus, dapibus sed sollicitudin vitae, maximus sit amet tortor.
+						.panel-footer Panel footer
+					// /col-md-4
+					#panels-widgets-showcase-2.panel.panel-success.panel-filled
+						.panel-heading
+							.panel-title
+								| Panel
+								small Success
+						.panel-body
+							p
+								| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ipsum lectus, dapibus sed sollicitudin vitae, maximus sit amet tortor.
+						.panel-footer Panel footer
+				// /col-md-4
+				.col-md-4
+					#panels-widgets-showcase-3.panel.panel-primary.panel-filled
+						.panel-heading
+							.panel-title
+								| Panel
+								small Primary
+						.panel-body
+							p
+								| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ipsum lectus, dapibus sed sollicitudin vitae, maximus sit amet tortor.
+						.panel-footer Panel footer
+					#panels-widgets-showcase-4.panel.panel-info.panel-filled
+						.panel-heading
+							.panel-title
+								| Panel
+								small Info
+						.panel-body
+							p
+								| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ipsum lectus, dapibus sed sollicitudin vitae, maximus sit amet tortor.
+						.panel-footer Panel footer
+				// /col-md-4
+				.col-md-4
+					#panels-widgets-showcase-5.panel.panel-warning.panel-filled
+						.panel-heading
+							.panel-title
+								| Panel
+								small Warning
+						.panel-body
+							p
+								| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ipsum lectus, dapibus sed sollicitudin vitae, maximus sit amet tortor.
+						.panel-footer Panel footer
+					#panels-widgets-showcase-6.panel.panel-danger.panel-filled
+						.panel-heading
+							.panel-title
+								| Panel
+								small Danger
+						.panel-body
+							p
+								| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ipsum lectus, dapibus sed sollicitudin vitae, maximus sit amet tortor.
+						.panel-footer Panel footer
+				// /col-md-4
+			// /row
+		// /container
+	// /wrapper
+	// Main nav
+	nav.menu-wrapper.nicescrolled
+		.logo-block
+			img.img-responsive(alt='logo', src='images/logo-big.png')
+		.main-menu
+			ul#metismenu.metismenu
+				li
+					a.has-arrow(href='#') Elements
+					ul
+						li
+							a(href='elements-buttons.html') Buttons
+						li
+							a(href='elements-components.html') Components
+						li
+							a(href='elements-navbars.html') Navbars
+						li
+							a(href='elements-panels.html') Panels
+						li
+							a(href='elements-typo.html') Typography
+						li
+							a(href='elements-tables.html') Tables
+						li
+							a(href='elements-carousels.html') Carousels
+						li
+							a(href='elements-popovers.html') Popover / Tooltip
+						li
+							a(href='elements-modals.html') Modals
+						li
+							a(href='elements-tabs.html') Tabs
+						li
+							a.has-arrow(href='#', aria-expanded='true') Icon Fonts
+							ul
+								li
+									a(href='icons-font-awesome.html') FontAwesome
+								li
+									a(href='icons-glyphicons.html') Glyphicons
+								li
+									a(href='icons-dripicons.html') Dripicons
+				li
+					a.has-arrow(href='#') Forms
+					ul
+						li
+							a(href='forms-elements.html') Form Elements
+						li
+							a(href='forms-pickers.html') Form Pickers
+						li
+							a(href='forms-validation.html') Form Validation
+						li
+							a(href='forms-wizard.html') Form Wizard
+						li
+							a(href='forms-wysiwyg.html') Form WYSIWYG
+				li
+					a.has-arrow(href='#') Extras
+					ul
+						li
+							a(href='extra-tree-view.html') Tree View
+						li
+							a(href='extra-grid-list-view.html') Grid/List View
+						li
+							a(href='extra-widgeted-panels.html') Widgeted Panels
+						li
+							a(href='extra-tree-view.html') Tree View
+						li
+							a.has-arrow(href='#') Images
+							ul
+								li
+									a(href='images-basics.html') Image Basics
+								li
+									a(href='images-placeholders.html') Image Placeholders
+								li
+									a(href='images-gallery.html') Image Galleries
+								li
+									a(href='images-effects.html') Image Effects
+						li
+							a.has-arrow(href='#') Pages
+							ul
+								li
+									a(href='extra-login.html') Login
+								li
+									a(href='extra-register.html') Register
+								li
+									a(href='extra-faq.html') FAQ
+				li
+					a(href='extra-colors.html') Colors Tests
+	// nav
+	a.scrollToTop.pull-right.tooltiped(href='#', data-toggle='tooltip', data-placement='left', title='To Top')
+		i.fa.fa-arrow-up
 
 		//- jQuery
 		script(src='/node/jquery/dist/jquery.min.js')
@@ -40,3 +347,5 @@ html(lang='en')
 		script(type='text/javascript', src='/themes/yummy/js/vendors/parsley/parsley.min.js')
 		//- jQuery UI Touch
 		script(src='/js/jquery-ui-touch.js')
+		//- jQuery UI Touch
+		script(src='/js/general.js')

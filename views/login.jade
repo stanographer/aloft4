@@ -21,6 +21,14 @@ html(lang='en')
 				.login-block
 					.login-header.text-center
 						img(src='images/logo-xs.png', alt='Logo')
+						if (message.length > 0)
+							.row
+								.col-xs-12
+									.alert.alert-danger(role='alert')
+										button.close(type='submit', data-dismiss='alert', aria-label='Close')
+											span(aria-hidden='true')
+												i.fa.fa-times
+										strong !{message}
 					form.form-horizontal(action='/login', method='POST' data-parsley-validate='')
 						.form-group
 							label.col-md-3.control-label(for='inputEmail3') Username

@@ -17,7 +17,7 @@ var Autoscroll = (function () {
     	}, 'slow');
 	}
 	var startScroll = function() {
-		scrollLoop = setInterval(scroll, 1300);
+		scrollLoop = setInterval(scroll, 1800);
 		console.log('scrolling has started!');
 	}
 	var stopScroll = function() {
@@ -26,12 +26,15 @@ var Autoscroll = (function () {
 	}
 	return {
 		start: function () {
+			// clearTimeout(scroller);
 			scroller = setTimeout(startScroll, 0);
 		},
 		delayedStart: function () {
+			// clearTimeout(scroller);
 			scroller = setTimeout(startScroll, 1600);
 		},
 		restart: function () {
+			// clearTimeout(scroller);
 			scroller = setTimeout(startScroll, 3000);
 		},
 		pause: function () {
@@ -43,12 +46,10 @@ var Autoscroll = (function () {
 
 function scroller () {
 	var lastScrollTop = 0;
-	var tolerance = 200;
-	var movedMouse = false;
+	var tolerance = 150;
 
 	function follow () {
 		$('#header').removeClass('nav-down').addClass('nav-up');
-		// $('#main-content').removeClass('content-nav-open').addClass('content-nav-closed');
 		$('.dropdown').removeClass('open');
 		$('#autoscroll').addClass('invisible').removeClass('visible');
 	}
@@ -56,9 +57,7 @@ function scroller () {
 	function pause () {
 		$('#header').removeClass('nav-up').addClass('nav-down');
 		$('#autoscroll').addClass('visible').removeClass('invisible');
-		// $('#main-content').removeClass('content-nav-closed').addClass('content-nav-open');
 		Autoscroll.pause();
-		clearInterval(count);
 	}
 
 
@@ -69,12 +68,9 @@ function scroller () {
 	$(window).scroll(function(e) {
     	var body = $('body')[0];
     	var scrollTop = body.scrollTop;
-    	// console.log('scrolltop ' + scrollTop)
-    	// console.log('lastscroll ' + lastScrollTop)
-    	// console.log('innerheight ' + window.innerHeight)
-    	// console.log('bodyscrollheight ' + body.scrollHeight)
+
 	    if (scrollTop > lastScrollTop) {
-	        if (scrollTop > (body.scrollHeight - window.innerHeight - tolerance)) {
+	        if (scrollTop >= (body.scrollHeight - window.innerHeight - tolerance)) {
 	            follow();
 	        }
 	    } else {

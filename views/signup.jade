@@ -41,7 +41,7 @@ html(lang='en')
 						.row
 							.col-sm-6
 								.form-group
-									input#password.form-control.input-lg(type='password', name='password', placeholder='Password', tabindex='5', required='')
+									input#password.form-control.input-lg(type='password', name='password', placeholder='Password', tabindex='5', data-parsley-equalto='#password_confirmation', required='')
 							.col-sm-6
 								.form-group
 									input#password_confirmation.form-control.input-lg(type='password', name='password_confirmation', placeholder='Confirm Password', tabindex='6', required='')
