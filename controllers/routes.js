@@ -9,6 +9,12 @@ module.exports = function(app, passport) {
 		}
 	});
 
+	app.get('/admin-only', isLoggedIn, function (req, res) {
+		res.render('admin-only', {
+			user: req.user.local
+		});
+	});
+
 	app.get('/editor', function (req, res) {
 		var user = req.query.user;
 		var event = req.query.event;
@@ -37,20 +43,17 @@ module.exports = function(app, passport) {
 	});
 
 	app.get('/dashboard', isLoggedIn, function (req, res) {
-		var userData = {
-			username: req.user.local.username,
-			firstname: req.user.local.firstname,
-			lastname: req.user.local.lastname,
-			email: req.user.local.email,
-			memberSince: req.user.local.dateCreated,
-			locale: req.user.local.locale,
-			role: req.user.local.role,
-			activated: req.user.local.activated,
-			isNew: req.user.local.isNew
-		}
 		res.render('dashboard', {
-			data: userData
+			user: req.user.local
 		});
+	});
+
+	app.get('/invite-user', isLoggedIn, function (req, res) {
+		if (req.user.local.role === 'admin') {
+			res.render('invite-user');
+		} else {
+			res.redirect('admin-only');
+		}
 	});
 
 	app.get('/:user/:event', function (req, res) {
@@ -84,6 +87,7 @@ module.exports = function(app, passport) {
 			if(req.isAuthenticated()) {
 				return next();
 	  		}
-	  		return res.redirect('/login');
+	  		req.flash('loginMessage', 'You must be logged in to do that!');
+	  		return res.redirect(307, '/login');
 		}
 }

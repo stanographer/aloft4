@@ -29,7 +29,7 @@ html(lang='en')
 					li.dropdown.full-width
 						a.dropdown-toggle.navbar-right(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
 							img(src='/img/stanavatar.jpg', height='60', width='60')
-							| #{data.firstname} #{data.lastname}&nbsp;&nbsp;
+							| #{user.firstname} #{user.lastname}&nbsp;&nbsp;
 							span.caret
 						ul.dropdown-menu.launcher-pad(role='menu')
 							li.col-md-4.col-sm-6.col-xs-4
@@ -111,6 +111,17 @@ html(lang='en')
 								a(href='#warning-tab', data-toggle='tab') Choose Warning
 							li
 								a(href='#danger-tab', data-toggle='tab') Choose Danger
+					if (user.role === 'admin')
+						li.tab-danger
+							a(href='#admin-tab', data-toggle='tab')
+								span.tab-big-icon.dripicons-help
+								| Admin
+								small Tools
+							ul.dropdown-menu.danger-dropdown(data-dropdown-in='flipInX', data-dropdown-out='flipOutX')
+								li
+									a(href='#warning-tab', data-toggle='tab') Choose Warning
+								li
+									a(href='#danger-tab', data-toggle='tab') Choose Danger
 				#myTabContent2.tab-content
 					#create-tab.tab-pane.active(role='tabpanel')
 						.row
@@ -127,7 +138,7 @@ html(lang='en')
 											.form-group.has-feedback
 												label.control-label(for='url') URL
 											.input-group
-												span#basic-addon3.input-group-addon aloft.nu/#{data.username}/
+												span#basic-addon3.input-group-addon aloft.nu/#{user.username}/
 												input#url.form-control(type='text', aria-describedby='url-field', placeholder='i.e. srccon', data-parsley-group='block1')
 											.form-group.has-feedback
 												label.control-label.make-room(for='firstname') Title
@@ -171,6 +182,46 @@ html(lang='en')
 					#help-tab.tab-pane.tab-pane-warning(role='tabpanel')
 						p
 							| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
+					if (user.role === 'admin')
+						#admin-tab.tab-pane.tab-pane-danger(role='tabpanel')
+							.row
+								h2 Invite a Member
+							.row
+								.col-md-8
+									form
+										.form-group.row
+											label.col-sm-2.col-form-label(for='new-member-email') Email
+											.col-sm-10
+												input#inputEmail3.form-control(type='email', name='new-member-email', placeholder='Email')
+										.form-group.row
+											.col-sm-6
+												label.col-sm-2.col-form-label(for='') Role
+												.col-sm-10
+													.radio-styled
+														input#trial(name='role', value='trial', checked='checked', type='radio')
+														label(for='trial') Trial
+													.radio-styled
+														input#member(name='role', value='member', type='radio')
+														label(for='member') Member
+													.radio-styled
+														input#admin(name='role', value='admin', type='radio')
+														label(for='admin') Administrator
+											.col-sm-6.pull-right
+												label.col-sm-2.col-form-label(for='new-member-email') Trial Period
+												input#inputEmail3.form-control(type='trial-duration', name='trial-duration', placeholder='in days')
+
+										.form-group.row
+											label.col-sm-2 Checkbox
+											.col-sm-10
+												.form-check
+													label.form-check-label
+														input.form-check-input(type='checkbox')
+														|  Check me out
+										.form-group.row
+											.offset-sm-2.col-sm-10
+												button.btn.btn-primary(type='submit') Sign in
+
+
 			//- p.lead
 				| Organize your workspace easily — get Bootstrap's panels extended by adding to them portlets fuctionality. Just add portlets class to your container and enjoy panel's new features such as collapsing, extending and deleting. Portlets data stored in HTML5 LocalStorage.
 			//- .callout.callout-warning
