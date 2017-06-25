@@ -43,7 +43,10 @@ const userSchema = mongoose.Schema({
 		}
 	},
 	resetPasswordToken: String,
-	resetPasswordExpiration: Date
+	resetPasswordExpiration: Date,
+	inviteToken: String,
+	trialPeriod: String,
+	expiration: Date
 });
 
 userSchema.methods.generateHash = function (password) {

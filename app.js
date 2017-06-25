@@ -1,7 +1,8 @@
 'use strict';
 
 // Dependencies
-const cookieParser = require('cookie-parser')
+const async = require('async')
+	, cookieParser = require('cookie-parser')
 	, bodyParser   = require('body-parser')
 	, express = require('express')
 	, flash = require('connect-flash')
@@ -9,6 +10,7 @@ const cookieParser = require('cookie-parser')
 	, passport = require('passport')
 	, methodOverride = require('method-override')
 	, mongoose = require('mongoose')
+	, nodemailer = require('nodemailer')
 	, path = require('path')
 	, session = require('express-session')
 	, http = require('http')
@@ -54,7 +56,7 @@ function startServer() {
  	require('./config/passport')(passport);
 
  	// Logger
-	app.use(morgan('dev'));
+	// app.use(morgan('dev'));
 
 	app.use(cookieParser());
 	app.use(bodyParser.json());

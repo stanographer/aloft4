@@ -1,4 +1,9 @@
 'use strict';
+const async = require('async')
+	, crypto = require('crypto')
+	, nodemailer = require('nodemailer')
+	, mailerConfig = require('../config/mailer.js')
+	, User = require('../models/user');
 
 module.exports = function(app, passport) {
 	app.get('/', function (req, res) {
@@ -37,7 +42,7 @@ module.exports = function(app, passport) {
 
 	app.get('/signup', function (req, res) {
 		res.render('signup', {
-			token: req.params.token,
+			token: req.query.token,
 			message: req.flash('signupMessage')
 		});
 	});
@@ -67,6 +72,59 @@ module.exports = function(app, passport) {
 			event: req.params.event,
 			prefs: prefs,
 			marker: '≈'
+		});
+	});
+
+	app.post('/invite-member', function (req, res) {
+		async.waterfall([function (done) {
+			crypto.randomBytes(20, function (err, buf) {
+				var token = buf.toString('hex');
+				done(err, token);
+			});
+		},
+		function (token, done) {
+			var user = new User({
+				username: 'newinvite',
+				firstname: 'newfirstname',
+				lastname: 'newlastname',
+				email: req.body.newmemberemail,
+				inviteToken: token,
+				trialPeriod: req.body.trialperiod,
+				role: req.body.role,
+				token: token
+			});
+			user.save (function (err) {
+				done(err, token, user);
+			});
+		},
+		function (token, user, done) {
+			var transport = nodemailer.createTransport(mailerConfig);
+			var mailOptions = {
+				to: req.body.newmemberemail,
+				from: 'Aloft Support',
+				subject: 'Your Aloft Invite Token',
+				text: 'Hi there! \n\n' +
+				'You\'ve been invited to sign up for Aloft, the super awesome text delivery/captioning system for realtime stenographers! Below you will find the sign-up token use to create your account. Click the link provided to start the registration process. If the link is not clickable, paste the address into your browser or go to aloft.nu/signup and paste the code into the field labeled "token."\n\n' +
+				'Your sign-up token: ' + token + '\n' +
+				'Your registration link: aloft.nu/signup?token=' + token + '.\n\n' +
+				'Please note that your code is only valid for 72 hours (three days). If you do not create your account within that time, you will have to request another token.\n' +
+				'Thank you and enjoy using Aloft!\n\n\n' +
+				'-Aloft Support'
+			};
+			transport.sendMail(mailOptions, function (err) {
+				req.flash('info', 'A sign-up token has been sent to ' + req.body.newmemberemail + '!');
+				done(err, 'done');
+			});
+		}], function (err) {
+			if (err) {
+				// req.flash('error', 'The email could not be sent. Please try again.');
+
+				// res.redirect('/');
+				return console.log(err);
+			} else {
+				req.flash('message', 'An email with the link to this event has been sent successfully to ' + req.body.newmemberemail + '.');
+				res.redirect('/dashboard');
+			}
 		});
 	});
 

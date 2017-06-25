@@ -89,7 +89,7 @@ html(lang='en')
 						a(href='#repo-tab', data-toggle='tab')
 							span.tab-big-icon.dripicons-folder-open
 							| Repository
-							span.badge 42
+							//- span.badge 42
 							small Past Events
 					li.tab-success
 						a(href='#template-tab', data-toggle='tab')
@@ -167,59 +167,53 @@ html(lang='en')
 											button.btn.btn-default.pull-right(type='submit') Send Request
 											.clearfix
 							.col-md-2
-					#repo-tab.tab-pane.tab-pane-primary(role='tabpanel')
+					#repo-tab.tab-pane.bar-primary(role='tabpanel')
 						p
 							| tdbstdhsdhstdhdhdhsstdhet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
-					#template-tab.tab-pane.tab-pane-success(role='tabpanel')
+					#template-tab.tab-pane.bar-success(role='tabpanel')
 						p
 							| Loremrstrtrs ipsum dolor sit amet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
-					#info-tab.tab-pane.tab-pane-info(role='tabpanel')
+					#info-tab.tab-pane.bar-info(role='tabpanel')
 						p
 							| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
-					#preferences-tab.tab-pane.tab-pane-info(role='tabpanel')
+					#preferences-tab.tab-pane.bar-info(role='tabpanel')
 						p
 							| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
-					#help-tab.tab-pane.tab-pane-warning(role='tabpanel')
+					#help-tab.tab-pane.bar-warning(role='tabpanel')
 						p
 							| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
 					if (user.role === 'admin')
-						#admin-tab.tab-pane.tab-pane-danger(role='tabpanel')
-							.row
+						#admin-tab.tab-pane.bar-danger(role='tabpanel')
+							.col-md-2
+							.col-md-8
 								h2 Invite a Member
-							.row
-								.col-md-8
-									form
+								p
+									| Use this form to send someone a sign-up token to create an account on Aloft. They will receive a link which must be redeemed within seven days.
+								.col-md-12
+									form#token-form.signup(action='/invite-member', method='post')
 										.form-group.row
-											label.col-sm-2.col-form-label(for='new-member-email') Email
+											label.col-sm-2.col-form-label(for='newmemberemail') Email
 											.col-sm-10
-												input#inputEmail3.form-control(type='email', name='new-member-email', placeholder='Email')
-										.form-group.row
+												input#inputEmail3.form-control(type='email', name='newmemberemail', placeholder='Email', required='', data-parsley-required='', data-parsley-type='email')
+											//- .col-sm-6
+											label.col-sm-2.col-form-label(for='') Role
 											.col-sm-6
-												label.col-sm-2.col-form-label(for='') Role
-												.col-sm-10
-													.radio-styled
-														input#trial(name='role', value='trial', checked='checked', type='radio')
-														label(for='trial') Trial
-													.radio-styled
-														input#member(name='role', value='member', type='radio')
-														label(for='member') Member
-													.radio-styled
-														input#admin(name='role', value='admin', type='radio')
-														label(for='admin') Administrator
-											.col-sm-6.pull-right
-												label.col-sm-2.col-form-label(for='new-member-email') Trial Period
-												input#inputEmail3.form-control(type='trial-duration', name='trial-duration', placeholder='e.g. 2')
-
-										.form-group.row
-											label.col-sm-2 Checkbox
-											.col-sm-10
-												.form-check
-													label.form-check-label
-														input.form-check-input(type='checkbox')
-														|  Check me out
+												.radio-styled
+													input#member(name='role', value='member', type='radio')
+													label(for='member') Member
+												.radio-styled
+													input#admin(name='role', value='admin', type='radio')
+													label(for='admin') Administrator
+												.radio-styled
+													input#trial(name='role', value='trial', type='radio')
+													label(for='trial') Trial
+												.input-group
+													input.form-control(type='text', name='trialPeriod', placeholder="Trial Duration", value='7', data-parsley-type='number', data-parsley-range='[1, 30]')
+													span.help-block Trial Duration in Days
 										.form-group.row
 											.offset-sm-2.col-sm-10
-												button.btn.btn-primary(type='submit') Sign in
+												button.btn.btn-primary(type='submit') Send Invite!
+							.col-md-2
 
 
 			//- p.lead
@@ -400,3 +394,14 @@ html(lang='en')
 		script(src='/js/jquery-ui-touch.js')
 		//- jQuery UI Touch
 		script(src='/js/general.js')
+		script.
+			$('#token-form').parsley();
+			var url = document.location.toString();
+			if (url.match('#')) {
+				$('.nav-tabs a[href="#' + url.split('#')[1] + '-tab"]').tab('show');
+			} //add a suffix
+
+			// Change hash for page-reload
+			$('.nav-tabs a').on('shown.bs.tab', function (e) {
+			    window.location.hash = e.target.hash;
+			});
