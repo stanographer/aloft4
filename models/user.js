@@ -29,10 +29,6 @@ const userSchema = mongoose.Schema({
 			type: String,
 			default: 'EN'
 		},
-		dateCreated: {
-			type: Date,
-			default: Date.now,
-		},
 		activated: {
 			type: Boolean,
 			default: true
@@ -42,11 +38,16 @@ const userSchema = mongoose.Schema({
 			default: true
 		}
 	},
+	timeFormat: String,
+	marker: String,
 	resetPasswordToken: String,
 	resetPasswordExpiration: Date,
+	dateCreated: {
+		type: Date,
+		default: Date.now,
+	},
 	inviteToken: String,
-	trialPeriod: String,
-	expiration: Date
+	trialPeriod: String
 });
 
 userSchema.methods.generateHash = function (password) {

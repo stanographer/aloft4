@@ -1,3 +1,41 @@
-#pad {
-	font-size: 30px;
+/*body {
+	background-color: #f2f3f5;
 }
+*/
+textarea {
+	resize: none;
+}
+.active-event {
+	margin-bottom: 0px;
+}
+.cell {
+	display: table-cell;
+}
+.textedit {
+	height: 100%;
+	background-color: #caced6;
+	padding: 1em 1em 1em 1em;
+	border-top-right-radius: 4px;
+	border-top-left-radius: 4px;
+}
+#pad {
+	font-size: 20px;
+	font-family: 'Sintony', sans-serif;
+	line-height: 170%;
+	background-color: #dee1e6;
+	/*border: 1px solid #a9a9a9;*/
+	border: none;
+	height: 100%;
+	width: 100%;
+	padding: 1em 2em 0 2em;
+}
+ol, ul {
+	margin-bottom: 0px !important;
+}
+.tab-content > .active, .pill-content > .active {
+	width: 100%;
+}
+/*h1, h2, h3 {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}*/

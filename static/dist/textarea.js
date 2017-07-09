@@ -1,4 +1,43 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var sharedb = require('sharedb/lib/client');
+var StringBinding = require('sharedb-string-binding');
+
+// Open WebSocket connection to ShareDB server
+var socket = new WebSocket('ws://' + window.location.host);
+var connection = new sharedb.Connection(socket);
+var doc;
+
+assignEventInfo(user, event);
+
+function assignEventInfo(user, event) {
+	doc = connection.get(user, event);
+	createDoc(subscribe);
+}
+
+// Create local Doc instance mapped to 'examples' collection document with id 'textarea'
+function createDoc(callback) {
+	doc.fetch(function(err) {
+	    if (err) throw err;
+	    if (doc.type === null) {
+	      	doc.create('', callback);
+	      	return;
+	    }
+	    callback();
+	});
+}
+
+function subscribe() {
+	doc.subscribe(function(err) {
+		if (err) throw err;
+		var element = document.querySelector('textarea');
+		var binding = new StringBinding(element, doc);
+		binding.setup();
+	});
+	doc.on('op', function(data) {
+		console.log('got data! ' + data);
+	});
+}
+},{"sharedb-string-binding":9,"sharedb/lib/client":12}],2:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -302,7 +341,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 // ISC @ Julien Fontanet
 
 'use strict'
@@ -446,7 +485,7 @@ function makeError (constructor, super_) {
 exports = module.exports = makeError
 exports.BaseError = BaseError
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 // These methods let you build a transform function from a transformComponent
 // function for OT types like JSON0 in which operations are lists of components
 // and transforming them requires N^2 work. I find it kind of nasty that I need
@@ -526,7 +565,7 @@ function bootstrapTransform(type, transformComponent, checkValidOp, append) {
   };
 };
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 // Only the JSON type is exported, because the text type is deprecated
 // otherwise. (If you want to use it somewhere, you're welcome to pull it out
 // into a separate module that json0 can depend on).
@@ -535,7 +574,7 @@ module.exports = {
   type: require('./json0')
 };
 
-},{"./json0":5}],5:[function(require,module,exports){
+},{"./json0":6}],6:[function(require,module,exports){
 /*
  This is the implementation of the JSON OT type.
 
@@ -1202,7 +1241,7 @@ json.registerSubtype(text);
 module.exports = json;
 
 
-},{"./bootstrapTransform":3,"./text0":6}],6:[function(require,module,exports){
+},{"./bootstrapTransform":4,"./text0":7}],7:[function(require,module,exports){
 // DEPRECATED!
 //
 // This type works, but is not exported. Its included here because the JSON0
@@ -1460,7 +1499,7 @@ text.invert = function(op) {
 
 require('./bootstrapTransform')(text, transformComponent, checkValidOp, append);
 
-},{"./bootstrapTransform":3}],7:[function(require,module,exports){
+},{"./bootstrapTransform":4}],8:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -1646,7 +1685,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var TextDiffBinding = require('text-diff-binding');
 
 module.exports = StringBinding;
@@ -1757,7 +1796,7 @@ function isSubpath(path, testPath) {
   return true;
 }
 
-},{"text-diff-binding":17}],9:[function(require,module,exports){
+},{"text-diff-binding":18}],10:[function(require,module,exports){
 (function (process){
 var Doc = require('./doc');
 var Query = require('./query');
@@ -2339,7 +2378,7 @@ Connection.prototype._firstQuery = function(fn) {
 };
 
 }).call(this,require('_process'))
-},{"../emitter":13,"../error":14,"../types":15,"../util":16,"./doc":10,"./query":12,"_process":7}],10:[function(require,module,exports){
+},{"../emitter":14,"../error":15,"../types":16,"../util":17,"./doc":11,"./query":13,"_process":8}],11:[function(require,module,exports){
 (function (process){
 var emitter = require('../emitter');
 var ShareDBError = require('../error');
@@ -3253,14 +3292,14 @@ function callEach(callbacks, err) {
 }
 
 }).call(this,require('_process'))
-},{"../emitter":13,"../error":14,"../types":15,"_process":7}],11:[function(require,module,exports){
+},{"../emitter":14,"../error":15,"../types":16,"_process":8}],12:[function(require,module,exports){
 exports.Connection = require('./connection');
 exports.Doc = require('./doc');
 exports.Error = require('../error');
 exports.Query = require('./query');
 exports.types = require('../types');
 
-},{"../error":14,"../types":15,"./connection":9,"./doc":10,"./query":12}],12:[function(require,module,exports){
+},{"../error":15,"../types":16,"./connection":10,"./doc":11,"./query":13}],13:[function(require,module,exports){
 (function (process){
 var emitter = require('../emitter');
 
@@ -3463,7 +3502,7 @@ Query.prototype._handleExtra = function(extra) {
 };
 
 }).call(this,require('_process'))
-},{"../emitter":13,"_process":7}],13:[function(require,module,exports){
+},{"../emitter":14,"_process":8}],14:[function(require,module,exports){
 var EventEmitter = require('events').EventEmitter;
 
 exports.EventEmitter = EventEmitter;
@@ -3475,7 +3514,7 @@ function mixin(Constructor) {
   }
 }
 
-},{"events":1}],14:[function(require,module,exports){
+},{"events":2}],15:[function(require,module,exports){
 var makeError = require('make-error');
 
 function ShareDBError(code, message) {
@@ -3487,7 +3526,7 @@ makeError(ShareDBError);
 
 module.exports = ShareDBError;
 
-},{"make-error":2}],15:[function(require,module,exports){
+},{"make-error":3}],16:[function(require,module,exports){
 
 exports.defaultType = require('ot-json0').type;
 
@@ -3500,7 +3539,7 @@ exports.register = function(type) {
 
 exports.register(exports.defaultType);
 
-},{"ot-json0":4}],16:[function(require,module,exports){
+},{"ot-json0":5}],17:[function(require,module,exports){
 
 exports.doNothing = doNothing;
 function doNothing() {}
@@ -3510,7 +3549,7 @@ exports.hasKeys = function(object) {
   return false;
 };
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = TextDiffBinding;
 
 function TextDiffBinding(element) {
@@ -3612,43 +3651,4 @@ TextDiffBinding.prototype.update = function() {
   this.element.value = value;
 };
 
-},{}],18:[function(require,module,exports){
-var sharedb = require('sharedb/lib/client');
-var StringBinding = require('sharedb-string-binding');
-
-// Open WebSocket connection to ShareDB server
-var socket = new WebSocket('ws://' + window.location.host);
-var connection = new sharedb.Connection(socket);
-var doc;
-
-assignEventInfo(user, event);
-
-function assignEventInfo(user, event) {
-	doc = connection.get(user, event);
-	createDoc(subscribe);
-}
-
-// Create local Doc instance mapped to 'examples' collection document with id 'textarea'
-function createDoc(callback) {
-	doc.fetch(function(err) {
-	    if (err) throw err;
-	    if (doc.type === null) {
-	      	doc.create('', callback);
-	      	return;
-	    }
-	    callback();
-	});
-}
-
-function subscribe() {
-	doc.subscribe(function(err) {
-		if (err) throw err;
-		var element = document.querySelector('textarea');
-		var binding = new StringBinding(element, doc);
-		binding.setup();
-	});
-	doc.on('op', function(data) {
-		console.log('got data! ' + data);
-	});
-}
-},{"sharedb-string-binding":8,"sharedb/lib/client":11}]},{},[18]);
+},{}]},{},[1]);

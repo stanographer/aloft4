@@ -55,6 +55,9 @@ function startServer() {
  	// Passport
  	require('./config/passport')(passport);
 
+ 	// Extra routes
+ 	var editorController = require('./controllers/editor');
+
  	// Logger
 	// app.use(morgan('dev'));
 
@@ -83,6 +86,7 @@ function startServer() {
  	app.use(passport.initialize());
  	app.use(passport.session());
  	app.use(flash());
+ 	app.use('/editor', editorController);
  	app.use(function (req, res, next) {
 	  console.log("======== REQ START =========");
 	  console.log("REQ DOT BODY\n", JSON.stringify(req.body));
@@ -107,10 +111,6 @@ function startServer() {
  	wss.on('disconnect', function() {
         console.log('disconnected');
     });
-
- 	// wss.disconnect = function (err) {
- 	// 	console.log('there was an error.')
- 	// }
 
  	server.listen(port, function () {
 		console.log('Aloft 4 is running on ' + port);

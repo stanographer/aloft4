@@ -3632,6 +3632,10 @@ function startShareDb () {
 	socket.onopen = function () {
 		console.log('connected!')
 		StatusBar.connected();
+		doc.subscribe(function(err) {
+			if (err) throw err;
+			update();
+		});
 	}
 
 	socket.onclose = function () {

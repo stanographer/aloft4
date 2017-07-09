@@ -26,37 +26,61 @@ passport.use('signup', new LocalStrategy({
     function (req, username, password, done) {
     	var email = req.body.email.trim().toLowerCase()
 			, firstname = req.body.firstname
-			, lastname = req.body.lastname;
+			, lastname = req.body.lastname
+			, token = req.body.token;
 
 		process.nextTick(function () {
-			User.findOne({'local.email':  email}, function (err, user) {
-				if (err)
-					return done(err);
-				if (user) {
-					return done(null, false, req.flash('signupMessage', 'Sorry. That email is already taken.'));
+			User.findOne({'inviteToken': token}, function (err, user) {
+				if (err) {
+					res.flash('signupMessage', 'There was an error retrieving that sign-up token.');
+					res.redirect('/signup');
 				} else {
-					User.findOne({'local.username': username.trim().toLowerCase()}, function (err, user) {
-						if (err)
-							return done(err);
-						if (user) {
-							return done(null, false, req.flash('signupMessage', 'Sorry. That username is already taken.'));
-						} else {
-							var newUser = new User();
-							newUser.local.username = username.trim().toLowerCase();
-							newUser.local.password = newUser.generateHash(password);
-							newUser.local.firstname = firstname.trim();
-							newUser.local.lastname = lastname.trim();
-							newUser.local.email = email.trim().toLowerCase();
+					if (user) {
+						var foundToken = user;
+						User.findOne({'local.email':  email}, function (err, user) {
+							if (err)
+								return done(err);
+							if (!user) {
+								User.find
+								User.findOne({'local.username': username.trim().toLowerCase()}, function (err, user) {
+									if (err)
+										return done(err);
+									if (user) {
+										return done(null, false, req.flash('signupMessage', 'Sorry. That username is already taken.'));
+									} else {
+										foundToken.update({$set: {
+												'local.username': username.trim().toLowerCase(),
+												'local.password': foundToken.generateHash(password),
+												'local.firstname': firstname.trim(),
+												'local.lastname': lastname.trim(),
+												'local.email': email.trim().toLowerCase(),
+												'inviteToken': ''
+											}
+										}, {upsert: true}, function (err, updatedUser) {
+											if (err) {
+												throw err;
+											} else {
+												console.log('Success!! Updated.');
+												return updatedUser;
+											}
+										});
 
-							newUser.save(function(err) {
-								if (err)
-									throw err;
-								return done(null, newUser);
-							});
-						}
-					});
+										foundToken.save(function(err) {
+											if (err)
+												throw err;
+											return done(null, foundToken);
+										});
+									}
+								});
+							} else {
+								return done(null, false, req.flash('signupMessage', 'Sorry. That email address already has an account.'));
+							}
+						});    
+					} else {
+						return done(null, false, req.flash('signupMessage', 'Sorry. That sign-up token is invalid.'));
+					}
 				}
-			});    
+			});
 		});
 	}));
 

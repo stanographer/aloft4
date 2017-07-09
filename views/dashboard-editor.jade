@@ -92,8 +92,8 @@ html(lang='en')
 					li.active
 						a(href='#create-tab', data-toggle='tab')
 							span.tab-big-icon.dripicons-blog
-							| Create
-							small New Event
+							| Active Event
+							small Transcription Editor
 					li.tab-primary
 						a(href='#repo-tab', data-toggle='tab')
 							span.tab-big-icon.dripicons-folder-open
@@ -134,50 +134,34 @@ html(lang='en')
 				#myTabContent2.tab-content
 					#create-tab.tab-pane.active(role='tabpanel')
 						.row
-							.col-md-2
-							.col-md-8
+							.col-md-10
 								.padding-8px.bg-white
-									h2 Create a new event
+									h2.active-event Active Event
 						.row
-							.col-md-2
-							.col-md-8
+							.col-md-6
 								.padding-10px.bg-white
+									
 									form#basic-wizard.margin-bottom-10px(data-parsley-validate='', action='/editor', method='post')
 										.first.block1.show
 											.form-group.has-feedback
 												label.control-label(for='url') URL
-											.input-group
-												span#basic-addon3.input-group-addon aloft.nu/#{user.username}/
-												input#url.form-control(type='text', name='event[url]', aria-describedby='url-field', placeholder='i.e. srccon', data-parsley-group='block1')
-											.form-group.has-feedback
-												label.control-label.make-room(for='firstname') Title
-												input#firstname.form-control.form-spacer(type='text', name='event[title]', placeholder='i.e. SRCCON 2016, Portland, OR', data-parsley-group='block1')
-											.btn-group(data-toggle='buttons')
-												label.btn.btn-default
-													input(type='checkbox', name='event[collab]', checked='', autocomplete='off')
-													| Collaborative
-												label.btn.btn-default
-													input(type='checkbox', name='event[hidden]', checked='', autocomplete='off')
-													| Hidden
-												label.btn.btn-default
-													input(type='checkbox', name='send_on_end', checked='', autocomplete='off')
-													| Send on End
-												label.btn.btn-default
-													input(type='checkbox', name='tweet', checked='', autocomplete='off')
-													| Tweet Event
-
-											//- button.btn.btn-default.btn-circle.btn-lg.tooltiped(type='button', data-toggle='tooltip', data-placement='bottom', title='Collaborative: Allow viewers make edits.')
-												i.fa.fa-users(aria-hidden='true')
-											//- button.btn.btn-primary.btn-circle.btn-lg.tooltiped(type='button', data-toggle='tooltip', data-placement='bottom', title='Hidden: Hide event from public listing.')
-											//- 	i.fa.fa-eye-slash(aria-hidden='true')
-											//- button.btn.btn-success.btn-circle.btn-lg.tooltiped(type='button', data-toggle='tooltip', data-placement='bottom', title='Send on End: Text file of the event will automatically be sent to specified email address.')
-											//- 	i.fa.fa-paper-plane(aria-hidden='true')
-											//- button.btn.btn-info.btn-circle.btn-lg.tooltiped(type='button', data-toggle='tooltip', data-placement='bottom', title='Tweet: Share this event via Twitter post.')
-											//- 	i.fa.fa-twitter(aria-hidden='true')
-											button.next.btn.btn-info.pull-right(data-current-block='1', data-next-block='2', type='submit')
-												| Begin Event!
-											
-							.col-md-2
+												input#eventURL.form-control(type='text', name='eventURL', value='aloft.nu/#{user}/#{event.url}' aria-describedby='url-field', placeholder='i.e. srccon', readonly='')
+												small 
+													a.cbcopy(href='#', data-clipboard-target='#eventURL') Copy to Clipboard							
+							.col-md-6
+								ul.list-inline
+									li
+										button.btn.btn-default.btn-big-icon(type='button')
+											i.dripicons-mail
+											| Send
+									li
+										button.btn.btn-primary.btn-big-icon(type='button')
+											i.fa.fa-twitter(aria-hidden='true')
+											| Tweet
+									li
+										button.btn.btn-danger.btn-big-icon(type='button')
+											i.dripicons-checkmark
+											| End
 					#repo-tab.tab-pane.bar-primary(role='tabpanel')
 						p
 							| tdbstdhsdhstdhdhdhsstdhet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
@@ -206,7 +190,6 @@ html(lang='en')
 											label.col-sm-2.col-form-label(for='newmemberemail') Email
 											.col-sm-10
 												input#inputEmail3.form-control(type='email', name='newmemberemail', placeholder='Email', required='', data-parsley-required='', data-parsley-type='email')
-											//- .col-sm-6
 											label.col-sm-2.col-form-label(for='') Role
 											.col-sm-6
 												.radio-styled
@@ -226,23 +209,25 @@ html(lang='en')
 												button.btn.btn-primary(type='submit') Send Invite!
 							.col-md-2.col-lg-2
 					.textedit
-						ul.list-unstyled
-							li
-								.btn-group.btn-group(role='group', aria-label='Large button group')
-									button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-										| Font Family
-										span.caret
-									ul.dropdown-menu
-										li
-											a(href='#') Action
-										li
-											a(href='#') Another action
-										li
-											a(href='#') Something else here
-										li.divider(role='separator')
-										li
-											a(href='#') Separated link
-									button.btn.btn-default(type='button', onclick='jumpqToBottom()') Jump to Bottom
+						//- ul.list-unstyled
+						//- 	li
+						//- 		.btn-group.btn-group(role='group', aria-label='Large button group')
+						//- 			button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+						//- 				| Font Family
+						//- 				span.caret
+						//- 			ul.dropdown-menu
+						//- 				li
+						//- 					a(href='#') Action
+						//- 				li
+						//- 					a(href='#') Another action
+						//- 				li
+						//- 					a(href='#') Something else here
+						//- 				li.divider(role='separator')
+						//- 				li
+						//- 					a(href='#') Separated link
+						button.btn.btn-default(type='button', onclick='jumpToBottom()')
+							i.fa.fa-arrow-down(aria-hidden='true') &nbsp;
+							| Jump to Bottom
 					textarea#pad(autofocus='', spellcheck='false', rows='10')
 
 			.row.oakenwidgets
@@ -325,8 +310,21 @@ html(lang='en')
 		script(type='text/javascript', src='/themes/yummy/js/vendors/parsley/parsley.min.js')
 		//- jQuery UI Touch
 		script(src='/js/jquery-ui-touch.js')
-		//- jQuery UI Touch
+		//- General Scripts
 		script(src='/js/general.js')
+		//- Clipboard.js
+		script(src='/js/clipboard.min.js')
+		//- ShareDB
+		script(src='/sharedb/textarea.js' defer)
+		//- Moment.js
+		script(src='/js/moment.js')
+		script.
+			var user = !{JSON.stringify(user)};
+			var event = !{JSON.stringify(event.url)};
+			var created = !{JSON.stringify(event.created)};
+			var crea = moment(created).format('MMMM Do YYYY, HH:MM');
+
+			console.log(crea)
 		script.
 			$('#token-form').parsley();
 			var url = document.location.toString();
@@ -337,4 +335,8 @@ html(lang='en')
 			// Change hash for page-reload
 			$('.nav-tabs a').on('shown.bs.tab', function (e) {
 			    window.location.hash = e.target.hash;
+			});
+
+			$(document).ready(function() {
+				$("input:text").focus(function() { $(this).select(); } );
 			});

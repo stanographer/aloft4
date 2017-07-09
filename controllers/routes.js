@@ -20,15 +20,6 @@ module.exports = function(app, passport) {
 		});
 	});
 
-	app.get('/editor', function (req, res) {
-		var user = req.query.user;
-		var event = req.query.event;
-		res.render('editor', {
-			user: user,
-			event: event
-		});
-	});
-
 	app.get('/login', function (req, res) {
 		res.render('login', {
 			message: req.flash('loginMessage')
@@ -49,11 +40,12 @@ module.exports = function(app, passport) {
 
 	app.get('/dashboard', isLoggedIn, function (req, res) {
 		res.render('dashboard', {
-			user: req.user.local
+			user: req.user.local,
+			error_message: req.flash('error_message')
 		});
 	});
 
-	app.get('/invite-user', isLoggedIn, function (req, res) {
+	app.get('/invite-member', isLoggedIn, function (req, res) {
 		if (req.user.local.role === 'admin') {
 			res.render('invite-user');
 		} else {
@@ -77,24 +69,30 @@ module.exports = function(app, passport) {
 
 	app.post('/invite-member', function (req, res) {
 		async.waterfall([function (done) {
-			crypto.randomBytes(20, function (err, buf) {
+			crypto.randomBytes(10, function (err, buf) {
 				var token = buf.toString('hex');
 				done(err, token);
 			});
 		},
 		function (token, done) {
-			var user = new User({
-				username: 'newinvite',
-				firstname: 'newfirstname',
-				lastname: 'newlastname',
-				email: req.body.newmemberemail,
-				inviteToken: token,
-				trialPeriod: req.body.trialperiod,
-				role: req.body.role,
-				token: token
-			});
-			user.save (function (err) {
-				done(err, token, user);
+			var cleanEmail = req.body.newmemberemail.trim().toLowerCase();
+			User.findOne({'local.email': cleanEmail}, function (err, user) {
+				if (err) {
+					throw err;
+				} else {
+					if (user) {
+						req.flash('adminMessage', 'That email is already registered.');
+						res.redirect('/dashboard#admin-tab')
+					} else {
+						var newUser = new User;
+						newUser.local.email = cleanEmail;
+						newUser.inviteToken = token;
+						newUser.trialPeriod = req.body.trialPeriod;
+						newUser.save (function (err) {
+							done(err, token, user);
+						});
+					}
+				}
 			});
 		},
 		function (token, user, done) {
