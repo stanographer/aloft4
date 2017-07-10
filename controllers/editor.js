@@ -35,6 +35,11 @@ router.post('/', isLoggedIn, function (req, res) {
 	event.user = req.user.local.username;
 	event.url = req.body.event.url.trim().toLowerCase();
 
+	// If there is no title given by user, automatically assign the URL to be the title.
+	if (!event.title) {
+		event.title = event.url;
+	}
+
 	checkUrl(event.url, event.user, startEvent);
 
 	function startEvent (valid, warnings) {

@@ -20,6 +20,7 @@ const eventSchema = mongoose.Schema({
 	hidden: Boolean,
 	subdomain: String,
 	viewCount: String,
+	version: String
 });
 
 var Event = mongoose.model('Event', eventSchema);

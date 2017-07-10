@@ -35,7 +35,8 @@ function startServer() {
  	const app = express();
 	const port = config.port;
 	const server = http.createServer(app);
-	const backend = new ShareDB({db: sharedbmongo(config.mongo)});
+	const db = sharedbmongo(config.mongo);
+	const backend = new ShareDB({db: db});
 	const connection = backend.connect();
 
 	// Mongoose
@@ -99,6 +100,10 @@ function startServer() {
 
  	// Routes
  	require('./controllers/routes')(app, passport);
+
+ 	// REST endpoint for transcript data via /text route
+ 	require('./controllers/share-rest')(app, db);
+
 
  	// Connect any incoming WebSocket connection to ShareDB
  	var wss = new WebSocket.Server({server: server});

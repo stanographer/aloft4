@@ -1,9 +1,11 @@
 'use strict';
+
 const async = require('async')
 	, crypto = require('crypto')
 	, nodemailer = require('nodemailer')
 	, mailerConfig = require('../config/mailer.js')
-	, User = require('../models/user');
+	, User = require('../models/user')
+	, Event = require('../models/event');
 
 module.exports = function(app, passport) {
 	app.get('/', function (req, res) {
@@ -39,10 +41,25 @@ module.exports = function(app, passport) {
 	});
 
 	app.get('/dashboard', isLoggedIn, function (req, res) {
-		res.render('dashboard', {
-			user: req.user.local,
-			error_message: req.flash('error_message')
-		});
+		let perPage = 9
+			, page = req.params.page > 0 ? req.params.page : 0
+
+		Event.find({user: req.user.local.username})
+			.select(['url', 'user', 'title', 'created'])
+			.limit(perPage)
+			.skip(perPage * page)
+			.sort({created: -1})
+			.exec(function (err, events) {
+				Event.count().exec(function (err, count) {
+					res.render('dashboard', {
+						user: req.user.local,
+						error_message: req.flash('error_message'),
+						events: events,
+						page: page,
+						pages: count / perPage
+					});
+				});
+			});
 	});
 
 	app.get('/invite-member', isLoggedIn, function (req, res) {
@@ -54,7 +71,7 @@ module.exports = function(app, passport) {
 	});
 
 	app.get('/:user/:event', function (req, res) {
-		var prefs = {
+		let prefs = {
 			fontSize: '35',
 			fontFace: 'Inconsolata',
 			lineHeight: '130'
@@ -70,12 +87,12 @@ module.exports = function(app, passport) {
 	app.post('/invite-member', function (req, res) {
 		async.waterfall([function (done) {
 			crypto.randomBytes(10, function (err, buf) {
-				var token = buf.toString('hex');
+				let token = buf.toString('hex');
 				done(err, token);
 			});
 		},
 		function (token, done) {
-			var cleanEmail = req.body.newmemberemail.trim().toLowerCase();
+			let cleanEmail = req.body.newmemberemail.trim().toLowerCase();
 			User.findOne({'local.email': cleanEmail}, function (err, user) {
 				if (err) {
 					throw err;
@@ -84,7 +101,7 @@ module.exports = function(app, passport) {
 						req.flash('adminMessage', 'That email is already registered.');
 						res.redirect('/dashboard#admin-tab')
 					} else {
-						var newUser = new User;
+						let newUser = new User;
 						newUser.local.email = cleanEmail;
 						newUser.inviteToken = token;
 						newUser.trialPeriod = req.body.trialPeriod;

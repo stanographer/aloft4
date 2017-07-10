@@ -15,6 +15,8 @@ html(lang='en')
 		link(href='/themes/yummy/css/overlay-effects/overlay-effects.css', rel='stylesheet', type='text/css')
 		link(rel='stylesheet', href='/css/general.css')
 		link(rel='stylesheet', href='/css/editor.css')
+		//- jQuery
+		script(src='/node/jquery/dist/jquery.min.js')
 	body
 		nav.navbar.navbar-default
 			// Brand and toggle get grouped for better mobile display
@@ -179,8 +181,49 @@ html(lang='en')
 											
 							.col-md-2
 					#repo-tab.tab-pane.bar-primary(role='tabpanel')
-						p
-							| tdbstdhsdhstdhdhdhsstdhet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
+						h2.tab-header-left-justified Event Repository
+						.row
+							#{events}
+							each event, i in events
+								script.
+									//- var date = #{event.created};
+									var prev = document.getElementById('preview');
+									loadPrev();
+
+									function loadPrev () {
+										$.ajax({
+											url: '/text/#{event.user}/#{event.url}',
+											dataType: 'text',
+											success: function (data) {
+												if (data.length >= 200) {
+													prev.innerHTML = data.substring(0, 200);
+												} else {
+													prev.innerHTML = data.substring(0, data.length);
+												}
+											}
+										});
+									}
+								.col-md-4
+									.panel.panel-primary.panel-filled
+										.panel-heading
+											.panel-title
+												| #{event.title}
+												small #{event.url}
+										.panel-body
+											p#preview-!{i}
+												| File preview
+											}
+										.panel-footer
+											ul.list-inline
+												li
+													button.btn.btn-success.btn-circle-sm(type='button')
+														i.dripicons-media-play
+												li
+													button.btn.btn-warning.btn-circle-sm(type='button')
+														i.dripicons-link
+												li
+													button.btn.btn-danger.btn-circle-sm(type='button')
+														i.dripicons-trash
 					#template-tab.tab-pane.bar-success(role='tabpanel')
 						p
 							| Loremrstrtrs ipsum dolor sit amet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
@@ -225,26 +268,6 @@ html(lang='en')
 											.offset-sm-2.col-sm-10
 												button.btn.btn-primary(type='submit') Send Invite!
 							.col-md-2.col-lg-2
-					.textedit
-						ul.list-unstyled
-							li
-								.btn-group.btn-group(role='group', aria-label='Large button group')
-									button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-										| Font Family
-										span.caret
-									ul.dropdown-menu
-										li
-											a(href='#') Action
-										li
-											a(href='#') Another action
-										li
-											a(href='#') Something else here
-										li.divider(role='separator')
-										li
-											a(href='#') Separated link
-									button.btn.btn-default(type='button', onclick='jumpqToBottom()') Jump to Bottom
-					textarea#pad(autofocus='', spellcheck='false', rows='10')
-
 			.row.oakenwidgets
 				.col-md-4
 					#panels-widgets-showcase-1.panel.panel-default.panel-filled
@@ -309,8 +332,6 @@ html(lang='en')
 	a.scrollToTop.pull-right.tooltiped(href='#', data-toggle='tooltip', data-placement='left', title='To Top')
 		i.fa.fa-arrow-up
 
-		//- jQuery
-		script(src='/node/jquery/dist/jquery.min.js')
 		//- Angular
 		script(src='/node/angular/angular.min.js')
 		//- Angular User Settings
@@ -323,10 +344,14 @@ html(lang='en')
 		//- Parsley
 		script(type='text/javascript', src='/themes/yummy/js/vendors/parsley/parsley-config.js')
 		script(type='text/javascript', src='/themes/yummy/js/vendors/parsley/parsley.min.js')
+		//- Clipboard.js
+		script(src='/js/clipboard.min.js')
 		//- jQuery UI Touch
 		script(src='/js/jquery-ui-touch.js')
 		//- jQuery UI Touch
 		script(src='/js/general.js')
+		//- Moment.js
+		script(src='/js/moment.js')
 		script.
 			$('#token-form').parsley();
 			var url = document.location.toString();
