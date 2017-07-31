@@ -3615,17 +3615,30 @@ TextDiffBinding.prototype.update = function() {
 },{}],18:[function(require,module,exports){
 var sharedb = require('sharedb/lib/client');
 var StringBinding = require('sharedb-string-binding');
+var otText = require('ot-text');
 
 // Open WebSocket connection to ShareDB server
 var socket = new WebSocket('ws://' + window.location.host);
 var connection = new sharedb.Connection(socket);
 var doc;
+var element = document.querySelector('textarea');
+var binding;
 
-assignEventInfo(user, event);
+sharedb.types.register(otType.type);
 
-function assignEventInfo (user, event) {
+// assignEventInfo(user, event);
+
+window.assignEventInfo = function (user, event) {
+  console.log('subscribing to: ' + user,)
 	doc = connection.get(user, event);
 	createDoc(subscribe);
+}
+
+window.unbind = function () {
+  if (doc) {
+    doc.unsubscribe();
+    binding.destroy();
+  }
 }
 
 // Create local Doc instance mapped to 'examples' collection document with id 'textarea'
@@ -3633,7 +3646,7 @@ function createDoc (callback) {
 	doc.fetch(function(err) {
 	    if (err) throw err;
 	    if (doc.type === null) {
-	      	doc.create('', callback);
+	      	doc.create('', 'text0', callback);
 	      	return;
 	    }
 	    callback();
@@ -3643,8 +3656,7 @@ function createDoc (callback) {
 function subscribe () {
 	doc.subscribe(function(err) {
 		if (err) throw err;
-		var element = document.querySelector('textarea');
-		var binding = new StringBinding(element, doc);
+		binding = new StringBinding(element, doc);
 		binding.setup();
 	});
 }

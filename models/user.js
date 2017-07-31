@@ -38,6 +38,7 @@ const userSchema = mongoose.Schema({
 			default: true
 		}
 	},
+	avatar: String,
 	timeFormat: String,
 	marker: String,
 	resetPasswordToken: String,

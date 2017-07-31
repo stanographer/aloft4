@@ -1,7 +1,10 @@
 'use strict';
 
-var sharedb = require('sharedb/lib/client');
-var ReconnectingWebSocket = require('reconnecting-websocket/dist/index');
+let sharedb = require('sharedb/lib/client');
+let ReconnectingWebSocket = require('reconnecting-websocket/dist/index');
+let otText = require('ot-text');
+
+sharedb.types.register(otText.type);
 
 startShareDb();
 
@@ -13,6 +16,7 @@ function startShareDb () {
 		connectionTimeout: 4000,
 		maxRetries: Infinity
 	});
+
 	var connection = new sharedb.Connection(socket);
 	var doc = connection.get(user, event);
 	var captionArea = document.getElementById('caption-area');

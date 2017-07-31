@@ -1,5 +1,5 @@
 doctype html
-html(lang='en')
+html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 	head
 		meta(charset='utf-8')
 		title Aloft Dashboard
@@ -13,13 +13,15 @@ html(lang='en')
 		link(rel='stylesheet', href='/css/fonts.css')
 		link(rel='stylesheet', href='/themes/yummy/css/styles.css')
 		link(href='/themes/yummy/css/overlay-effects/overlay-effects.css', rel='stylesheet', type='text/css')
+		//- link(rel='stylesheet', href='/css/packages/jquery.highlighttextarea.min.css')
 		link(rel='stylesheet', href='/css/general.css')
 		link(rel='stylesheet', href='/css/editor.css')
 		//- jQuery
 		script(src='/node/jquery/dist/jquery.min.js')
+		//- Moment.js
+		script(src='/js/packages/moment.js')
 	body
 		nav.navbar.navbar-default
-			// Brand and toggle get grouped for better mobile display
 			.navbar-header
 				button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar-default-collapse')
 					span.sr-only Toggle navigation
@@ -80,6 +82,91 @@ html(lang='en')
 									i.fa.fa-thumbs-down
 									|  Dislikes
 									span.badge 20
+		#editor-pane.overlay
+			a.closebtn(href='javascript:void(0)', onclick='stopEditor()') ×
+			.overlay-content
+				.container
+					.row
+						.col-md-12.col-xs-12.col-sm-12
+							h1 {{ activeEventTitle }}
+								small.user-info #{user.firstname} #{user.lastname}
+
+						.col-md-12.col-xs-12.col-sm-12.editor-wrapper
+							.textedit.panel-body
+								button.btn.btn-primary(type='button', onclick='jumpToBottom()')
+									i.fa.fa-arrow-down(aria-hidden='true') &nbsp;
+								.butt-group
+									button#eventURL.btn.btn-default.cbcopy(type='button', data-clipboard-text='{{ host }}/#{user.username}/{{ activeEventURL }}')
+										i.fa.fa-link(aria-hidden='true') &nbsp;
+										| {{ host }}/#{user.username}/{{ activeEventURL }}
+								.butt-group
+									button.btn.btn-success(type='button', href='#email-modal', role='button', data-toggle='modal')
+										i.fa.fa-paper-plane(aria-hidden='true') &nbsp;
+									button.btn.btn-info(type='button', onclick='jumpToBottom()')
+										i.fa.fa-twitter(aria-hidden='true') &nbsp;
+									.btn-group
+										button.btn.btn-warning.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+											i.fa.fa-download(aria-hidden='true') &nbsp;
+											span.caret
+										ul.dropdown-menu.absolute-right-dropdown-menu.editor-menu(role='menu')
+											li
+												h4.margin-top-0.margin-bottom-20px Download Text
+												.form-group
+													.input-group
+														input#filename-id.form-control(name='filename-id' placeholder='filename.txt', type='text', value='{{ activeEventURL }}')
+														span.input-group-addon.save-group .txt
+													button.input-group-btn.btn.btn-success.save-group(type='submit', ng-click='grabTranscript("#{user.username}", activeEventURL)') Save
+								.butt-group
+									.btn-group
+										button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+											i.fa.fa-font(aria-hidden='true') &nbsp;
+											span.caret
+										ul.dropdown-menu.absolute-right-dropdown-menu.editor-menu(role='menu')
+											li
+												h4.margin-top-0.margin-bottom-20px Font Style
+												.form-group
+														.col-md-8
+															select(ng-model='editorFontFamily', ng-options='f as f.name group by f.type for f in editorFonts track by f.name' ng-change='saveFontFamily()').selectpicker.form-control
+									.btn-group
+										button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+											i.fa.fa-text-height(aria-hidden='true') &nbsp;
+											span.caret
+										ul.dropdown-menu.editor-menu
+											li
+												h4.margin-top-0.margin-bottom-20px Text Size
+												span.label.label-info.slider-value
+															span#font-size-value {{editorFontSize}}
+														#font-size(model='editorFontSize', setting-slider, min="1", max="120")
+									.btn-group
+										button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+											i.fa.fa-align-justify(aria-hidden='true') &nbsp;
+											span.caret
+										ul.dropdown-menu.absolute-right-dropdown-menu.editor-menu(role='menu')
+											li
+												h4.margin-top-0.margin-bottom-20px Line Height
+												span.label.label-info.slider-value
+															span#line-height-value {{editorLineHeight}}
+														#line-height(model='editorLineHeight', setting-slider, min='1', max='200', click='save()')
+									.btn-group
+										button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+											i.fa.fa-tint(aria-hidden='true') &nbsp;
+											span.caret
+										ul.dropdown-menu.absolute-right-dropdown-menu.editor-menu(role='menu')
+											li
+												h4.margin-top-0.margin-bottom-20px Colors
+												.row
+													h5 Text Color
+													.form-group
+														input#fgColor.form-control(ng-model='editorFgColor', ng-change='saveFg()' minicolors="minicolorsSettings")
+												.row
+													h5 Background Color
+													.form-group
+														input#bgColor.form-control(ng-model='editorBgColor', ng-change='saveBg()' minicolors='minicolorsSettings')
+									button#panel-fullscreen.btn.btn-default(type='button')
+										i.fa.fa-expand(aria-hidden='true') &nbsp;
+
+							textarea#pad(autofocus='', spellcheck='false', ng-style="{'fontSize': editorFontSize + 'px', 'lineHeight': editorLineHeight + '%', 'color': editorFgColor, 'backgroundColor': editorBgColor, 'font-family': editorFontFamily.id}")
+
 		.container
 			.col-md-12
 				if (error_message.length > 0)
@@ -89,31 +176,38 @@ html(lang='en')
 								i.fa.fa-times
 						h4 Uh-oh!
 						| !{error_message}
+				if (success_message.length > 0)
+					.alert.callout.callout-success(role='alert')
+						button.close(type='button', data-dismiss='alert', aria-label='Close')
+							span(aria-hidden='true')
+								i.fa.fa-times
+						h4 Yay!
+						| !{success_message}
 
-				ul#myTabs.nav.nav-tabs.nav-justified(role='tablist')
+				ul#create-tab.nav.nav-tabs.nav-justified(role='tablist')
 					li.active
-						a(href='#create-tab', data-toggle='tab')
+						a(href='#create', data-toggle='tab')
 							span.tab-big-icon.dripicons-blog
 							| Create
 							small New Event
 					li.tab-primary
-						a(href='#repo-tab', data-toggle='tab')
+						a(href='#repo', data-toggle='tab')
 							span.tab-big-icon.dripicons-folder-open
 							| Repository
 							//- span.badge 42
 							small Past Events
 					li.tab-success
-						a(href='#template-tab', data-toggle='tab')
-							span.tab-big-icon.dripicons-export
-							| Template
+						a(href='#conference', data-toggle='tab')
+							span.tab-big-icon.dripicons-view-apps
+							| Conference
 							small Manager
 					li.tab-info
-						a(href='#preferences-tab', data-toggle='tab')
+						a(href='#preferences', data-toggle='tab')
 							span.tab-big-icon.dripicons-gear
 							| Preferences
 							small User Settings
 					li.tab-warning
-						a(href='#help-tab', data-toggle='tab')
+						a(href='#help', data-toggle='tab')
 							span.tab-big-icon.dripicons-help
 							| About
 							small Info &amp; Help
@@ -124,7 +218,7 @@ html(lang='en')
 								a(href='#danger-tab', data-toggle='tab') Choose Danger
 					if (user.role === 'admin')
 						li.tab-danger
-							a(href='#admin-tab', data-toggle='tab')
+							a(href='#admin', data-toggle='tab')
 								span.tab-big-icon.dripicons-help
 								| Admin
 								small Tools
@@ -133,13 +227,18 @@ html(lang='en')
 									a(href='#warning-tab', data-toggle='tab') Choose Warning
 								li
 									a(href='#danger-tab', data-toggle='tab') Choose Danger
-				#myTabContent2.tab-content
-					#create-tab.tab-pane.active(role='tabpanel')
+				#create-tab.tab-content
+					#create.tab-pane.active(role='tabpanel')
 						.row
 							.col-md-2
-							.col-md-8
+							.col-md-8(style='text-align: center')
 								.padding-8px.bg-white
 									h2 Create a new event
+									.toggle-buttons
+										button.btn.btn-success(type='button')
+											| Normal Mode
+										button.btn.btn-default(type='button')
+											| Conference Mode
 						.row
 							.col-md-2
 							.col-md-8
@@ -149,12 +248,12 @@ html(lang='en')
 											.form-group.has-feedback
 												label.control-label(for='url') URL
 											.input-group
-												span#basic-addon3.input-group-addon aloft.nu/#{user.username}/
+												span#basic-addon3.input-group-addon {{ host }}/#{user.username}/
 												input#url.form-control(type='text', name='event[url]', aria-describedby='url-field', placeholder='i.e. srccon', data-parsley-group='block1')
 											.form-group.has-feedback
 												label.control-label.make-room(for='firstname') Title
-												input#firstname.form-control.form-spacer(type='text', name='event[title]', placeholder='i.e. SRCCON 2016, Portland, OR', data-parsley-group='block1')
-											.btn-group(data-toggle='buttons')
+												input#firstname.form-control.form-spacer(type='text', name='event[title]', placeholder='i.e. SRCCON 2017, Portland, OR', data-parsley-group='block1')
+											//- .btn-group(data-toggle='buttons')
 												label.btn.btn-default
 													input(type='checkbox', name='event[collab]', checked='', autocomplete='off')
 													| Collaborative
@@ -164,9 +263,6 @@ html(lang='en')
 												label.btn.btn-default
 													input(type='checkbox', name='send_on_end', checked='', autocomplete='off')
 													| Send on End
-												label.btn.btn-default
-													input(type='checkbox', name='tweet', checked='', autocomplete='off')
-													| Tweet Event
 
 											//- button.btn.btn-default.btn-circle.btn-lg.tooltiped(type='button', data-toggle='tooltip', data-placement='bottom', title='Collaborative: Allow viewers make edits.')
 												i.fa.fa-users(aria-hidden='true')
@@ -180,64 +276,105 @@ html(lang='en')
 												| Begin Event!
 											
 							.col-md-2
-					#repo-tab.tab-pane.bar-primary(role='tabpanel')
-						h2.tab-header-left-justified Event Repository
+					#repo.tab-pane.bar-primary(role='tabpanel')
+						h2.tab-header-left-justified(style='text-align: center') Event Repository
+						.row.breadcrumbs
+							if (pages > 1)
+								.pagination
+									ul
+										!= createPagination(pages, page)
 						.row
-							#{events}
 							each event, i in events
-								script.
-									//- var date = #{event.created};
-									var prev = document.getElementById('preview');
-									loadPrev();
-
-									function loadPrev () {
-										$.ajax({
-											url: '/text/#{event.user}/#{event.url}',
-											dataType: 'text',
-											success: function (data) {
-												if (data.length >= 200) {
-													prev.innerHTML = data.substring(0, 200);
-												} else {
-													prev.innerHTML = data.substring(0, data.length);
-												}
-											}
-										});
-									}
 								.col-md-4
-									.panel.panel-primary.panel-filled
+									.panel.panel-default.panel-filled.prev-panel
 										.panel-heading
 											.panel-title
 												| #{event.title}
-												small #{event.url}
+												br
+												small
+													script.
+															var d = moment(new Date('#{event.created}'));
+															document.write(d.format('MM-DD-YYYY (HH:mm)'));
 										.panel-body
-											p#preview-!{i}
-												| File preview
-											}
+											script.
+													$.ajax({
+														url: 'http://' + window.location.hostname + ':' + window.location.port + '/text/#{event.user}/#{event.url}',
+														dataType: 'text',
+														success: function (data) {
+															if (data && data.length <= 120) {
+																document.getElementById('preview_#{event.url}').innerHTML = data;
+															} else {
+																data = data.substr(0, 120);
+																data += '...';
+																document.getElementById('preview_#{event.url}').innerHTML = data;
+															}
+														}
+													});
+											p.snippet(id='preview_#{event.url}')
 										.panel-footer
 											ul.list-inline
 												li
-													button.btn.btn-success.btn-circle-sm(type='button')
+													a.btn.btn-success.btn-circle-sm(type='button', ng-click='activeEventURL = "#{event.url}"; activeEventTitle = "#{event.title}"', onclick='startEditor("#{event.url}")')
 														i.dripicons-media-play
 												li
-													button.btn.btn-warning.btn-circle-sm(type='button')
+													button.btn.btn-warning.btn-circle-sm.cbcopy(type='button', data-clipboard-text='aloft.nu/#{user.username}/#{event.url}')
 														i.dripicons-link
 												li
-													button.btn.btn-danger.btn-circle-sm(type='button')
-														i.dripicons-trash
-					#template-tab.tab-pane.bar-success(role='tabpanel')
-						p
-							| Loremrstrtrs ipsum dolor sit amet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
-					#info-tab.tab-pane.bar-info(role='tabpanel')
+													form(action='/editor/#{event.id}?_method=DELETE', method='post')
+														button.btn.btn-danger.btn-circle-sm(type='submit')
+															i.dripicons-trash
+					#conference.tab-pane.bar-success(role='tabpanel')
+						.col-md-2.col-lg-2
+						.col-md-8.col-lg-8
+							h2 Create a New Conference
+							p
+								| Use this form to create a new conference. Events created in conference mode will be accessible via the a dedicated subdomain (i.e. wordcampnyc.aloft.nu/track1).
+							.col-md-12
+								form#token-form.signup(action='/invite-member', method='post')
+									.form-group.row
+										label.col-sm-2.col-form-label(for='conf-subdomain') Dedicated Subdomain
+										.col-sm-10
+											.input-group
+												input#conf-subdomain.form-control(type='text', name='conf-subdomain', placeholder='(i.e. wordcampnyc)', required='', data-parsley-required='')
+												span.input-group-addon .aloft.nu
+									.form-group.row
+										label.col-sm-2.col-form-label(for='conf-name') Name
+										.col-sm-10
+											input#conf-name.form-control(type='text', name='conf-name', placeholder='(i.e. WordCamp NYC 2017)', required='', data-parsley-required='')
+									.form-group.row
+										label.col-sm-2.col-form-label(for='shared') 
+											| Share With&nbsp;&nbsp;
+											i.fa.fa-question-circle.tooltiped(aria-hidden='true', data-toggle='tooltip', data-placement='top', title='When this is true, it lets other Aloft users see this conference. Ideal if you are part of a steno team for a conference.')
+										.col-sm-10
+											//- .row
+												.checkbox-toggle-styled-yes-no
+													input#conf-shared(name='conf-shared', value='conf-shared', type='checkbox', checked='')
+													label(for='conf-shared')
+											.row
+												.form-group
+													.col-md-8
+														select#selectmultiple-normal.form-control(name='selectmultiple-normal', multiple='multiple')
+															option(value='1') Option One
+															option(value='2') Option Two
+															option(value='3') Option Three
+															option(value='4') Option Four
+
+									.form-group.row
+										.offset-sm-2.col-sm-10
+											button.btn.btn-primary(type='submit') Create
+							h2 Manage Existing Conference
+							.col-md-2.col-lg-2
+					#info.tab-pane.bar-info(role='tabpanel')
 						p
 							| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
-					#preferences-tab.tab-pane.bar-info(role='tabpanel')
+					#preferences.tab-pane.bar-info(role='tabpanel')
 						p
 							| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
-					#help-tab.tab-pane.bar-warning(role='tabpanel')
+					#help.tab-pane.bar-warning(role='tabpanel')
 						p
 							| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
 					if (user.role === 'admin')
-						#admin-tab.tab-pane.bar-danger(role='tabpanel')
+						#admin.tab-pane.bar-danger(role='tabpanel')
 							.col-md-2.col-lg-2
 							.col-md-8.col-lg-8
 								h2 Invite a Member
@@ -329,6 +466,43 @@ html(lang='en')
 							p
 								| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ipsum lectus, dapibus sed sollicitudin vitae, maximus sit amet tortor.
 						.panel-footer Panel footer
+		#email-modal.modal.modal-success(data-easein='fadeInRight', data-easeout='fadeOutRight', tabindex='-1', role='dialog', aria-labelledby='sendTranscriptViaEmailModal', aria-hidden='true')
+			.modal-dialog
+				.modal-content
+					.modal-header
+						a.close(type='button', data-dismiss='modal')
+							span(aria-hidden='true')
+								i.fa.fa-times
+							span.sr-only Close
+						h4.modal-title Send Transcription File via Email
+					.modal-body
+						p Enter the email address of the recipient of this file.
+						form(method='post', action='/send')
+							.input-group
+								span.input-group-addon @
+								input#transcript_recipient.form-control(type='email', name='transcript_recipient', placeholder='Email', required='', data-parsley-required='', data-parsley-type='email')
+							input#transcript_send_subject.form-control(type='text', name='transcript_send_subject', placeholder='Subject Line', required='', value='Transcription file for {{activeEventTitle}}')
+							input.hidden-stuff(name='active_event_url', value='{{activeEventURL}}')
+							input.hidden-stuff(name='active_event_title', value='{{activeEventTitle}}')
+							textarea#transcript_send_message.form-control(name='transcript_send_message', rows='11')
+								| Hi there!
+								| 
+								| #{user.firstname} #{user.lastname} has sent you the transcription file for {{activeEventTitle}}. A copy is attached to this email.
+								| 
+								| If you have any questions regarding the file or the event, please contact your stenographer, #{user.firstname}, at #{user.email}. Please don't respond directly to this email as it is automated.
+								| 
+								| Thanks!
+								| Aloft Support
+							p.attachment
+								i.fa.fa-paperclip(aria-hidden='true') &nbsp;
+								| {{activeEventURL}}.txt
+							.modal-footer
+								button.btn.btn-default(data-dismiss='modal')
+									i.fa.fa-remove(aria-hidden='true') &nbsp;
+									| Close
+								button.btn.btn-success(type='submit')
+									i.fa.fa-paper-plane(aria-hidden='true') &nbsp;
+									| Send
 	a.scrollToTop.pull-right.tooltiped(href='#', data-toggle='tooltip', data-placement='left', title='To Top')
 		i.fa.fa-arrow-up
 
@@ -339,27 +513,58 @@ html(lang='en')
 		script(type='text/javascript', src='/themes/yummy/js/vendors/jquery/jquery-ui.min.js')
 		//- Bootstrap scripts
 		script(src='/node/bootstrap/dist/js/bootstrap.min.js')
-		//- Angular controller
-		script(src='/js/controller.js')
 		//- Parsley
 		script(type='text/javascript', src='/themes/yummy/js/vendors/parsley/parsley-config.js')
 		script(type='text/javascript', src='/themes/yummy/js/vendors/parsley/parsley.min.js')
 		//- Clipboard.js
-		script(src='/js/clipboard.min.js')
+		script(src='/js/packages/clipboard.min.js')
+		//- No tab
+		script(src='/js/no-tab.js')
 		//- jQuery UI Touch
 		script(src='/js/jquery-ui-touch.js')
-		//- jQuery UI Touch
+		//- Minicolors
+		script(type='text/javascript', src='/themes/yummy/js/vendors/minicolors/jquery.minicolors.min.js')
+		//- Angular Minicolors
+		script(src='/node/angular-minicolors/angular-minicolors.js')
+		//- Angular controller
+		script(src='/js/angular/dashboard-controller.js')
+		//- My scripts
 		script(src='/js/general.js')
-		//- Moment.js
-		script(src='/js/moment.js')
+		//- Save text function
+		script(src='/js/save-text.js')
+		//- ShareDB
+		script(src='/dist/textarea.js' defer)
 		script.
 			$('#token-form').parsley();
+
 			var url = document.location.toString();
 			if (url.match('#')) {
 				$('.nav-tabs a[href="#' + url.split('#')[1] + '-tab"]').tab('show');
-			} //add a suffix
+			}
 
-			// Change hash for page-reload
-			$('.nav-tabs a').on('shown.bs.tab', function (e) {
-			    window.location.hash = e.target.hash;
+			$(function () {
+				var hashTab = window.location.hash;
+				if (hashTab != '') {
+					$('.nav-tabs a[href="' + hashTab + '"]').tab('show');
+					$(hashTab).addClass('active');
+				}
 			});
+			
+			function openEditor() {
+				document.getElementById('editor-pane').style.width = "100%";
+			}
+
+			function closeEditor() {
+				document.getElementById('editor-pane').style.width = "0%";
+			}
+
+			function startEditor(event) {
+				var user = !{JSON.stringify(user.username)};
+				assignEventInfo(user, event);
+				openEditor();
+			}
+
+			function stopEditor () {
+				unbind();
+				closeEditor();
+			}

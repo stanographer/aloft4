@@ -1,0 +1,146 @@
+doctype html
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		title Aloft Editor: #{event.title}
+		link(rel='stylesheet', href='/node/bootstrap/dist/css/bootstrap.min.css')
+		link(href='/themes/yummy/css/font-awesome.min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/dripicons.min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/animate/animate.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/hover/hover-min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/minicolors/jquery.minicolors.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/stepper/jquery.stepper.min.css', rel='stylesheet', type='text/css')
+		link(rel='stylesheet', href='/css/fonts.css')
+		link(rel='stylesheet', href='/themes/yummy/css/styles.css')
+		link(href='/themes/yummy/css/overlay-effects/overlay-effects.css', rel='stylesheet', type='text/css')
+		link(rel='stylesheet', href='/css/general.css')
+		link(rel='stylesheet', href='/css/editor.css')
+	body
+		nav.navbar.navbar-default
+			.navbar-header
+				button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar-default-collapse')
+					span.sr-only Toggle navigation
+					span.fa.fa-bars
+				a.navbar-brand(href='#')
+					i.fa.fa-cloud(aria-hidden='true')
+					| &nbsp;&nbsp;Aloft
+			#navbar-default-collapse.collapse.navbar-collapse
+				ul.nav.navbar-nav.navbar-right
+					li.dropdown.full-width
+						a.dropdown-toggle.navbar-right(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+							img(src='/img/stanavatar.jpg', height='60', width='60')
+							| #{user.firstname} #{user.lastname}&nbsp;&nbsp;
+							span.caret
+						ul.dropdown-menu.launcher-pad(role='menu')
+							li.col-md-4.col-sm-6.col-xs-4
+								a(href='#')
+									i.fa.fa-cube
+									| Appz
+									span.badge 55
+							li.col-md-4.col-sm-6.col-xs-4
+								a(href='#')
+									i.fa.fa-database
+									|  Database
+									span.badge 19
+							li.col-md-4.col-sm-6.col-xs-4
+								a(href='#')
+									i.fa.fa-android
+									|  Android
+									span.badge 7
+							li.col-md-4.col-sm-6.col-xs-4
+								a(href='#')
+									i.fa.fa-cubes
+									|  Platforms
+									span.badge 2
+							li.col-md-4.col-sm-6.col-xs-4
+								a(href='#')
+									i.fa.fa-life-ring
+									|  Support
+									span.badge 9
+							li.col-md-4.col-sm-6.col-xs-4
+								a(href='#')
+									i.fa.fa-gear
+									|  Settings
+									span.badge 5
+							li.col-md-4.col-sm-6.col-xs-4
+								a(href='#')
+									i.fa.fa-thumbs-up
+									|  Likes
+									span.badge 182
+							li.col-md-4.col-sm-6.col-xs-4
+								a(href='#')
+									i.fa.fa-heart-o
+									|  Lovers
+									span.badge + 21
+							li.col-md-4.col-sm-6.col-xs-4
+								a(href='#')
+									i.fa.fa-thumbs-down
+									|  Dislikes
+									span.badge 20
+		.container
+			.col-md-2
+				//- | #{event}
+				#date
+
+				.panel.panel-default.panel-filled
+					.panel-heading
+						.panel-title
+							| Transcription Editor
+					.panel-body
+						table
+							tr
+								td Title:
+								td #{event.url}
+					.panel-footer Panel footer
+
+			.col-md-8
+					.textedit
+						ul.list-unstyled
+							li
+								.btn-group.btn-group(role='group', aria-label='Large button group')
+									button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+										| Font Family
+										span.caret
+									ul.dropdown-menu
+										li
+											a(href='#') Action
+										li
+											a(href='#') Another action
+										li
+											a(href='#') Something else here
+										li.divider(role='separator')
+										li
+											a(href='#') Separated link
+									button.btn.btn-default(type='button', onclick='jumpqToBottom()') Jump to Bottom
+					textarea#pad(autofocus='', spellcheck='false', rows='10')
+			.col-md-2
+
+		//- jQuery
+		script(src='/node/jquery/dist/jquery.min.js')
+		//- Angular
+		script(src='/node/angular/angular.min.js')
+		//- Angular User Settings
+		script(src='/node/angular-user-settings/dist/angular-user-settings.min.js')
+		script(type='text/javascript', src='/themes/yummy/js/vendors/jquery/jquery-ui.min.js')
+		//- Bootstrap scripts
+		script(src='/node/bootstrap/dist/js/bootstrap.min.js')
+		//- Angular controller
+		script(src='/js/controller.js')
+		//- Parsley
+		script(type='text/javascript', src='/themes/yummy/js/vendors/parsley/parsley-config.js')
+		script(type='text/javascript', src='/themes/yummy/js/vendors/parsley/parsley.min.js')
+		//- jQuery UI Touch
+		script(src='/js/jquery-ui-touch.js')
+		//- General scripts
+		script(src='/js/general.js')
+		//- ShareDB
+		script(src='/sharedb/textarea.js' defer)
+		//- Moment.js
+		script(src='/js/moment.js')
+		script.
+			var user = !{JSON.stringify(user)};
+			var event = !{JSON.stringify(event.url)};
+			var created = !{JSON.stringify(event.created)};
+			var crea = moment(created).format('MMMM Do YYYY, HH:MM');
+
+			console.log(crea)

@@ -31,10 +31,15 @@ var app = angular.module('Aloft', ['angularUserSettings', 'minicolors'])
 			]
 		};
 
+		$scope.activeEventURL = 'Hey';
+		$scope.activeEventTitle = '';
+
 		$scope.minicolorsSettings = {
     		control: 'hue',
     		theme: 'bootstrap',
-    		position: 'bottom right'
+    		position: 'bottom right',
+    		changeDelay: 200,
+    		hide: null
   		};
 
   		// Saves foreground color

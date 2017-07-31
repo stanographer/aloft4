@@ -1,4 +1,4 @@
-'use strict';
+ 'use strict';
 
 // Dependencies
 const async = require('async')
@@ -14,12 +14,15 @@ const async = require('async')
 	, path = require('path')
 	, session = require('express-session')
 	, http = require('http')
-	, morgan = require('morgan');
+	, morgan = require('morgan')
+	, wcs = require('wildcard-subdomains');
 
 // ShareDB
-const richText = require('rich-text')
+const otText = require('ot-text')
+	, richText = require('rich-text')
 	, ShareDB = require('sharedb')
 	, sharedbmongo = require('sharedb-mongo')
+	, shareRest = require('./controllers/share-rest')
 	, types = require('sharedb/lib/types')
 	, WebSocket = require('ws')
 	, WebSocketJSONStream = require('websocket-json-stream');
@@ -44,7 +47,7 @@ function startServer() {
  	mongoose.Promise = global.Promise;
  	var udb = mongoose.connection;
  	udb.on('error', function () {
-  		console.log("Database error.");
+  		console.log('Database error.');
 	});
 
 	udb.once('open', function () {
@@ -68,6 +71,10 @@ function startServer() {
 		extended: true
 	}));
 
+	app.use(wcs({
+		namespace: '_sub',
+		whitelist: ['www', 'app']
+	}));
 	app.set('view engine', 'jade');
 	app.set('views', __dirname + '/views');
  	app.use(express.static(__dirname + '/static'));
@@ -99,21 +106,27 @@ function startServer() {
 	});
 
  	// Routes
- 	require('./controllers/routes')(app, passport);
+ 	require('./controllers/routes')(app, passport, db);
+ 	// require('./controllers/editor')(connection);
+
+ 	ShareDB.types.register(otText.type);
 
  	// REST endpoint for transcript data via /text route
- 	require('./controllers/share-rest')(app, db);
-
+ 	shareRest(app, db);
 
  	// Connect any incoming WebSocket connection to ShareDB
  	var wss = new WebSocket.Server({server: server});
- 	wss.on('connection', function(ws, req) {
+ 	wss.on('connection', function (ws, req) {
 		var stream = new WebSocketJSONStream(ws);
    		backend.listen(stream);
    		console.log('Someone connected!');
- 	});
 
- 	wss.on('disconnect', function() {
+   		ws.on('message', function incoming (op) {
+ 			console.log('op', JSON.stringify(JSON.parse(op), null, 2));
+ 		});
+  	});
+
+ 	wss.on('close', function() {
         console.log('disconnected');
     });
 

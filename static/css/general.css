@@ -3,10 +3,13 @@
 		height: 95% !important;
 	}
 }
-body {
+body, html {
 	background-color: #30353e;
+	height: 100%;
 	/*background-color: #bdaed3;*/
-	/*background-image: url("/themes/yummy/images/backgrounds/6.png");*/
+	background-image: url("/img/grasshorizon.jpg");
+	background-repeat: no-repeat;
+	background-attachment: fixed;
 	/*background: repeating-linear-gradient(-45deg, #caced6, #caced6 1px, rgba(255, 255, 255, 0.6) 2px, rgba(255, 255, 255, 0.6) 3px);*/
 }
 .image-background-1 {
@@ -39,7 +42,13 @@ body {
 	transition: 1s;
 	left: 0;
 }
-
+.breadcrumbs {
+	text-align: center;
+	margin-bottom: 4em;
+}
+.btn-group {
+	z-index: 0 !important;
+}
 .btn-circle {
   width: 30px;
   height: 30px;
@@ -73,6 +82,9 @@ body {
 .form-spacer {
 	margin-bottom: 2em;
 }
+.hidden-stuff {
+	display: none;
+}
 .make-room {
 	margin-bottom: 15px;
 	margin-top: 10px;
@@ -92,15 +104,36 @@ body {
 	padding-top: 0px;
 	padding-bottom: 0px;
 }
+.panel-footer {
+	padding-top: 0px !important;
+}
+.panel-heading small:before {
+	content: unset;
+}
+.panel .panel-heading .panel-title {
+	margin-bottom: 12px;
+}
+.prev-panel {
+	min-height: 210px;
+	border-radius: 6px;
+}
 .signup {
 	margin-top: 2em;
+}
+.snippet {
+	font-size: 85%;
+	font-style: italic;
+	color: #848c9e;
+}
+.snippet:before {
+	content: '"';
+}
+.snippet:after {
+	content: '"';
 }
 .tab-content > .active, .pill-content > .active {
 	display: inline-block;
 }
 .tab-default .badge {
 	margin-left: 5px;
-}
-.tab-header-left-justified {
-	margin-bottom: 40px;
 }

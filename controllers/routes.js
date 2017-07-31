@@ -4,16 +4,25 @@ const async = require('async')
 	, crypto = require('crypto')
 	, nodemailer = require('nodemailer')
 	, mailerConfig = require('../config/mailer.js')
+	, send = require('../controllers/send')
+	, ShareRest = require('../controllers/share-rest')
 	, User = require('../models/user')
 	, Event = require('../models/event');
 
-module.exports = function(app, passport) {
+module.exports = function(app, passport, db) {
+
+	let Rest = new ShareRest(app, db);
+
 	app.get('/', function (req, res) {
 		if (req.user) {
 			res.redirect('/dashboard');
 		} else {
 			res.render('login');
 		}
+	});
+
+	app.get('/_sub/:address', function (req, res) {
+		res.send(req.params.address);
 	});
 
 	app.get('/admin-only', isLoggedIn, function (req, res) {
@@ -41,19 +50,42 @@ module.exports = function(app, passport) {
 	});
 
 	app.get('/dashboard', isLoggedIn, function (req, res) {
-		let perPage = 9
-			, page = req.params.page > 0 ? req.params.page : 0
+		let perPage = 9, page = req.query.page > 0 ? req.query.page : 0
+
+		res.locals.createPagination = function (pages, page) {
+						var url = require('url')
+							, qs = require('querystring')
+							, params = qs.parse(url.parse(req.url).query)
+							, str = ''
+
+						params.page = 0
+						var clas = page == 0 ? "active" : "no"
+						str += '<div class="btn-group" role="group" aria-label="...">'
+						str += '<a class="btn btn-default ' + clas + '" href="?'+qs.stringify(params)+'#repo-tab">First</a>'
+						for (var p = 1; p < pages; p++) {
+							params.page = p
+							clas = page == p ? "active" : "no"
+							str += '<a class="btn btn-default ' + clas + '" href="?'+qs.stringify(params)+'#repo-tab">'+ p +'</a>'
+						}
+						params.page = --p
+						clas = page == params.page ? "active" : "no"
+						str += '<a class="btn btn-default ' + clas + '" href="?'+qs.stringify(params)+'#repo-tab">Last</a></div>'
+
+						return str
+					}
 
 		Event.find({user: req.user.local.username})
-			.select(['url', 'user', 'title', 'created'])
+			.select(['url', 'user', 'title', 'created', '_id'])
 			.limit(perPage)
 			.skip(perPage * page)
 			.sort({created: -1})
 			.exec(function (err, events) {
+
 				Event.count().exec(function (err, count) {
 					res.render('dashboard', {
 						user: req.user.local,
 						error_message: req.flash('error_message'),
+						success_message: req.flash('success_message'),
 						events: events,
 						page: page,
 						pages: count / perPage
@@ -71,16 +103,29 @@ module.exports = function(app, passport) {
 	});
 
 	app.get('/:user/:event', function (req, res) {
-		let prefs = {
-			fontSize: '35',
-			fontFace: 'Inconsolata',
-			lineHeight: '130'
-		}
-		res.render('watch', {
-			user: req.params.user,
-			event: req.params.event,
-			prefs: prefs,
-			marker: '≈'
+		Event.findOne({'user': req.params.user, 'url': req.params.event}, function (err, event) {
+			if (err) {
+				throw err;
+			} else {
+				if (event) {
+					let prefs = {
+						fontSize: '35',
+						fontFace: 'Inconsolata',
+						lineHeight: '130'
+					}
+					res.render('watch', {
+						user: req.params.user,
+						event: req.params.event,
+						prefs: prefs,
+						marker: '≈'
+					});
+				} else {
+					req.flash('error_message', 'Sorry. There was no event found with those parameters.')
+					res.render('error', {
+						message: req.flash('error_message')
+					});
+				}
+			}
 		});
 	});
 
@@ -99,7 +144,7 @@ module.exports = function(app, passport) {
 				} else {
 					if (user) {
 						req.flash('adminMessage', 'That email is already registered.');
-						res.redirect('/dashboard#admin-tab')
+						res.redirect('/dashboard#admin')
 					} else {
 						let newUser = new User;
 						newUser.local.email = cleanEmail;
@@ -126,15 +171,19 @@ module.exports = function(app, passport) {
 				'Thank you and enjoy using Aloft!\n\n\n' +
 				'-Aloft Support'
 			};
-			transport.sendMail(mailOptions, function (err) {
-				req.flash('info', 'A sign-up token has been sent to ' + req.body.newmemberemail + '!');
-				done(err, 'done');
+			transport.sendMail(mailOptions, function (err, info) {
+				if (err) {
+					req.flash('error_message', 'There was an error sending the email!');
+					done(err, 'done');
+				} else {
+					req.flash('info', 'A sign-up token has been sent to ' + req.body.newmemberemail + '!');
+					done(err, 'done');
+				}
 			});
 		}], function (err) {
 			if (err) {
-				// req.flash('error', 'The email could not be sent. Please try again.');
-
-				// res.redirect('/');
+				req.flash('error', 'The email could not be sent. Please try again.');
+				res.redirect('/');
 				return console.log(err);
 			} else {
 				req.flash('message', 'An email with the link to this event has been sent successfully to ' + req.body.newmemberemail + '.');
@@ -144,9 +193,9 @@ module.exports = function(app, passport) {
 	});
 
 	app.post('/login', passport.authenticate('login', {
-		successRedirect : '/dashboard',
-		failureRedirect : '/login',
-		failureFlash : true
+		successReturnToOrRedirect: '/dashboard',
+		failureRedirect: '/login',
+		failureFlash: true
 	}));
 
 
@@ -155,6 +204,25 @@ module.exports = function(app, passport) {
 		failureRedirect: '/signup',
 		failureFlash: true
 	}));
+
+	app.post('/send', isLoggedIn, function (req, res) {
+		let mailer = send(req.body.transcript_recipient, req.user, req.body.active_event_title, req.body.active_event_url, req.body.transcript_send_subject, req.body.transcript_send_message);
+		if (mailer.send === true) {
+			req.flash('success_message', 'Email was sent successfully!');
+			res.redirect('/dashboard#repo');
+		} else {
+			// req.flash('error_message', 'Email failed to send!');
+			// res.redirect('/dashboard#repo-tab');
+			req.flash('success_message', 'Email was sent successfully!');
+			res.redirect('/dashboard#repo');
+		}
+	});
+
+	app.use(function (req, res, next) {
+		req.flash('404', 'Sorry. We couldn\'t find what you were looking for.');
+		res.render('error', { message: req.flash('404')});
+		res.end();
+	});
 
 	function isLoggedIn(req, res, next) {
 			if(req.isAuthenticated()) {

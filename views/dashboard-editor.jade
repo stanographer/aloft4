@@ -2,7 +2,7 @@ doctype html
 html(lang='en')
 	head
 		meta(charset='utf-8')
-		title Aloft Dashboard
+		title Aloft (#{event.title})
 		link(rel='stylesheet', href='/node/bootstrap/dist/css/bootstrap.min.css')
 		link(href='/themes/yummy/css/font-awesome.min.css', rel='stylesheet', type='text/css')
 		link(href='/themes/yummy/css/dripicons.min.css', rel='stylesheet', type='text/css')
@@ -147,7 +147,7 @@ html(lang='en')
 												label.control-label(for='url') URL
 												input#eventURL.form-control(type='text', name='eventURL', value='aloft.nu/#{user}/#{event.url}' aria-describedby='url-field', placeholder='i.e. srccon', readonly='')
 												small 
-													a.cbcopy(href='#', data-clipboard-target='#eventURL') Copy to Clipboard							
+													a.cbcopy(href='#', data-clipboard-target='#eventURL') Copy to Clipboard
 							.col-md-6
 								ul.list-inline
 									li
@@ -209,22 +209,6 @@ html(lang='en')
 												button.btn.btn-primary(type='submit') Send Invite!
 							.col-md-2.col-lg-2
 					.textedit
-						//- ul.list-unstyled
-						//- 	li
-						//- 		.btn-group.btn-group(role='group', aria-label='Large button group')
-						//- 			button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-						//- 				| Font Family
-						//- 				span.caret
-						//- 			ul.dropdown-menu
-						//- 				li
-						//- 					a(href='#') Action
-						//- 				li
-						//- 					a(href='#') Another action
-						//- 				li
-						//- 					a(href='#') Something else here
-						//- 				li.divider(role='separator')
-						//- 				li
-						//- 					a(href='#') Separated link
 						button.btn.btn-default(type='button', onclick='jumpToBottom()')
 							i.fa.fa-arrow-down(aria-hidden='true') &nbsp;
 							| Jump to Bottom
@@ -318,6 +302,8 @@ html(lang='en')
 		script(src='/sharedb/textarea.js' defer)
 		//- Moment.js
 		script(src='/js/moment.js')
+		//- No tab
+		script(src='/js/no-tab.js')
 		script.
 			var user = !{JSON.stringify(user)};
 			var event = !{JSON.stringify(event.url)};

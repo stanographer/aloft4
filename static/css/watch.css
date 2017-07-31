@@ -101,6 +101,9 @@ header {
 .menuu {
   position: fixed;
 }
+.minicolors-theme-bootstrap .minicolors-swatch-color {
+  border-radius: 4px;
+}
 .navbar-fixed {
   position: absolute;
 }
@@ -190,6 +193,7 @@ header {
   padding-top: 1rem;
   padding-bottom: 3.5rem;
   font-family: 'Sintony', sans-serif;
+  letter-spacing: 2px;
   font-size: 40px;
   z-index: 2;
   color: #fff;
@@ -200,6 +204,10 @@ header {
 #header {
   transition: left 0.2s ease-in-out;
   height: 100%;
+}
+#main-content {
+  padding-left: 10em;
+  padding-right: 10em;
 }
 @-webkit-keyframes fadeIn {
   0% {opacity: 0;}

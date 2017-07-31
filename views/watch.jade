@@ -18,7 +18,7 @@ html(lang='en')
 		link(rel='stylesheet', href='/css/watch.css')
 
 	
-	body(ng-app="Aloft", ng-controller='AloftController' ng-style="{'backgroundColor': bgColor}")
+	body(ng-app='Aloft', ng-controller='AloftController' ng-style="{'backgroundColor': bgColor}")
 		.status-bar.connected
 		header.nav-down
 			#header.navbar.navbar-default.navbar-twitch(role='navigation')
@@ -90,11 +90,11 @@ html(lang='en')
 										.row
 											h5 Text Color
 											.form-group
-												input#fgColor.form-control(type='text', ng-model='fgColor', ng-change='saveFg()' minicolors="minicolorsSettings")
+												input#fgColor.form-control(type='hidden', ng-model='fgColor', ng-change='saveFg()' minicolors="minicolorsSettings")
 										.row
 											h5 Background Color
 											.form-group
-												input#bgColor.form-control(type='text', ng-model='bgColor', ng-change='saveBg()' minicolors='minicolorsSettings')
+												input#bgColor.form-control(type='hidden', ng-model='bgColor', ng-change='saveBg()' minicolors='minicolorsSettings')
 							li.dropdown.third-width
 								a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
 									span.small-nav
@@ -105,9 +105,9 @@ html(lang='en')
 										h4.margin-top-0.margin-bottom-20px Download Text
 										.form-group
 											.input-group
-												input#filename-id.form-control(name='filename-id', placeholder='filename.txt', type='text', value='#{event}')
+												input#filename-id.form-control(name='filename-id' placeholder='filename.txt', type='text', value='#{event}')
 												span.input-group-addon .txt
-											a.input-group-btn.btn.btn-success.inline(type='submit', onclick='saveForm()') Save
+											a.input-group-btn.btn.btn-success.inline(type='submit', onclick='grabTranscript("#{user}", "#{event}")') Save
 							li.dropdown.third-width
 								a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
 									span.small-nav
@@ -120,26 +120,26 @@ html(lang='en')
 											.input-group
 												input#filename-id.form-control(name='filename-id', placeholder='someone@email.com', type='text')
 												span.input-group-addon @
-											a.input-group-btn.btn.btn-success.inline(type='submit', onclick='saveForm()') Send
+											a.input-group-btn.btn.btn-success.inline(type='submit', onclick='grabTranscript()') Send
 					// /.nav-collapse
 		button.btn.btn-default.btn-xs.navbar-twitch-toggle(type='button')
 			span.glyphicon.glyphicon-chevron-right.nav-open
 			span.glyphicon.glyphicon-chevron-left.nav-close
-		#main-content.container
-			//- .row
-			//- 	h2 Navbar Styles
-			//- 	p Just to show off how easy it is to theme!
-			//- 	button.btn.btn-inverse.nav-style-toggle.disabled(type='button', data-type='inverse')  Inverse
-			//- 	button.btn.btn-default.nav-style-toggle(type='button', data-type='default')  Default
-			//- 	button.btn.btn-purple.nav-style-toggle(type='button', data-type='purple')  Purple
+		#main-content
 			.row
 				#caption-area(ng-style="{'fontSize': fontSize + 'px', 'lineHeight': lineHeight + '%', 'color': fgColor, 'backgroundColor': bgColor, 'font-family': fontFamily.id}")
+
+		//- .row
+		//- 		h2 Navbar Styles
+		//- 		p Just to show off how easy it is to theme!
+		//- 		button.btn.btn-inverse.nav-style-toggle.disabled(type='button', data-type='inverse')  Inverse
+		//- 		button.btn.btn-default.nav-style-toggle(type='button', data-type='default')  Default
+		//- 		button.btn.btn-purple.nav-style-toggle(type='button', data-type='purple')  Purple
+
 		//- a.scrollToTop.pull-right.tooltiped(href='#', data-toggle='tooltip', data-placement='left', title='To Top')
 		//- 	i.fa.fa-arrow-up
 
 		a#autoscroll.arrow.bounce
-		//- Primus
-		//- script(src='/node/primus/dist/primus.js')
 		//- jQuery
 		script(src='/node/jquery/dist/jquery.min.js')
 		//- Angular
@@ -149,10 +149,6 @@ html(lang='en')
 		script(type='text/javascript', src='/themes/yummy/js/vendors/jquery/jquery-ui.min.js')
 		//- Bootstrap scripts
 		script(src='/node/bootstrap/dist/js/bootstrap.min.js')
-		//- Annotator
-		script(src='/js/annotator-full.min.js')
-		//- ShareDB scripts
-		//- script(src='/sharedb/textarea.js' defer)
 		//- Minicolors
 		script(type='text/javascript', src='/themes/yummy/js/vendors/minicolors/jquery.minicolors.min.js')
 		//- Angular User Settings
@@ -161,12 +157,12 @@ html(lang='en')
 		script(src='/js/controller.js')
 		//- My shit
 		script(src='/js/watch.js')
+		//- Save text function
+		script(src='/js/save-text.js')
 		//- jQuery UI Touch
 		script(src='/js/jquery-ui-touch.js')
 		//- My scripts
 		script(src='/dist/bundle.js' defer)
-		//- General scripts
-		script(src='/js/general.js')
 		script.
 			var user = !{JSON.stringify(user)};
 			var event = !{JSON.stringify(event)};

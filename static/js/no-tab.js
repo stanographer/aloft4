@@ -1,4 +1,4 @@
-$('textarea').keydown(function(e) {
+$('#pad').keydown(function(e) {
     if(e.keyCode === 9) { // tab was pressed
         // get caret position/selection
         var start = this.selectionStart;

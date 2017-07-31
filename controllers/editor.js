@@ -1,31 +1,33 @@
 const express = require('express')
-	, Event = require('../models/event');
+	, Event = require('../models/event')
+	, config = require('../config/aloft-config')
+	, db = require('sharedb-mongo')(config.mongo)
+	, ShareDB = require('sharedb');
 
 const router = express.Router();
 
+let doc;
+
 router.get('/', isLoggedIn, function (req, res) {
-		var query = req.query.event;
-		if (query) {
-			Event.findOne({url: query, user: req.user.local.username}, function (err, found) {
-				if (err) {
-					throw err;
+	var query = req.query.event;
+	if (query) {
+		Event.findOne({url: query, user: req.user.local.username}, function (err, found) {
+			if (err) {
+				throw err;
+			} else {
+				if (found) {
+					req.flash('success_message', 'Event')
+					res.redirect('/dashboard');
 				} else {
-					if (found) {
-						res.render('dashboard-editor', {
-							user: req.user.local.username,
-							event: found,
-							error_message: req.flash('error_message')
-						});
-					} else {
-						req.flash('error_message', 'Cannot run editor because event "' + query + '" does not exist.<br />Please create the event first.');
-						res.redirect('/dashboard');
-					}
+					req.flash('error_message', 'Cannot run editor because event "' + query + '" does not exist.<br />Please create the event first.');
+					res.redirect('/dashboard');
 				}
-			});
-		} else {
-			req.flash('error_message', 'Event must have a title!');
-			res.redirect('/dashboard');
-		}
+			}
+		});
+	} else {
+		req.flash('error_message', 'Event must have a title!');
+		res.redirect('/dashboard');
+	}
 });
 
 router.post('/', isLoggedIn, function (req, res) {
@@ -53,7 +55,7 @@ router.post('/', isLoggedIn, function (req, res) {
 	}
 	function proceed (isDup) {
 		if (isDup) {
-			res.redirect('/editor?event=' + event.url);
+			res.redirect('/dashboard?event=' + event.url);
 		} else {
 			event.save(function (err, event) {
 					if (err) {
@@ -61,11 +63,31 @@ router.post('/', isLoggedIn, function (req, res) {
 						req.flash('dashboardMessage', 'There was an error saving the event! Please check your database.');
 						res.redirect('/dashboard');
 					} else {
-						res.redirect('/editor?event=' + event.url);
+						// res.redirect('/editor?event=' + event.url);
+						req.flash('success_message', 'Event \"' + event.title + '\" was successfully created! Click on the play icon below to begin writing.');
+						res.redirect('/dashboard#repo-tab');
 					}
 			});
 		}
 	}
+});
+
+router.delete('/:id', isLoggedIn, function (req, res) {
+	Event.findById(req.params.id, function (err, event) {
+		if (err) {
+			throw err;
+		} else {
+			deleteShareDbDoc(event.user, event.url);
+			Event.remove({_id: req.params.id}, function (err) {
+				if (err) {
+					throw err;
+				} else {
+					req.flash('success_message', 'Event "' + event.title + ' (' + event.url + ') " was successfully deleted!');
+					res.redirect('/dashboard#repo-tab');
+				}
+			});
+		}
+	});
 });
 
 // Logic ------------------------------------
@@ -171,6 +193,21 @@ function isLoggedIn(req, res, next) {
 	}
 	req.flash('loginMessage', 'You must be logged in to do that!');
 		return res.redirect(307, '/login');
+}
+
+function deleteShareDbDoc (user, title) {
+	let backend = ShareDB({db: db});
+	let connection = backend.connect();
+	let doc = connection.get(user, title);
+
+	doc.fetch(function(err) {
+		if (err) throw err;
+		doc.del(function(err) {
+			if (err) throw err;
+    		// When done with the doc, remove the client's reference to the doc object so that it does not stay in memory:
+			doc.destroy();
+		});
+	});
 }
 
 module.exports = router;
