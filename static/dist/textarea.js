@@ -6,7 +6,15 @@ var otText = require('ot-text');
 // var bind = require('sharedb/lib/bind-textarea')
 
 // Open WebSocket connection to ShareDB server
-var socket = new WebSocket('wss://' + window.location.host);
+var wsProtocol = function () {
+  if (location.host === 'aloft.nu') {
+    return 'wss://';
+  } else {
+    return 'ws://';
+  }
+}
+
+var socket = new WebSocket(wsProtocol() + window.location.host);
 var connection = new sharedb.Connection(socket);
 var doc;
 var binding;

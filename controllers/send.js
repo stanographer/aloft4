@@ -1,12 +1,13 @@
 'use strict';
 
 const nodemailer = require('nodemailer')
+	, smtpTransport = require('nodemailer-smtp-transport')
 	, mailerConfig = require('../config/mailer.js');
 
 let status = false;
 
 module.exports = function (recipient, user, title, url, subject, message) {
-	let transport = nodemailer.createTransport(mailerConfig);
+	let transport = nodemailer.createTransport(smtpTransport(mailerConfig));
 	console.log(user)
 
 	let mailOptions = {
