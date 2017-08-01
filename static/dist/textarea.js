@@ -6,14 +6,13 @@ var otText = require('ot-text');
 // var bind = require('sharedb/lib/bind-textarea')
 
 // Open WebSocket connection to ShareDB server
-var wsProtocol = function () {
-  if (location.host === 'aloft.nu') {
-    return 'wss://';
-  } else {
-    return 'ws://';
+ var wsProtocol = function () {
+    if (location.host === 'aloft.nu') {
+      return 'wss://';
+    } else {
+      return 'ws://';
+    }
   }
-}
-
 var socket = new WebSocket(wsProtocol() + window.location.host);
 var connection = new sharedb.Connection(socket);
 var doc;
@@ -53,10 +52,6 @@ function subscribe() {
 		attachTextarea(element, doc);
 		binding = new StringBinding(element, doc);
 		binding.setup();
-	});
-	console.log('TYPE: ' + JSON.stringify(doc.type));
-	doc.on('op', function(data) {
-		console.log('got data! ' + data);
 	});
 }
 
@@ -137,7 +132,7 @@ var attachTextarea = function (elem, doc) {
   // Replace the content of the text area with newText, and transform the
   // current cursor by the specified function.
   var replaceText = function (newText, transformCursor) {
-    console.log('replaceText', newText);
+    // console.log('replaceText', newText);
     if (transformCursor) {
       var newSelection = [transformCursor(elem.selectionStart), transformCursor(elem.selectionEnd)];
     }
@@ -281,7 +276,7 @@ var attachTextarea = function (elem, doc) {
  * This algorithm is O(N). I suspect you could speed it up somehow using regular expressions.
  */
 var applyChange = function (doc, oldval, newval) {
-  console.log('applyChange', doc, oldval, newval);
+  // console.log('applyChange', doc, oldval, newval);
 
   // Strings are immutable and have reference equality. I think this test is O(1), so its worth doing.
   if (oldval === newval) return;
