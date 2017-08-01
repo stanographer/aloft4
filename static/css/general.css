@@ -44,7 +44,7 @@ body, html {
 }
 .breadcrumbs {
 	text-align: center;
-	margin-bottom: 4em;
+	margin-bottom: 2em;
 }
 .btn-group {
 	z-index: 0 !important;
@@ -84,6 +84,9 @@ body, html {
 }
 .hidden-stuff {
 	display: none;
+}
+.lowercase {
+	text-transform: lowercase;
 }
 .make-room {
 	margin-bottom: 15px;

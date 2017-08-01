@@ -38,50 +38,9 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 							span.caret
 						ul.dropdown-menu.launcher-pad(role='menu')
 							li.col-md-4.col-sm-6.col-xs-4
-								a(href='#')
-									i.fa.fa-cube
-									| Appz
-									span.badge 55
-							li.col-md-4.col-sm-6.col-xs-4
-								a(href='#')
-									i.fa.fa-database
-									|  Database
-									span.badge 19
-							li.col-md-4.col-sm-6.col-xs-4
-								a(href='#')
-									i.fa.fa-android
-									|  Android
-									span.badge 7
-							li.col-md-4.col-sm-6.col-xs-4
-								a(href='#')
-									i.fa.fa-cubes
-									|  Platforms
-									span.badge 2
-							li.col-md-4.col-sm-6.col-xs-4
-								a(href='#')
-									i.fa.fa-life-ring
-									|  Support
-									span.badge 9
-							li.col-md-4.col-sm-6.col-xs-4
-								a(href='#')
-									i.fa.fa-gear
-									|  Settings
-									span.badge 5
-							li.col-md-4.col-sm-6.col-xs-4
-								a(href='#')
-									i.fa.fa-thumbs-up
-									|  Likes
-									span.badge 182
-							li.col-md-4.col-sm-6.col-xs-4
-								a(href='#')
-									i.fa.fa-heart-o
-									|  Lovers
-									span.badge + 21
-							li.col-md-4.col-sm-6.col-xs-4
-								a(href='#')
-									i.fa.fa-thumbs-down
-									|  Dislikes
-									span.badge 20
+								a(href='/logout')
+									i.fa.fa-sign-out(aria-hidden='true')
+									| Log out							
 		#editor-pane.overlay
 			a.closebtn(href='javascript:void(0)', onclick='stopEditor()') ×
 			.overlay-content
@@ -243,18 +202,31 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 							.col-md-2
 							.col-md-8
 								.padding-10px.bg-white
-									form#basic-wizard.margin-bottom-10px(data-parsley-validate='', action='/editor', method='post')
+									form#basic-wizard.margin-bottom-10px(data-parsley-validate='', action='/conference', method='post')
 										.first.block1.show
+											.col-md-12
+												.form-group.has-feedback
+													label.control-label(for='url') URL
+												.input-group.input-group-lg
+													span#basic-addon3.input-group-addon {{ host }}/#{user.username}/
+													input#url.form-control.lowercase(type='text', name='event[url]', aria-describedby='url-field', placeholder='i.e. makebetterplugins')
 											.form-group.has-feedback
-												label.control-label(for='url') URL
-											.input-group
-												span#basic-addon3.input-group-addon {{ host }}/#{user.username}/
-												input#url.form-control(type='text', name='event[url]', aria-describedby='url-field', placeholder='i.e. srccon', data-parsley-group='block1')
-											.form-group.has-feedback
-												label.control-label.make-room(for='firstname') Title
-												input#firstname.form-control.form-spacer(type='text', name='event[title]', placeholder='i.e. SRCCON 2017, Portland, OR', data-parsley-group='block1')
+												.col-md-6
+													label.control-label.make-room(for='title') Title
+													input#title.form-control.form-spacer(type='text', name='event[title]', placeholder='i.e. Make Better Plugins')
+												.col-md-6
+													label.control-label.make-room(for='speaker') Speaker
+													input#speaker.form-control.form-spacer(type='text', name='event[speaker]', placeholder='i.e. Andrew Nacin')
+											.col-md-6
+												.checkbox-toggle-styled-yes-no
+													
+													input#conf-shared(name='event[hidden]', value='event[hidden]', type='checkbox')
+													label(for='event[speaker]') Hidden Event
+											.col-md-6
+												button.next.btn.btn-info.pull-right(type='submit')
+													| Create Event
 											//- .btn-group(data-toggle='buttons')
-												label.btn.btn-default
+												label.btn.btn-default.btn-circle
 													input(type='checkbox', name='event[collab]', checked='', autocomplete='off')
 													| Collaborative
 												label.btn.btn-default
@@ -271,10 +243,7 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 											//- button.btn.btn-success.btn-circle.btn-lg.tooltiped(type='button', data-toggle='tooltip', data-placement='bottom', title='Send on End: Text file of the event will automatically be sent to specified email address.')
 											//- 	i.fa.fa-paper-plane(aria-hidden='true')
 											//- button.btn.btn-info.btn-circle.btn-lg.tooltiped(type='button', data-toggle='tooltip', data-placement='bottom', title='Tweet: Share this event via Twitter post.')
-											//- 	i.fa.fa-twitter(aria-hidden='true')
-											button.next.btn.btn-info.pull-right(data-current-block='1', data-next-block='2', type='submit')
-												| Begin Event!
-											
+											//- 	i.fa.fa-twitter(aria-hidden='true')											
 							.col-md-2
 					#repo.tab-pane.bar-primary(role='tabpanel')
 						h2.tab-header-left-justified(style='text-align: center') Event Repository
@@ -289,7 +258,14 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 									.panel.panel-default.panel-filled.prev-panel
 										.panel-heading
 											.panel-title
-												| #{event.title}
+												script.
+													var event_title = '#{event.title}';
+
+													if (event_title.length >= 67) {
+														event_title = String(event_title).substr(0, 66);
+														event_title += '...';
+													}
+													document.write(event_title);
 												br
 												small
 													script.
@@ -330,21 +306,21 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 							p
 								| Use this form to create a new conference. Events created in conference mode will be accessible via the a dedicated subdomain (i.e. wordcampnyc.aloft.nu/track1).
 							.col-md-12
-								form#token-form.signup(action='/invite-member', method='post')
+								form#token-form.signup(action='/conferences/new', method='post')
 									.form-group.row
-										label.col-sm-2.col-form-label(for='conf-subdomain') Dedicated Subdomain
+										label.col-sm-2.col-form-label(for='conf[url]') Dedicated Subdomain
 										.col-sm-10
 											.input-group
-												input#conf-subdomain.form-control(type='text', name='conf-subdomain', placeholder='(i.e. wordcampnyc)', required='', data-parsley-required='')
+												input#conf-url.form-control.lowercase(type='text', name='conf[url]', placeholder='(i.e. wordcampnyc)', required='', data-parsley-required='')
 												span.input-group-addon .aloft.nu
 									.form-group.row
-										label.col-sm-2.col-form-label(for='conf-name') Name
+										label.col-sm-2.col-form-label(for='conf-title') Name
 										.col-sm-10
-											input#conf-name.form-control(type='text', name='conf-name', placeholder='(i.e. WordCamp NYC 2017)', required='', data-parsley-required='')
+											input#conf-title.form-control(type='text', name='conf[title]', placeholder='(i.e. WordCamp NYC 2017)', required='', data-parsley-required='')
 									.form-group.row
 										label.col-sm-2.col-form-label(for='shared') 
 											| Share With&nbsp;&nbsp;
-											i.fa.fa-question-circle.tooltiped(aria-hidden='true', data-toggle='tooltip', data-placement='top', title='When this is true, it lets other Aloft users see this conference. Ideal if you are part of a steno team for a conference.')
+											i.fa.fa-question-circle.tooltiped(aria-hidden='true', data-toggle='tooltip', data-placement='top', title='Here you can give access to your conference to other Aloft users. Ideal if you are part of a steno team for a conference.')
 										.col-sm-10
 											//- .row
 												.checkbox-toggle-styled-yes-no
@@ -353,20 +329,54 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 											.row
 												.form-group
 													.col-md-8
-														select#selectmultiple-normal.form-control(name='selectmultiple-normal', multiple='multiple')
-															option(value='1') Option One
-															option(value='2') Option Two
-															option(value='3') Option Three
-															option(value='4') Option Four
-
+														select#selectmultiple-normal.form-control(name='conf[users]', multiple='multiple')
+															each user, i in users
+																option(value='#{user.local.username}') #{user.local.firstname} #{user.local.lastname} (#{user.local.username})
 									.form-group.row
 										.offset-sm-2.col-sm-10
 											button.btn.btn-primary(type='submit') Create
-							h2 Manage Existing Conference
-							.col-md-2.col-lg-2
-					#info.tab-pane.bar-info(role='tabpanel')
-						p
-							| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
+							h2 Use Existing Conference
+							p.text-primary(style='margin-bottom: 0px;')
+								if (conference)
+									strong
+										| Active Conference: #{conference.title} (#{conference.url})
+								else
+									strong
+										| No Active Conference
+							p
+								small
+									| All new events created via the Create Event tool will be added to this conference.
+							form#token-form.signup(action='/conferences/set', method='post')
+								.col-md-12
+									.form-group.row
+										label.col-md-4.control-label(for='selectbasic-normal') Set Active Conference
+										.col-md-8
+											select#selectbasic-normal.form-control(name='current_conf')
+												if (conferences && conferences.length > 0)
+													each conference in conferences
+														option(value='#{conference.url}, #{conference.title}') #{conference.title} (#{conference.url})
+												else
+													option(value='0') Nothing here yet!
+									.form-group.row
+										.offset-sm-2.col-sm-10
+											button.btn.btn-primary(type='submit') Use This Conference
+							h2 Add Planned Events
+							p
+								| For larger conferences, adding your events ahead of time make it easier for you to for you to easily start jobs according to the URL and title schemes given to you by event organizers. The list of added events can be found on a dropdown on the Create Event tool when Conference Mode is activated.
+							p
+								| Add your planned events in the following format: 
+								code
+									| making-wordpress-plugins, Making Wordpress Plugins
+							form#token-form.signup(action='/invite-member', method='post')
+								.col-md-12
+									.form-group.row
+										label.col-md-4.control-label(for='textarea-normal') Add Planned Events
+										.col-md-8
+											textarea#textarea-normal.form-control(name='textarea-normal', placeholder='making-wordpress-plugins, Making Wordpress Plugins')
+									.form-group.row
+										.offset-sm-2.col-sm-10
+											button.btn.btn-primary(type='submit') Add Events
+	
 					#preferences.tab-pane.bar-info(role='tabpanel')
 						p
 							| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.

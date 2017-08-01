@@ -7,7 +7,8 @@ const async = require('async')
 	, send = require('../controllers/send')
 	, ShareRest = require('../controllers/share-rest')
 	, User = require('../models/user')
-	, Event = require('../models/event');
+	, Event = require('../models/event')
+	, Conference = require('../models/conference');
 
 module.exports = function(app, passport, db) {
 
@@ -73,25 +74,78 @@ module.exports = function(app, passport, db) {
 
 						return str
 					}
-
-		Event.find({user: req.user.local.username})
-			.select(['url', 'user', 'title', 'created', '_id'])
-			.limit(perPage)
-			.skip(perPage * page)
-			.sort({created: -1})
-			.exec(function (err, events) {
-
-				Event.count().exec(function (err, count) {
-					res.render('dashboard', {
-						user: req.user.local,
-						error_message: req.flash('error_message'),
-						success_message: req.flash('success_message'),
-						events: events,
-						page: page,
-						pages: count / perPage
+		async.waterfall([function (done) {
+			Event.find({user: req.user.local.username})
+				.select(['url', 'user', 'title', 'created', '_id'])
+				.limit(perPage)
+				.skip(perPage * page)
+				.sort({created: -1})
+				.exec(function (err, events) {
+					Event.count().exec(function (err, count) {
+						let data = {
+							events: events,
+							page: page,
+							count: count,
+							perPage: perPage,
+							users: ''
+						}
+						done(err, data);
 					});
 				});
+		},
+		function (data, done) {
+			User.find({}, function (err, users) {
+				if (err) {
+					throw err;
+				} else {
+					done(err, data, users);
+				}
+			})
+		},
+		function (data, users, done) {
+			Conference.find({}, function (err, conferences) {
+				if (err) {
+					throw err;
+				} else {
+					if (conferences && conferences.length > 0) {
+						let matched_conferences = [];
+						for (var c in conferences) {
+							// Matches conferences the user created themselves.
+							if (conferences[c].user == req.user.local.username) {
+								matched_conferences.push(conferences[c]);
+							}
+							// Matches conferences where user is authorized.
+							if (conferences[c].users.includes(req.user.local.username)) {
+								matched_conferences.push(conferences[c]);
+							}
+						}
+						done(err, data, users, matched_conferences);
+					} else {
+						done(err, data, users, null);
+					}
+				}
+			})
+		},
+		function (data, users, conferences, done) {
+			res.render('dashboard', {
+				user: req.user.local,
+				conference: req.user.conference,
+				error_message: req.flash('error_message'),
+				success_message: req.flash('success_message'),
+				events: data.events,
+				conferences: conferences,
+				page: data.page,
+				pages: data.count / data.perPage,
+				users: users
 			});
+		}],
+		function (err, result) {
+			if (err) {
+				throw err;
+			} else {
+				console.log(result);
+			}
+		});
 	});
 
 	app.get('/invite-member', isLoggedIn, function (req, res) {

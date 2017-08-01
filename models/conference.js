@@ -5,7 +5,8 @@ const Schema = mongoose.Schema;
 
 const conferenceSchema = mongoose.Schema({
 	url: String,
-	name: String,
+	title: String,
+	user: String,
 	created: {
 		type: Date,
 		default: Date.now
@@ -16,8 +17,9 @@ const conferenceSchema = mongoose.Schema({
 	},
 	plannedEvents: [],
 	events: [],
-	users: []
+	users: [],
+	tracks: []
 });
 
-var Event = mongoose.model('Conference', conferenceSchema);
-module.exports  = Event;
+var Conference = mongoose.model('Conference', conferenceSchema);
+module.exports  = Conference;

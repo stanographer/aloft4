@@ -7,6 +7,7 @@ const eventSchema = mongoose.Schema({
 	user: String,
 	url: String,
 	title: String,
+	speaker: String,
 	alias: String,
 	collab: Boolean,
 	completed: {

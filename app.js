@@ -60,7 +60,8 @@ function startServer() {
  	require('./config/passport')(passport);
 
  	// Extra routes
- 	var editorController = require('./controllers/editor');
+ 	let editorController = require('./controllers/editor');
+ 	let conferencesController = require('./controllers/conferences');
 
  	// Logger
 	// app.use(morgan('dev'));
@@ -95,6 +96,7 @@ function startServer() {
  	app.use(passport.session());
  	app.use(flash());
  	app.use('/editor', editorController);
+ 	app.use('/conferences', conferencesController);
  	app.use(function (req, res, next) {
 	  console.log("======== REQ START =========");
 	  console.log("REQ DOT BODY\n", JSON.stringify(req.body));

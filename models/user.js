@@ -39,6 +39,7 @@ const userSchema = mongoose.Schema({
 		}
 	},
 	avatar: String,
+	conference: {},
 	timeFormat: String,
 	marker: String,
 	resetPasswordToken: String,

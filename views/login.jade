@@ -16,12 +16,12 @@ html(lang='en')
 		link(rel='stylesheet', href='/css/fonts.css')
 		link(rel='stylesheet', href='/css/sidebar.css')
 	body
-		.standalone-page-wrapper.image-background-1
+		.standalone-page-wrapper.image-background-3
 			.center-wrapper
 				.login-block
 					.login-header.text-center
 						img(src='images/logo-xs.png', alt='Logo')
-						if (message)
+						if (message && message.length > 0)
 							.row
 								.col-xs-12
 									.alert.alert-danger(role='alert')

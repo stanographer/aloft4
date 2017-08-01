@@ -32,7 +32,6 @@ router.get('/', isLoggedIn, function (req, res) {
 
 router.post('/', isLoggedIn, function (req, res) {
 	var event = new Event(req.body.event);
-	console.log(event)
 
 	event.user = req.user.local.username;
 	event.url = req.body.event.url.trim().toLowerCase();
@@ -60,12 +59,12 @@ router.post('/', isLoggedIn, function (req, res) {
 			event.save(function (err, event) {
 					if (err) {
 						throw err;
-						req.flash('dashboardMessage', 'There was an error saving the event! Please check your database.');
+						req.flash('error_message', 'There was an error saving the event! Please check your database.');
 						res.redirect('/dashboard');
 					} else {
 						// res.redirect('/editor?event=' + event.url);
 						req.flash('success_message', 'Event \"' + event.title + '\" was successfully created! Click on the play icon below to begin writing.');
-						res.redirect('/dashboard#repo-tab');
+						res.redirect('/dashboard#repo');
 					}
 			});
 		}
@@ -83,7 +82,7 @@ router.delete('/:id', isLoggedIn, function (req, res) {
 					throw err;
 				} else {
 					req.flash('success_message', 'Event "' + event.title + ' (' + event.url + ') " was successfully deleted!');
-					res.redirect('/dashboard#repo-tab');
+					res.redirect('/dashboard#repo');
 				}
 			});
 		}
