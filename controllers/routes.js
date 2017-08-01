@@ -205,7 +205,6 @@ module.exports = function(app, passport, db) {
 						res.redirect('/dashboard#admin')
 					} else {
 						let newUser = new User;
-						newUser.local.email = cleanEmail;
 						newUser.inviteToken = token;
 						newUser.trialPeriod = req.body.trialPeriod;
 						newUser.save (function (err) {

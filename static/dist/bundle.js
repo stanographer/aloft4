@@ -4115,7 +4115,7 @@ sharedb.types.register(otText.type);
 startShareDb();
 
 function startShareDb () {
-	var socket = new ReconnectingWebSocket('ws://' + window.location.host, null, {
+	var socket = new ReconnectingWebSocket('wss://' + window.location.host, null, {
 		timeoutInterval: 2000,
 		reconnectInterval: 900,
 		automaticOpen: true,

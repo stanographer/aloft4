@@ -25,6 +25,7 @@
   "license": "MIT",
   "repository": "github.com/stanographer/aloft4",
   "dependencies": {
+    "angular": "^1.6.5",
     "angular-local-storage": "^0.5.2",
     "angular-minicolors": "0.0.10",
     "angular-user-settings": "^0.2.0",

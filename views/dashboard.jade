@@ -202,7 +202,7 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 							.col-md-2
 							.col-md-8
 								.padding-10px.bg-white
-									form#basic-wizard.margin-bottom-10px(data-parsley-validate='', action='/conference', method='post')
+									form#basic-wizard.margin-bottom-10px(data-parsley-validate='', action='/editor', method='post')
 										.first.block1.show
 											.col-md-12
 												.form-group.has-feedback
@@ -274,7 +274,7 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 										.panel-body
 											script.
 													$.ajax({
-														url: 'http://' + window.location.hostname + ':' + window.location.port + '/text/#{event.user}/#{event.url}',
+														url: window.location.origin + '/text/#{event.user}/#{event.url}',
 														dataType: 'text',
 														success: function (data) {
 															if (data && data.length <= 120) {

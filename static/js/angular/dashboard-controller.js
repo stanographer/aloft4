@@ -34,7 +34,7 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors'])
 
 		$scope.activeEventURL = '';
 		$scope.activeEventTitle = '';
-		$scope.host = window.location.hostname + ':' + window.location.port;
+		$scope.host = window.location.origin;
 
 		$scope.minicolorsSettings = {
     		control: 'hue',

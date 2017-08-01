@@ -41,7 +41,6 @@ passport.use('signup', new LocalStrategy({
 							if (err)
 								return done(err);
 							if (!user) {
-								User.find
 								User.findOne({'local.username': username.trim().toLowerCase()}, function (err, user) {
 									if (err)
 										return done(err);
