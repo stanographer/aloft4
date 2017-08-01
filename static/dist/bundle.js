@@ -4115,13 +4115,13 @@ sharedb.types.register(otText.type);
 startShareDb();
 
 function startShareDb () {
-  var wsProtocol = function () {
-    if (location.host === 'aloft.nu') {
-      return 'wss://';
-    } else {
-      return 'ws://';
-    }
-  }
+	var wsProtocol = function () {
+		if (location.host === 'aloft.nu') {
+			return 'wss://';
+		} else {
+			return 'ws://';
+		}
+}
 	var socket = new ReconnectingWebSocket(wsProtocol() + window.location.host, null, {
 		timeoutInterval: 2000,
 		reconnectInterval: 900,
