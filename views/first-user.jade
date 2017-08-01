@@ -16,41 +16,30 @@ html(lang='en')
 		link(rel='stylesheet', href='/css/fonts.css')
 		link(rel='stylesheet', href='/css/sidebar.css')
 	body
-		.standalone-page-wrapper.image-background-3
-			.center-wrapper
-				.login-block
-					.login-header.text-center
-						img(src='img/aloftlogo-xs.png', alt='Logo')
-						if (message && message.length > 0)
-							.row
-								.col-xs-12
-									.alert.alert-danger(role='alert')
-										button.close(type='submit', data-dismiss='alert', aria-label='Close')
-											span(aria-hidden='true')
-												i.fa.fa-times
-										strong !{message}
-					form.form-horizontal(action='/login', method='POST' data-parsley-validate='')
-						.form-group
-							label.col-md-3.control-label(for='inputEmail3') Username
-							.col-md-9
-								input#inputEmail3.form-control(type='text', placeholder='Username', name='username', required='', autofocus='')
-						.form-group
-							label.col-md-3.control-label(for='inputPassword3') Password
-							.col-md-9
-								input#inputPassword3.form-control(type='password', placeholder='Password', name='password', required='', data-parsley-minlength='6')
-						.form-group
-							.col-md-offset-3.col-md-9
-								.checkbox-styled.checkbox-inline
-									input#checkbox(name='checkbox', type='checkbox')
-									label(for='checkbox') Remember Me
-						.form-group
-							.col-sm-offset-3.col-sm-9
-								button.btn.btn-default.btn-lg(type='submit') Sign in
-				.copyrights
-					| Aloft Realtime Text System
-					br
-					| Created by Stanley Sakai
-
+		.col-md-12
+			form#token-form.signup(action='/invite-member', method='post')
+				.form-group.row
+					label.col-sm-2.col-form-label(for='newmemberemail') Email
+					.col-sm-10
+						input#inputEmail3.form-control(type='email', name='newmemberemail', placeholder='Email', required='', data-parsley-required='', data-parsley-type='email')
+					//- .col-sm-6
+					label.col-sm-2.col-form-label(for='') Role
+					.col-sm-6
+						.radio-styled
+							input#member(name='role', value='member', type='radio')
+							label(for='member') Member
+						.radio-styled
+							input#admin(name='role', value='admin', type='radio')
+							label(for='admin') Administrator
+						.radio-styled
+							input#trial(name='role', value='trial', type='radio')
+							label(for='trial') Trial
+						.input-group
+							input.form-control(type='text', name='trialPeriod', placeholder="Trial Duration", data-parsley-type='number', data-parsley-range='[1, 30]')
+							span.help-block Trial Duration in Days
+				.form-group.row
+					.offset-sm-2.col-sm-10
+						button.btn.btn-primary(type='submit') Send Invite!
 		//- jQuery
 		script(src='/node/jquery/dist/jquery.min.js')
 		//- Angular

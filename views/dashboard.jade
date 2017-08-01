@@ -367,12 +367,12 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 								| Add your planned events in the following format: 
 								code
 									| making-wordpress-plugins, Making Wordpress Plugins
-							form#token-form.signup(action='/invite-member', method='post')
+							form#token-form.signup(action='/conferences/plan-events', method='post')
 								.col-md-12
 									.form-group.row
 										label.col-md-4.control-label(for='textarea-normal') Add Planned Events
 										.col-md-8
-											textarea#textarea-normal.form-control(name='textarea-normal', placeholder='making-wordpress-plugins, Making Wordpress Plugins')
+											textarea#textarea-normal.form-control(name='event_list', placeholder='making-wordpress-plugins, Making Wordpress Plugins')
 									.form-group.row
 										.offset-sm-2.col-sm-10
 											button.btn.btn-primary(type='submit') Add Events

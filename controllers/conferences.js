@@ -66,6 +66,32 @@ router.post('/set', isLoggedIn, function (req, res) {
 	});
 });
 
+router.post('/plan-events', function (req, res) {
+	let event_list = req.body.event_list;
+
+	processPlannedEvents(event_list, proceed);
+
+	function proceed (pairs) {
+		Conference.findOne({url: req.user.conference.url}, function (err, conf) {
+			if (err) {
+				throw err;
+			} else {
+				if (conf) {
+					conf.update({$push: {plannedEvents: {$each: pairs}}}, {upsert: true}, 
+						function (err, updated) {
+							if (err) {
+								throw err;
+							} else {
+								req.flash('success_message', 'Planned events added successfully to ' + conf.title + '!');
+								res.redirect('/dashboard#conference');
+							}
+					});
+				}
+			}
+		})
+	}
+});
+
 // Logic ----------------------------------------------------------
 
 var checkUrl = function (conf, callback) {
@@ -184,6 +210,26 @@ function deleteShareDbDoc (user, title) {
 			doc.destroy();
 		});
 	});
+}
+
+function processPlannedEvents (string, callback) {
+	let pairs = [];
+
+	if (string && string.length > 0) {
+		let list = string.trim().replace(/\r\n/g,'\n').replace(/^\s*[\r\n]/gm, '').split('\n');
+		let slug = '';
+		let title = '';
+
+		for (var i = 0; i < list.length; i++) {
+			var split = list[i].split(',');
+			var pair  = {
+				slug  : split[0].toString(),
+				title : split[1].toString()
+			}
+			pairs.push(pair);
+		}
+		callback(pairs);
+	}
 }
 
 module.exports = router;

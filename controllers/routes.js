@@ -148,6 +148,10 @@ module.exports = function(app, passport, db) {
 		});
 	});
 
+	app.get('/first-user', function (req, res) {
+		res.render('first-user');
+	})
+
 	app.get('/invite-member', isLoggedIn, function (req, res) {
 		if (req.user.local.role === 'admin') {
 			res.render('invite-user');
