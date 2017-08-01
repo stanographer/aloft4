@@ -49,7 +49,7 @@ function createDoc(callback) {
 function subscribe() {
 	doc.subscribe(function(err) {
 		if (err) throw err;
-		attachTextarea(element, doc);
+		// attachTextarea(element, doc);
 		binding = new StringBinding(element, doc);
 		binding.setup();
 	});
