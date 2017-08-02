@@ -1,8 +1,9 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var sharedb = require('sharedb/lib/client');
-var StringBinding = require('sharedb-string-binding');
-var types = require('sharedb/lib/types');
-var otText = require('ot-text');
+let sharedb = require('sharedb/lib/client');
+let StringBinding = require('sharedb-string-binding');
+let ReconnectingWebSocket = require('reconnecting-websocket/dist/index');
+let types = require('sharedb/lib/types');
+let otText = require('ot-text');
 // var bind = require('sharedb/lib/bind-textarea')
 
 // Open WebSocket connection to ShareDB server
@@ -13,7 +14,14 @@ var otText = require('ot-text');
       return 'ws://';
     }
   }
-var socket = new WebSocket(wsProtocol() + window.location.host);
+var socket = new ReconnectingWebSocket(wsProtocol() + window.location.host, null, {
+  timeoutInterval: 2000,
+  reconnectInterval: 900,
+  automaticOpen: true,
+  connectionTimeout: 4000,
+  maxRetries: Infinity
+});
+
 var connection = new sharedb.Connection(socket);
 var doc;
 var binding;
@@ -452,7 +460,7 @@ var attachTextarea = function (elem, doc) {
 
   return doc;
 };
-},{"ot-text":9,"sharedb-string-binding":12,"sharedb/lib/client":15,"sharedb/lib/types":19}],2:[function(require,module,exports){
+},{"ot-text":9,"reconnecting-websocket/dist/index":12,"sharedb-string-binding":13,"sharedb/lib/client":16,"sharedb/lib/types":20}],2:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2595,6 +2603,216 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],12:[function(require,module,exports){
+"use strict";
+var isWebSocket = function (constructor) {
+    return constructor && constructor.CLOSING === 2;
+};
+var isGlobalWebSocket = function () {
+    return typeof WebSocket !== 'undefined' && isWebSocket(WebSocket);
+};
+var getDefaultOptions = function () { return ({
+    constructor: isGlobalWebSocket() ? WebSocket : null,
+    maxReconnectionDelay: 10000,
+    minReconnectionDelay: 1500,
+    reconnectionDelayGrowFactor: 1.3,
+    connectionTimeout: 4000,
+    maxRetries: Infinity,
+    debug: false,
+}); };
+var bypassProperty = function (src, dst, name) {
+    Object.defineProperty(dst, name, {
+        get: function () { return src[name]; },
+        set: function (value) { src[name] = value; },
+        enumerable: true,
+        configurable: true,
+    });
+};
+var initReconnectionDelay = function (config) {
+    return (config.minReconnectionDelay + Math.random() * config.minReconnectionDelay);
+};
+var updateReconnectionDelay = function (config, previousDelay) {
+    var newDelay = previousDelay * config.reconnectionDelayGrowFactor;
+    return (newDelay > config.maxReconnectionDelay)
+        ? config.maxReconnectionDelay
+        : newDelay;
+};
+var LEVEL_0_EVENTS = ['onopen', 'onclose', 'onmessage', 'onerror'];
+var reassignEventListeners = function (ws, oldWs, listeners) {
+    Object.keys(listeners).forEach(function (type) {
+        listeners[type].forEach(function (_a) {
+            var listener = _a[0], options = _a[1];
+            ws.addEventListener(type, listener, options);
+        });
+    });
+    if (oldWs) {
+        LEVEL_0_EVENTS.forEach(function (name) { ws[name] = oldWs[name]; });
+    }
+};
+var ReconnectingWebsocket = function (url, protocols, options) {
+    var _this = this;
+    if (options === void 0) { options = {}; }
+    var ws;
+    var connectingTimeout;
+    var reconnectDelay = 0;
+    var retriesCount = 0;
+    var shouldRetry = true;
+    var savedOnClose = null;
+    var listeners = {};
+    // require new to construct
+    if (!(this instanceof ReconnectingWebsocket)) {
+        throw new TypeError("Failed to construct 'ReconnectingWebSocket': Please use the 'new' operator");
+    }
+    // Set config. Not using `Object.assign` because of IE11
+    var config = getDefaultOptions();
+    Object.keys(config)
+        .filter(function (key) { return options.hasOwnProperty(key); })
+        .forEach(function (key) { return config[key] = options[key]; });
+    if (!isWebSocket(config.constructor)) {
+        throw new TypeError('Invalid WebSocket constructor. Set `options.constructor`');
+    }
+    var log = config.debug ? function () {
+        var params = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            params[_i] = arguments[_i];
+        }
+        return console.log.apply(console, ['RWS:'].concat(params));
+    } : function () { };
+    /**
+     * Not using dispatchEvent, otherwise we must use a DOM Event object
+     * Deferred because we want to handle the close event before this
+     */
+    var emitError = function (code, msg) { return setTimeout(function () {
+        var err = new Error(msg);
+        err.code = code;
+        if (Array.isArray(listeners.error)) {
+            listeners.error.forEach(function (_a) {
+                var fn = _a[0];
+                return fn(err);
+            });
+        }
+        if (ws.onerror) {
+            ws.onerror(err);
+        }
+    }, 0); };
+    var handleClose = function () {
+        log('close');
+        retriesCount++;
+        log('retries count:', retriesCount);
+        if (retriesCount > config.maxRetries) {
+            emitError('EHOSTDOWN', 'Too many failed connection attempts');
+            return;
+        }
+        if (!reconnectDelay) {
+            reconnectDelay = initReconnectionDelay(config);
+        }
+        else {
+            reconnectDelay = updateReconnectionDelay(config, reconnectDelay);
+        }
+        log('reconnectDelay:', reconnectDelay);
+        if (shouldRetry) {
+            setTimeout(connect, reconnectDelay);
+        }
+    };
+    var connect = function () {
+        if (!shouldRetry) {
+            return;
+        }
+        log('connect');
+        var oldWs = ws;
+        ws = new config.constructor(url, protocols);
+        connectingTimeout = setTimeout(function () {
+            log('timeout');
+            ws.close();
+            emitError('ETIMEDOUT', 'Connection timeout');
+        }, config.connectionTimeout);
+        log('bypass properties');
+        for (var key in ws) {
+            // @todo move to constant
+            if (['addEventListener', 'removeEventListener', 'close', 'send'].indexOf(key) < 0) {
+                bypassProperty(ws, _this, key);
+            }
+        }
+        ws.addEventListener('open', function () {
+            clearTimeout(connectingTimeout);
+            log('open');
+            reconnectDelay = initReconnectionDelay(config);
+            log('reconnectDelay:', reconnectDelay);
+            retriesCount = 0;
+        });
+        ws.addEventListener('close', handleClose);
+        reassignEventListeners(ws, oldWs, listeners);
+        // because when closing with fastClose=true, it is saved and set to null to avoid double calls
+        ws.onclose = ws.onclose || savedOnClose;
+        savedOnClose = null;
+    };
+    log('init');
+    connect();
+    this.close = function (code, reason, _a) {
+        if (code === void 0) { code = 1000; }
+        if (reason === void 0) { reason = ''; }
+        var _b = _a === void 0 ? {} : _a, _c = _b.keepClosed, keepClosed = _c === void 0 ? false : _c, _d = _b.fastClose, fastClose = _d === void 0 ? true : _d, _e = _b.delay, delay = _e === void 0 ? 0 : _e;
+        if (delay) {
+            reconnectDelay = delay;
+        }
+        shouldRetry = !keepClosed;
+        ws.close(code, reason);
+        if (fastClose) {
+            var fakeCloseEvent_1 = {
+                code: code,
+                reason: reason,
+                wasClean: true,
+            };
+            // execute close listeners soon with a fake closeEvent
+            // and remove them from the WS instance so they
+            // don't get fired on the real close.
+            handleClose();
+            ws.removeEventListener('close', handleClose);
+            // run and remove level2
+            if (Array.isArray(listeners.close)) {
+                listeners.close.forEach(function (_a) {
+                    var listener = _a[0], options = _a[1];
+                    listener(fakeCloseEvent_1);
+                    ws.removeEventListener('close', listener, options);
+                });
+            }
+            // run and remove level0
+            if (ws.onclose) {
+                savedOnClose = ws.onclose;
+                ws.onclose(fakeCloseEvent_1);
+                ws.onclose = null;
+            }
+        }
+    };
+    this.send = function (data) {
+        ws.send(data);
+    };
+    this.addEventListener = function (type, listener, options) {
+        if (Array.isArray(listeners[type])) {
+            if (!listeners[type].some(function (_a) {
+                var l = _a[0];
+                return l === listener;
+            })) {
+                listeners[type].push([listener, options]);
+            }
+        }
+        else {
+            listeners[type] = [[listener, options]];
+        }
+        ws.addEventListener(type, listener, options);
+    };
+    this.removeEventListener = function (type, listener, options) {
+        if (Array.isArray(listeners[type])) {
+            listeners[type] = listeners[type].filter(function (_a) {
+                var l = _a[0];
+                return l !== listener;
+            });
+        }
+        ws.removeEventListener(type, listener, options);
+    };
+};
+module.exports = ReconnectingWebsocket;
+
+},{}],13:[function(require,module,exports){
 var TextDiffBinding = require('text-diff-binding');
 
 module.exports = StringBinding;
@@ -2705,7 +2923,7 @@ function isSubpath(path, testPath) {
   return true;
 }
 
-},{"text-diff-binding":21}],13:[function(require,module,exports){
+},{"text-diff-binding":22}],14:[function(require,module,exports){
 (function (process){
 var Doc = require('./doc');
 var Query = require('./query');
@@ -3287,7 +3505,7 @@ Connection.prototype._firstQuery = function(fn) {
 };
 
 }).call(this,require('_process'))
-},{"../emitter":17,"../error":18,"../types":19,"../util":20,"./doc":14,"./query":16,"_process":11}],14:[function(require,module,exports){
+},{"../emitter":18,"../error":19,"../types":20,"../util":21,"./doc":15,"./query":17,"_process":11}],15:[function(require,module,exports){
 (function (process){
 var emitter = require('../emitter');
 var ShareDBError = require('../error');
@@ -4201,14 +4419,14 @@ function callEach(callbacks, err) {
 }
 
 }).call(this,require('_process'))
-},{"../emitter":17,"../error":18,"../types":19,"_process":11}],15:[function(require,module,exports){
+},{"../emitter":18,"../error":19,"../types":20,"_process":11}],16:[function(require,module,exports){
 exports.Connection = require('./connection');
 exports.Doc = require('./doc');
 exports.Error = require('../error');
 exports.Query = require('./query');
 exports.types = require('../types');
 
-},{"../error":18,"../types":19,"./connection":13,"./doc":14,"./query":16}],16:[function(require,module,exports){
+},{"../error":19,"../types":20,"./connection":14,"./doc":15,"./query":17}],17:[function(require,module,exports){
 (function (process){
 var emitter = require('../emitter');
 
@@ -4411,7 +4629,7 @@ Query.prototype._handleExtra = function(extra) {
 };
 
 }).call(this,require('_process'))
-},{"../emitter":17,"_process":11}],17:[function(require,module,exports){
+},{"../emitter":18,"_process":11}],18:[function(require,module,exports){
 var EventEmitter = require('events').EventEmitter;
 
 exports.EventEmitter = EventEmitter;
@@ -4423,7 +4641,7 @@ function mixin(Constructor) {
   }
 }
 
-},{"events":2}],18:[function(require,module,exports){
+},{"events":2}],19:[function(require,module,exports){
 var makeError = require('make-error');
 
 function ShareDBError(code, message) {
@@ -4435,7 +4653,7 @@ makeError(ShareDBError);
 
 module.exports = ShareDBError;
 
-},{"make-error":3}],19:[function(require,module,exports){
+},{"make-error":3}],20:[function(require,module,exports){
 
 exports.defaultType = require('ot-json0').type;
 
@@ -4448,7 +4666,7 @@ exports.register = function(type) {
 
 exports.register(exports.defaultType);
 
-},{"ot-json0":5}],20:[function(require,module,exports){
+},{"ot-json0":5}],21:[function(require,module,exports){
 
 exports.doNothing = doNothing;
 function doNothing() {}
@@ -4458,7 +4676,7 @@ exports.hasKeys = function(object) {
   return false;
 };
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = TextDiffBinding;
 
 function TextDiffBinding(element) {

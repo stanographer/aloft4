@@ -148,9 +148,9 @@ module.exports = function(app, passport, db) {
 		});
 	});
 
-	app.get('/first-user', function (req, res) {
-		res.render('first-user');
-	})
+	// app.get('/first-user', function (req, res) {
+	// 	res.render('first-user');
+	// });
 
 	app.get('/invite-member', isLoggedIn, function (req, res) {
 		if (req.user.local.role === 'admin') {
@@ -182,28 +182,82 @@ module.exports = function(app, passport, db) {
 					});
 				} else {
 					Conference.findOne({url: req.params.user}, function (err, conf) {
+						let isAnEvent;
+						let isPlanned;
+
 						if (err) {
 							throw err;
 						} else {
 							if (conf) {
-								for (let e in conf.events) {
-									if (conf.events[e].slug === var2) {
-										res.render('watch', {
-											user: conf.events[e].user,
-											event: conf.events[e].url,
-											speaker: conf.events[e].speaker,
-											title: conf.events[e],
-											marker: '≈'
-										});
-									}
-								}
+								async.waterfall([
+									function (done) {
+										let eventData;
+										for (let e in conf.events) {
+											if (conf.events[e].slug === var2) {
+												eventData = {
+													is_event: true,
+													user: conf.events[e].user,
+													event: conf.events[e].url,
+													speaker: conf.events[e].speaker,
+													title: conf.events[e]
+												}
+											}
+										}
+										done(err, eventData);
+									},
+									function (eventData, done) {
+										let plannedData;
+										for (let p in conf.plannedEvents) {
+											if (conf.plannedEvents[p].slug === var2) {
+												plannedData = {
+													is_planned: true,
+													conf_name: conf.title,
+													conf_slug: conf.url,
+													event: conf.plannedEvents[p].slug,
+													speaker: conf.plannedEvents[p].speaker,
+													title: conf.plannedEvents[p].title
+												}
+											}
+										}
+										done(err, plannedData, eventData);
+									},
+									function (plannedData, eventData, done) {
+										if (eventData && eventData.is_event === true) {
+											res.render('watch', {
+												user: eventData.user,
+												event: eventData.url,
+												speaker: eventData.speaker,
+												title: eventData,
+												marker: '≈'
+											});
+										} else if (plannedData && plannedData.is_planned === true) {
+											res.render('hasnt-started', {
+													conf_title: conf.title,
+													conf_slug: conf.url,
+													event: plannedData.slug,
+													speaker: plannedData.speaker,
+													title: plannedData.title
+											});
+										} else {
+											req.flash('error_message', 'Sorry. There was no matching event name found.')
+											res.render('error', {
+												message: req.flash('error_message')
+											});
+										}
+									}],
+									function (err, result) {
+										if (err) {
+											throw err;
+										} else {
+											console.log(result);
+										}
+									});
 							} else {
 								req.flash('error_message', 'Sorry. There was no matching conference found.')
 								res.render('error', {
 									message: req.flash('error_message')
 								});
 							}
-							
 						}
 					});
 				}

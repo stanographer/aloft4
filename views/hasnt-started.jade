@@ -1,0 +1,44 @@
+doctype html
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		title #{conf_title} - Event hasn't started yet!
+		link(rel='stylesheet', href='/node/bootstrap/dist/css/bootstrap.min.css')
+		link(href='/themes/yummy/css/overlay-effects/overlay-effects.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/font-awesome.min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/dripicons.min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/animate/animate.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/hover/hover-min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/minicolors/jquery.minicolors.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/stepper/jquery.stepper.min.css', rel='stylesheet', type='text/css')
+		link(rel='stylesheet', href='/themes/yummy/css/styles.css')
+		link(rel='stylesheet', href='/css/annotator.min.css')
+		link(rel='stylesheet', href='/css/fonts.css')
+		link(rel='stylesheet', href='/css/standalonepage.css')
+		link(rel='stylesheet', href='/css/sidebar.css')
+	body
+		.standalone-page-wrapper.image-background-3
+			.container
+				.col-md-3
+				.col-md-6
+					.content-wrapper
+						.logo-wrapper
+							img.rect-logo(src='/img/#{conf_slug}-logo.png')
+						.panel.panel-default.panel-filled
+							.panel-body
+								h3(style='line-height: 1.3em; margin-bottom: 2em;') "#{title}"
+									br
+									small #{speaker}
+								p
+									| Hang tight! Live transcription for this event hasn't started yet. Check back here later.
+						.copyrights
+							| Aloft Realtime Text System
+							br
+							| Created by Stanley Sakai
+				.col-md-3
+		//- Angular User Settings
+		//- Bootstrap scripts
+		script(src='/node/bootstrap/dist/js/bootstrap.min.js')
+		//- Angular controller
+		//- jQuery UI Touch
+		script(src='/js/jquery-ui-touch.js')
