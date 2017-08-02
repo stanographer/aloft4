@@ -46,6 +46,9 @@ body, html {
 	text-align: center;
 	margin-bottom: 2em;
 }
+.dropdown.open .caret, .btn-group.open .caret {
+	left: unset;
+}
 .btn-group {
 	z-index: 0 !important;
 }
@@ -84,6 +87,9 @@ body, html {
 }
 .hidden-stuff {
 	display: none;
+}
+.input-group-btn:first-child > .btn, .input-group-btn:first-child > .btn-group {
+	border-radius: 5px;
 }
 .lowercase {
 	text-transform: lowercase;
@@ -139,4 +145,7 @@ body, html {
 }
 .tab-default .badge {
 	margin-left: 5px;
+}
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
 }

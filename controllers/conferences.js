@@ -3,11 +3,12 @@
 const express = require('express')
 	, config = require('../config/aloft-config')
 	, Conference = require('../models/conference')
-	, User = require('../models/user');
+	, User = require('../models/user')
+	, Event = require('../models/event');
 
 const router = express.Router();
 
-router.post('/new', function (req, res) {
+router.post('/new', isLoggedIn, function (req, res) {
 	let conf = new Conference(req.body.conf);
 
 	conf.user = req.user.local.username;
@@ -53,13 +54,18 @@ router.post('/set', isLoggedIn, function (req, res) {
 				let conf_url = req.body.current_conf.split(',')[0];
 				let conf_title = req.body.current_conf.split(',')[1];
 
-				user.update({$set: {'conference': {
-					url: conf_url,
-					title: conf_title
-				}}}, {upsert: true}, 
-					function (err, updated) {
-						req.flash('success_message', 'Active conference successfully set!');
-						res.redirect('/dashboard#conference');
+				Conference.findOne({url: conf_url}, function (err, conf) {
+					if (err) {
+						throw err;
+					} else {
+						if (conf) {
+							user.update({$set: {'conference': conf}}, {upsert: true}, 
+								function (err, updated) {
+									req.flash('success_message', 'Active conference successfully set!');
+									res.redirect('/dashboard#conference');
+							});
+						}
+					}
 				});
 			}
 		}
@@ -88,8 +94,69 @@ router.post('/plan-events', function (req, res) {
 					});
 				}
 			}
-		})
+		});
 	}
+});
+
+router.post('/new-event', isLoggedIn, function (req, res) {
+	let conf_event = req.body.conf;
+	conf_event.user = req.user.local.username;
+
+	Conference.findOne({'url': req.user.conference.url}, function (err, conf) {
+			if (err) {
+				throw err;
+			} else {
+				if (conf) {
+					conf.update({$push: {events: conf_event}}, {upsert: true}, 
+						function (err, updated) {
+							if (err) {
+								throw err;
+							} else {
+								var event = new Event({
+									url: conf_event.url.trim().toLowerCase(),
+									title: conf_event.title,
+									user: req.user.local.username,
+									speaker: conf_event.speaker
+								});
+
+								// If there is no title given by user, automatically assign the URL to be the title.
+								if (!event.title) {
+									event.title = event.url;
+								}
+
+								checkUrl(event.url, startEvent);
+
+								function startEvent (valid, warnings) {
+									if (valid) {
+										checkForDuplicateEvent(event.url, event.user, proceed);
+									} else {
+										var messages = warnings.join('<br />');
+										req.flash('error_message', '<strong>Event could not be created.</strong> Please fix the following errors: <br /><br />' + messages);
+										res.redirect('/dashboard');
+									}
+								}
+								function proceed (isDup) {
+									if (isDup) {
+										res.redirect('/dashboard?event=' + event.url);
+									} else {
+										event.save(function (err, event) {
+												if (err) {
+													throw err;
+													req.flash('error_message', 'There was an error saving the event! Please check your database.');
+													res.redirect('/dashboard');
+												} else {
+													// res.redirect('/editor?event=' + event.url);
+													req.flash('success_message', 'Event \"' + event.title + '\" was successfully created! Click on the play icon below to begin writing.');
+													res.redirect('/dashboard#repo');
+												}
+										});
+									}
+								}
+							}
+					});
+				}
+			}
+		});
 });
 
 // Logic ----------------------------------------------------------
@@ -189,6 +256,39 @@ function checkForDuplicates (url, callback) {
 
 	findMatch();
 }
+function checkForDuplicateEvent (url, user, callback) {
+	let searchForDupes = new Promise(
+		function (resolve, reject) {
+			Event.findOne({'url': url, 'user': user}, function (err, event) {
+				if (err) {
+					throw err;
+				} else {
+					if (!event) {
+						console.log('NO EVNT FOUND')
+						reject('No event found; is a unique url.');
+					} else {
+						console.log('EVNT FOUND')
+						resolve('Found an event; not a unique url.')
+					}
+				}
+			});
+		}
+	);
+
+	let findMatch = function () {
+		searchForDupes
+			.then(function (fulfilled) {
+				callback(true);
+
+			})
+			.catch(function (error) {
+				callback(false);
+
+			});
+	}
+
+	findMatch();
+}
 function isLoggedIn(req, res, next) {
 	if (req.isAuthenticated()) {
 		return next();
@@ -217,14 +317,13 @@ function processPlannedEvents (string, callback) {
 
 	if (string && string.length > 0) {
 		let list = string.trim().replace(/\r\n/g,'\n').replace(/^\s*[\r\n]/gm, '').split('\n');
-		let slug = '';
-		let title = '';
 
 		for (var i = 0; i < list.length; i++) {
 			var split = list[i].split(',');
 			var pair  = {
-				slug  : split[0].toString(),
-				title : split[1].toString()
+				slug: split[0].toString(),
+				title: split[1].toString().replace(/['"]+/g, ''),
+				speaker: split[2].toString().replace(/['"]+/g, '')
 			}
 			pairs.push(pair);
 		}

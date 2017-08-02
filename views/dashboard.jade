@@ -13,7 +13,7 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 		link(rel='stylesheet', href='/css/fonts.css')
 		link(rel='stylesheet', href='/themes/yummy/css/styles.css')
 		link(href='/themes/yummy/css/overlay-effects/overlay-effects.css', rel='stylesheet', type='text/css')
-		//- link(rel='stylesheet', href='/css/packages/jquery.highlighttextarea.min.css')
+		link(rel='stylesheet', href='/css/packages/bootstrap-select.min.css')
 		link(rel='stylesheet', href='/css/general.css')
 		link(rel='stylesheet', href='/css/editor.css')
 		//- jQuery
@@ -85,7 +85,7 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 												h4.margin-top-0.margin-bottom-20px Font Style
 												.form-group
 														.col-md-8
-															select(ng-model='editorFontFamily', ng-options='f as f.name group by f.type for f in editorFonts track by f.name' ng-change='saveFontFamily()').selectpicker.form-control
+															select(ng-model='editorFontFamily', ng-options='f as f.name group by f.type for f in editorFonts track by f.name' ng-change='saveFontFamily()')
 									.btn-group
 										button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
 											i.fa.fa-text-height(aria-hidden='true') &nbsp;
@@ -194,15 +194,13 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 								.padding-8px.bg-white
 									h2 Create a new event
 									.toggle-buttons
-										button.btn.btn-success(type='button')
-											| Normal Mode
-										button.btn.btn-default(type='button')
-											| Conference Mode
+										button.btn.btn-success.ng-cloak(type='button', ng-cloak, ng-click='toggleConfMode()')
+											| {{ confMode === true ? "Conference Mode" : "Normal Event Mode" }}
 						.row
 							.col-md-2
 							.col-md-8
 								.padding-10px.bg-white
-									form#basic-wizard.margin-bottom-10px(data-parsley-validate='', action='/editor', method='post')
+									form#basic-wizard.margin-bottom-10px(data-parsley-validate='', action='/editor', method='post', ng-cloak, ng-hide='confMode')
 										.first.block1.show
 											.col-md-12
 												.form-group.has-feedback
@@ -219,11 +217,40 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 													input#speaker.form-control.form-spacer(type='text', name='event[speaker]', placeholder='i.e. Andrew Nacin')
 											.col-md-6
 												.checkbox-toggle-styled-yes-no
-													
-													input#conf-shared(name='event[hidden]', value='event[hidden]', type='checkbox')
-													label(for='event[speaker]') Hidden Event
+													input#hidden(name='event[hidden]', type='checkbox')
+													label(for='hidden') Hidden Event
 											.col-md-6
 												button.next.btn.btn-info.pull-right(type='submit')
+													| Create Event
+									form#basic-wizard.margin-bottom-10px(data-parsley-validate='', action='/conferences/new-event', method='post', ng-cloak, ng-hide='!confMode')
+										.first.block1.show
+											.col-md-12
+												.form-group.has-feedback
+												if (conference.plannedEvents)
+													.input-group.input-group-lg
+														select.selectpicker#url-select(data-container='body', ng-change='pickEvent("#{conference.url}")', ng-model='planned', title='(Choose from scheduled events)')
+															each plannedEvent in conference.plannedEvents
+																option(value='#{plannedEvent.slug}::#{plannedEvent.title}::#{plannedEvent.speaker}') #{plannedEvent.title}
+												.form-group.has-feedback
+													label.control-label(for='url') Slug
+												.input-group.input-group-lg
+													span#basic-addon3.input-group-addon {{ host }}/#{conference.url}/
+													input#slug.form-control.lowercase(type='text', ng-readonly='eventCreator.slug', name='conf[slug]', aria-describedby='url-field', placeholder='i.e. makebetterplugins', ng-model='eventCreator.slug')
+													input#url.form-control.lowercase(type='text', ng-readonly='eventCreator.url', name='conf[url]', aria-describedby='url-field', placeholder='i.e. makebetterplugins', ng-model='eventCreator.url')
+											.form-group.has-feedback
+												.col-md-6
+													label.control-label.make-room(for='title') Title
+													input#title.form-control.form-spacer(type='text', ng-readonly='eventCreator.title', ng-model='eventCreator.title', name='conf[title]', placeholder='i.e. Make Better Plugins')
+												.col-md-6
+													label.control-label.make-room(for='speaker') Speaker
+													input#speaker.form-control.form-spacer(type='text', ng-readonly='eventCreator.speaker', name='conf[speaker]', placeholder='i.e. Andrew Nacin', ng-model='eventCreator.speaker')
+											.col-md-6
+												.checkbox-toggle-styled-yes-no
+													input#hidden(name='conf[hidden]', type='checkbox')
+													label(for='hidden') Hidden Event
+											.col-md-6
+
+												button.next.btn.btn-info(type='submit')
 													| Create Event
 											//- .btn-group(data-toggle='buttons')
 												label.btn.btn-default.btn-circle
@@ -542,9 +569,17 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 		script(src='/js/general.js')
 		//- Save text function
 		script(src='/js/save-text.js')
+		//- Bootstrap Select
+		script(src='/js/packages/bootstrap-select.js')
 		//- ShareDB
 		script(src='/dist/textarea.js' defer)
 		script.
+			$('.selectpicker').selectpicker({
+				size: 4,
+				liveSearch: true,
+				showIcon: false
+			});
+
 			$('#token-form').parsley();
 
 			var url = document.location.toString();

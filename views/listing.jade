@@ -1,0 +1,82 @@
+doctype html
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		title Error
+		link(rel='stylesheet', href='/node/bootstrap/dist/css/bootstrap.min.css')
+		link(href='/themes/yummy/css/overlay-effects/overlay-effects.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/font-awesome.min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/dripicons.min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/animate/animate.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/hover/hover-min.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/minicolors/jquery.minicolors.css', rel='stylesheet', type='text/css')
+		link(href='/themes/yummy/css/stepper/jquery.stepper.min.css', rel='stylesheet', type='text/css')
+		link(rel='stylesheet', href='/themes/yummy/css/styles.css')
+		link(rel='stylesheet', href='/css/annotator.min.css')
+		link(rel='stylesheet', href='/css/fonts.css')
+		link(rel='stylesheet', href='/css/standalonepage.css')
+		link(rel='stylesheet', href='/css/sidebar.css')
+		script(src='/node/jquery/dist/jquery.min.js')
+		script(src='/js/packages/moment.js')
+	body
+		.standalone-page-wrapper.image-background-3
+			.center-wrapper
+				.container
+					h2 Public Event Listing
+						small for #{firstname} #{lastname}
+					//- .row
+						each event, i in events
+							.col-md-8
+								.col-md-6
+									.panel.panel-default.panel-filled.prev-panel
+										.panel-heading
+											.panel-title
+												script.
+													var event_title = '#{event.title}';
+
+													if (event_title.length >= 67) {
+														event_title = String(event_title).substr(0, 66);
+														event_title += '...';
+													}
+													document.write(event_title);
+												br
+												small
+													script.
+															var d = moment(new Date('#{event.created}'));
+															document.write(d.format('MM-DD-YYYY (HH:mm)'));
+										.panel-body
+											script.
+													$.ajax({
+														url: window.location.origin + '/text/#{event.user}/#{event.url}',
+														dataType: 'text',
+														success: function (data) {
+															if (data && data.length <= 120) {
+																document.getElementById('preview_#{event.url}').innerHTML = data;
+															} else {
+																data = data.substr(0, 120);
+																data += '...';
+																document.getElementById('preview_#{event.url}').innerHTML = data;
+															}
+														}
+													});
+											p.snippet(id='preview_#{event.url}')
+										.panel-footer
+											ul.list-inline
+												li
+													a.btn.btn-success.btn-circle-sm(type='button', ng-click='activeEventURL = "#{event.url}"; activeEventTitle = "#{event.title}"', onclick='startEditor("#{event.url}")')
+														i.dripicons-media-play
+												li
+													button.btn.btn-warning.btn-circle-sm.cbcopy(type='button', data-clipboard-text='aloft.nu/#{user.username}/#{event.url}')
+														i.dripicons-link
+												li
+													form(action='/editor/#{event.id}?_method=DELETE', method='post')
+														button.btn.btn-danger.btn-circle-sm(type='submit')
+															i.dripicons-trash
+		//- Angular User Settings
+		//- Bootstrap scripts
+		script(src='/node/bootstrap/dist/js/bootstrap.min.js')
+		//- Angular controller
+		//- jQuery UI Touch
+		script(src='/js/jquery-ui-touch.js')
+		//- jQuery
+		script(src='/node/jquery/dist/jquery.min.js')

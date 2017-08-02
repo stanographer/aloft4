@@ -35,6 +35,17 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors'])
 		$scope.activeEventURL = '';
 		$scope.activeEventTitle = '';
 		$scope.host = window.location.origin;
+		$scope.eventCreator = {
+			url: '',
+			slug: '',
+			title: '',
+			speaker: ''
+		}
+		$scope.planned = {
+			slug: '',
+			title: '',
+			speaker: ''
+		};
 
 		$scope.minicolorsSettings = {
     		control: 'hue',
@@ -43,6 +54,34 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors'])
     		changeDelay: 200,
     		hide: null
   		};
+
+		$scope.confMode = false;
+
+		$scope.generateURL = function (url, conference) {
+			let newURL = conference + '_' + url;
+			return newURL;
+		}
+
+		$scope.pickEvent = function (conf_url) {
+			let split = $scope.planned.split('::');
+			let slug = split[0];
+			let title = split[1];
+			let speaker = split[2];
+
+			$scope.eventCreator.slug = slug;
+			$scope.eventCreator.title = title;
+			$scope.eventCreator.speaker = speaker;
+			$scope.eventCreator.url = conf_url + '_' + slug;
+
+			$scope.planned.slug = slug;
+			$scope.planned.title = title;
+			$scope.planned.speaker = speaker;
+		}
+
+		$scope.toggleConfMode = function() {
+            $scope.confMode = $scope.confMode === false ? true: false;
+        };
+
 
   		// Saves foreground color
   		$scope.saveFg = function () {

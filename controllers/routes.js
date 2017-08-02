@@ -160,7 +160,10 @@ module.exports = function(app, passport, db) {
 		}
 	});
 
-	app.get('/:user/:event', function (req, res) {
+	app.get('/:user/:event', function (req, res, next) {
+		let var1 = req.params.user;
+		let var2 = req.params.event;
+
 		Event.findOne({'user': req.params.user, 'url': req.params.event}, function (err, event) {
 			if (err) {
 				throw err;
@@ -178,9 +181,30 @@ module.exports = function(app, passport, db) {
 						marker: '≈'
 					});
 				} else {
-					req.flash('error_message', 'Sorry. There was no event found with those parameters.')
-					res.render('error', {
-						message: req.flash('error_message')
+					Conference.findOne({url: req.params.user}, function (err, conf) {
+						if (err) {
+							throw err;
+						} else {
+							if (conf) {
+								for (let e in conf.events) {
+									if (conf.events[e].slug === var2) {
+										res.render('watch', {
+											user: conf.events[e].user,
+											event: conf.events[e].url,
+											speaker: conf.events[e].speaker,
+											title: conf.events[e],
+											marker: '≈'
+										});
+									}
+								}
+							} else {
+								req.flash('error_message', 'Sorry. There was no matching conference found.')
+								res.render('error', {
+									message: req.flash('error_message')
+								});
+							}
+							
+						}
 					});
 				}
 			}
@@ -273,6 +297,48 @@ module.exports = function(app, passport, db) {
 			req.flash('success_message', 'Email was sent successfully!');
 			res.redirect('/dashboard#repo');
 		}
+	});
+
+	app.get('/:user', function (req, res) {
+		User.findOne({'local.username': req.params.user}, function (err, user) {
+			if (err) {
+				throw err;
+			} else {
+				if (user) {
+					Event.find({user: req.params.user}, function (err, events) {
+						if (err) {
+							throw err;
+						} else {
+							res.render('listing', {
+								user: user.local.username,
+								firstname: user.local.firstname,
+								lastname: user.local.lastname,
+								events: events
+							});
+						}
+					});
+				} else {
+					Conference.findOne({url: req.params.user}, function (err, conf) {
+						if (err) {
+							throw err;
+						} else {
+							if (conf) {
+								res.render('listing-conf', {
+									title: conf.title,
+									url: conf.url,
+									events: conf.events
+								});
+							} else {
+								req.flash('error_message', 'Sorry. There was no user or conference found with that name.');
+								res.render('error', {
+									message: req.flash('error_message')
+								});
+							}
+						}
+					});
+				}
+			}
+		})
 	});
 
 	app.use(function (req, res, next) {

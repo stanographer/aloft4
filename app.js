@@ -14,8 +14,7 @@ const async = require('async')
 	, path = require('path')
 	, session = require('express-session')
 	, http = require('http')
-	, morgan = require('morgan')
-	, wcs = require('wildcard-subdomains');
+	, morgan = require('morgan');
 
 // ShareDB
 const otText = require('ot-text')
@@ -70,11 +69,6 @@ function startServer() {
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({
 		extended: true
-	}));
-
-	app.use(wcs({
-		namespace: '_sub',
-		whitelist: ['www', 'app']
 	}));
 	app.set('view engine', 'jade');
 	app.set('views', __dirname + '/views');
