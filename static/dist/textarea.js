@@ -30,7 +30,7 @@ window.assignEventInfo = function (user, event) {
 window.unbind = function () {
   if (doc) {
     doc.destroy();
-    doc.unsubscribe();
+    doc.detach();
     // binding.destroy();
   }
 }
