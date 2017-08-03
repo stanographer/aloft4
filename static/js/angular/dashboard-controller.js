@@ -22,8 +22,8 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors'])
 			editorFontFamily: {name: 'Sintony', id: 'Sintony'},
 			editorFontSize: '30',
 			editorLineHeight: '130',
-			editorFgColor: '#c5ff33',
-			editorBgColor: '#102147',
+			editorFgColor: '#fff',
+			editorBgColor: '#30353e',
 			editorFonts: [
 				{name: 'Inconsolata', id: 'Inconsolata', type: 'default'},
 				{name: 'Lato', id: 'Lato', type: 'default'},

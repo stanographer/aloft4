@@ -115,7 +115,7 @@ module.exports = function(app, passport, db) {
 								matched_conferences.push(conferences[c]);
 							}
 							// Matches conferences where user is authorized.
-							if (conferences[c].users.includes(req.user.local.username)) {
+							if (conferences[c].users.indexOf(req.user.local.username)) {
 								matched_conferences.push(conferences[c]);
 							}
 						}

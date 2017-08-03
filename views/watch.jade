@@ -16,7 +16,6 @@ html(lang='en')
 		link(rel='stylesheet', href='/css/fonts.css')
 		link(rel='stylesheet', href='/css/sidebar.css')
 		link(rel='stylesheet', href='/css/watch.css')
-
 	
 	body(ng-app='Aloft', ng-controller='AloftController' ng-style="{'backgroundColor': bgColor}")
 		.status-bar.connected
@@ -163,6 +162,10 @@ html(lang='en')
 		script(src='/js/jquery-ui-touch.js')
 		//- My scripts
 		script(src='/dist/bundle.js' defer)
+		script.
+			$('.dropdown-menu').click(function (e) {
+				e.stopPropagation();
+			});
 		script.
 			var user = !{JSON.stringify(user)};
 			var event = !{JSON.stringify(event)};

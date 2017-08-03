@@ -319,11 +319,13 @@ function processPlannedEvents (string, callback) {
 		let list = string.trim().replace(/\r\n/g,'\n').replace(/^\s*[\r\n]/gm, '').split('\n');
 
 		for (var i = 0; i < list.length; i++) {
-			var split = list[i].split(',');
+			var split = list[i].split('::');
+			console.log('SPLITTTTTTTTTT ' + split)
 			var pair  = {
 				slug: split[0].toString(),
-				title: split[1].toString().replace(/['"]+/g, ''),
-				speaker: split[2].toString().replace(/['"]+/g, '')
+				title: split[1].toString(),
+				speaker: split[2].toString()
+				// .replace(/['"]+/g, '')
 			}
 			pairs.push(pair);
 		}

@@ -21,8 +21,8 @@ var app = angular.module('Aloft', ['angularUserSettings', 'minicolors'])
 			fontFamily: {name: 'Sintony', id: 'Sintony'},
 			fontSize: '30',
 			lineHeight: '130',
-			fgColor: '#c5ff33',
-			bgColor: '#102147',
+			fgColor: '#fff',
+			bgColor: '#30353e',
 			fonts: [
 				{name: 'Inconsolata', id: 'Inconsolata', type: 'default'},
 				{name: 'Lato', id: 'Lato', type: 'default'},
