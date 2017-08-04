@@ -62,15 +62,15 @@ module.exports = function(app, passport, db) {
 						params.page = 0
 						var clas = page == 0 ? "active" : "no"
 						str += '<div class="btn-group" role="group" aria-label="...">'
-						str += '<a class="btn btn-default ' + clas + '" href="?'+qs.stringify(params)+'#repo-tab">First</a>'
+						str += '<a class="btn btn-default ' + clas + '" href="?'+qs.stringify(params)+'#repo">First</a>'
 						for (var p = 1; p < pages; p++) {
 							params.page = p
 							clas = page == p ? "active" : "no"
-							str += '<a class="btn btn-default ' + clas + '" href="?'+qs.stringify(params)+'#repo-tab">'+ p +'</a>'
+							str += '<a class="btn btn-default ' + clas + '" href="?'+qs.stringify(params)+'#repo">'+ p +'</a>'
 						}
 						params.page = --p
 						clas = page == params.page ? "active" : "no"
-						str += '<a class="btn btn-default ' + clas + '" href="?'+qs.stringify(params)+'#repo-tab">Last</a></div>'
+						str += '<a class="btn btn-default ' + clas + '" href="?'+qs.stringify(params)+'#repo">Last</a></div>'
 
 						return str
 					}
@@ -181,13 +181,14 @@ module.exports = function(app, passport, db) {
 						marker: '≈'
 					});
 				} else {
-					Conference.findOne({url: req.params.user}, function (err, conf) {
+					Conference.findOne({'url': req.params.user}, function (err, conf) {
 						let isAnEvent;
 						let isPlanned;
 
 						if (err) {
 							throw err;
 						} else {
+							console.log('fffooouuunnndddd the conffff' + conf)
 							if (conf) {
 								async.waterfall([
 									function (done) {
@@ -199,11 +200,13 @@ module.exports = function(app, passport, db) {
 													user: conf.events[e].user,
 													event: conf.events[e].url,
 													speaker: conf.events[e].speaker,
-													title: conf.events[e]
+													title: conf.events[e].title
 												}
+												// return done(err, eventData);
+												// console.log('event DATATAT' + JSON.stringify(eventData))
 											}
 										}
-										done(err, eventData);
+										return done(err, eventData);
 									},
 									function (eventData, done) {
 										let plannedData;
@@ -217,15 +220,22 @@ module.exports = function(app, passport, db) {
 													speaker: conf.plannedEvents[p].speaker,
 													title: conf.plannedEvents[p].title
 												}
+												
+												console.log('event DATATAT 2222222' + JSON.stringify(eventData))
+												console.log('planned DATATAT' + JSON.stringify(plannedData))
 											}
 										}
-										done(err, plannedData, eventData);
+										return done(err, plannedData, eventData);
 									},
 									function (plannedData, eventData, done) {
-										if (eventData && eventData.is_event === true) {
+										console.log('event DATATAT 33333' + JSON.stringify(eventData))
+										console.log('planned DATATAT 3333333' + JSON.stringify(plannedData))
+										// console.log(eventData.user, eventData.slug, eventData.speaker)
+
+										if (eventData || eventData && plannedData) {
 											res.render('watch', {
 												user: eventData.user,
-												event: eventData.url,
+												event: eventData.event,
 												speaker: eventData.speaker,
 												title: eventData,
 												marker: '≈'

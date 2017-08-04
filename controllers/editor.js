@@ -34,6 +34,7 @@ router.post('/', isLoggedIn, function (req, res) {
 	var event = new Event(req.body.event);
 
 	event.user = req.user.local.username;
+	event.title = req.body.title.replace(/'/g, "\\'");
 	event.url = req.body.event.url.trim().toLowerCase();
 
 	// If there is no title given by user, automatically assign the URL to be the title.

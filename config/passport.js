@@ -37,7 +37,7 @@ passport.use('signup', new LocalStrategy({
 				} else {
 					if (user) {
 						var foundToken = user;
-						User.findOne({'local.email':  email}, function (err, user) {
+						User.findOne({'local.email': email.trim().toLowerCase()}, function (err, user) {
 							if (err)
 								return done(err);
 							if (!user) {
@@ -90,7 +90,7 @@ passport.use('signup', new LocalStrategy({
 	},
 
     function(req, username, password, done) {
-        User.findOne({'local.username':  username}, function (err, user) {
+        User.findOne({'local.username':  username.trim().toLowerCase()}, function (err, user) {
 			if (err)
 				return done(err);
 

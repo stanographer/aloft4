@@ -19,9 +19,9 @@ var app = angular.module('Aloft', ['angularUserSettings', 'minicolors'])
 	.controller('AloftController', function ($scope, $userSettings, configService) {
 		var defaults = {
 			fontFamily: {name: 'Sintony', id: 'Sintony'},
-			fontSize: '30',
-			lineHeight: '130',
-			fgColor: '#fff',
+			fontSize: '33',
+			lineHeight: '150',
+			fgColor: '#e1edeb',
 			bgColor: '#30353e',
 			fonts: [
 				{name: 'Inconsolata', id: 'Inconsolata', type: 'default'},
@@ -31,7 +31,7 @@ var app = angular.module('Aloft', ['angularUserSettings', 'minicolors'])
 			]
 		};
 
-		$scope.activeEventURL = 'Hey';
+		$scope.activeEventURL = '';
 		$scope.activeEventTitle = '';
 
 		$scope.minicolorsSettings = {

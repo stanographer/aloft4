@@ -2,7 +2,6 @@
 
 var captionArea = document.getElementById('caption-area');
 var previousText
-var idle = true;
 var count;
 
 scroller();
@@ -57,44 +56,49 @@ function scroller () {
 		// Autoscroll.pause();
 	}
 
+	let fired = false;
+
 	$(document).ready(function () {
 		follow();
 	});
 
-	$('#autoscroll').click(function () {
-		idle = true;
+	$('#autoscroll').click(function (e) {
+		e.stopPropagation();
+		fired = false;
 		Autoscroll.start();
 		follow();
 	});
 
-	$('body').on('touchend mousewheel', function () {
-		idle = false;
-		Autoscroll.pause();
-		pause();
+	$('body').on('touchend mousewheel click', function () {
+		if (fired === false) {
+			Autoscroll.pause();
+			pause();
+			fired = true;
+		}
 	});
 
-	$(window).scroll(function(e) {
-    	var body = $('body')[0];
-    	var scrollTop = body.scrollTop;
+	// $(window).scroll(function(e) {
+ //    	var body = $('body')[0];
+ //    	var scrollTop = body.scrollTop;
 
-	    if (scrollTop > lastScrollTop) {
-	        if (scrollTop >= (body.scrollHeight - window.innerHeight - tolerance)) {
-	        	if (!window.innerHeight < body.scrollTop) {
-	        		if (idle === false) {
-	        			follow();
-	        			idle = true;
-	        		}
-	        	}
-	        }
-	    } else if (scrollTop < (body.scrollHeight - window.innerHeight - tolerance)) {
-           		if (idle === true) {
-           			pause();
-           			idle = false;
-           		}
+	//     if (scrollTop > lastScrollTop) {
+	//         if (scrollTop >= (body.scrollHeight - window.innerHeight - tolerance)) {
+	//         	if (!window.innerHeight < body.scrollTop) {
+	//         		if (idle === false) {
+	//         			follow();
+	//         			idle = true;
+	//         		}
+	//         	}
+	//         }
+	//     } else if (scrollTop < (body.scrollHeight - window.innerHeight - tolerance)) {
+ //           		if (idle === true) {
+ //           			pause();
+ //           			idle = false;
+ //           		}
         	
-    	}
-    	lastScrollTop = scrollTop;
-	});
+ //    	}
+ //    	lastScrollTop = scrollTop;
+	// });
 }
 
 
