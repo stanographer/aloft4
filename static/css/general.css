@@ -7,7 +7,8 @@ body, html {
 	background-color: #30353e;
 	height: 100%;
 	/*background-color: #bdaed3;*/
-	background-image: url("/img/grasshorizon.jpg");
+	/*background-image: url("/img/grasshorizon.jpg");*/
+	background-image: url("/img/geometric.png");
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	/*background: repeating-linear-gradient(-45deg, #caced6, #caced6 1px, rgba(255, 255, 255, 0.6) 2px, rgba(255, 255, 255, 0.6) 3px);*/

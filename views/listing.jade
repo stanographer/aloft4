@@ -22,7 +22,9 @@ html(lang='en', ng-app='AloftDash')
 		.container(ng-controller='ListingController', ng-init="username='#{user}'")
 			.panel.panel-default
 				.panel-body(style='background-color: #f2f3f5')
-					h2.breadcrumbs Public Event Listing for #{firstname} #{lastname} {{pageSize}} {{currentPage}}
+					.center.breadcrumbs
+						img(src='img/aloftlogo-xs.png', alt='Logo', height='120', width='120')
+					h2.breadcrumbs Public Event Listing for #{firstname} #{lastname}
 					.row(style='padding-left: 10px; padding-right: 10px;')
 						.col-md-8
 							.form-group
