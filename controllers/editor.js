@@ -34,7 +34,7 @@ router.post('/', isLoggedIn, function (req, res) {
 	var event = new Event(req.body.event);
 
 	event.user = req.user.local.username;
-	event.title = req.body.title.replace(/'/g, "\\'");
+	// event.title = req.body.title.replace(/'/g, "\\'");
 	event.url = req.body.event.url.trim().toLowerCase();
 
 	// If there is no title given by user, automatically assign the URL to be the title.
@@ -198,16 +198,34 @@ function isLoggedIn(req, res, next) {
 function deleteShareDbDoc (user, title) {
 	let backend = ShareDB({db: db});
 	let connection = backend.connect();
-	let doc = connection.get(user, title);
+	let doc;
 
-	doc.fetch(function(err) {
-		if (err) throw err;
-		doc.del(function(err) {
-			if (err) throw err;
-    		// When done with the doc, remove the client's reference to the doc object so that it does not stay in memory:
-			doc.destroy();
+	try {
+		doc = connection.get(user, title);
+		doc.fetch(function(err) {
+			if (err) return;
+			doc.del(function(err) {
+				if (err) throw err;
+	    		// When done with the doc, remove the client's reference to the doc object so that it does not stay in memory:
+				doc.destroy();
+			});
 		});
-	});
+	} catch (err) {
+		console.log('Document does not exist or is empty! Nothing to delete! Error: ' + err);
+	}
+
+	// if (doc) {
+	// 	doc.fetch(function(err) {
+	// 		if (err) throw err;
+	// 		doc.del(function(err) {
+	// 			if (err) throw err;
+	//     		// When done with the doc, remove the client's reference to the doc object so that it does not stay in memory:
+	// 			doc.destroy();
+	// 		});
+	// 	});
+	// } else {
+	// 	return;
+	// }
 }
 
 module.exports = router;

@@ -18,7 +18,9 @@ const eventSchema = mongoose.Schema({
 		type: Date,
 		default: Date.now
 	},
+	formattedDate: String,
 	hidden: Boolean,
+	snapshot: String,
 	subdomain: String,
 	viewCount: String,
 	version: String

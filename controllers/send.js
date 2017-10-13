@@ -2,23 +2,24 @@
 
 const nodemailer = require('nodemailer')
 	, smtpTransport = require('nodemailer-smtp-transport')
-	, mailerConfig = require('../config/mailer.js');
+	, mailerConfig = require('../config/mailer.js')
+	, url = require('url');
 
 let status = false;
 
-module.exports = function (recipient, user, title, url, subject, message) {
+module.exports = function (recipient, user, title, url, subject, message, location) {
 	let transport = nodemailer.createTransport(smtpTransport(mailerConfig));
 	console.log(user)
 
 	let mailOptions = {
 		to: recipient,
-		from: 'Aloft Support',
+		from: '"Aloft Transcripts" <admin@aloft.nu>',
 		subject: subject,
 		text: message,
 		attachments: [
 			{
 				filename: url + '.txt',
-				path: location.origin + '/text/' + user.local.username + '/' + url
+				path: location + '/text/' + user.local.username + '/' + url
 			}
 		]
 	}

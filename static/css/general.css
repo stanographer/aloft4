@@ -140,11 +140,23 @@ body, html {
 .snippet:after {
 	content: '"';
 }
+.tab-content > .tab-pane {
+	background: #f2f3f5;
+}
 .tab-content > .active, .pill-content > .active {
 	display: inline-block;
 }
 .tab-default .badge {
 	margin-left: 5px;
+}
+.truncate {
+	width: 300px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.z-index-2 {
+	z-index: 2;
 }
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;

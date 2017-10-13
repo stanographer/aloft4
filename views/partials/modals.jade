@@ -1,0 +1,70 @@
+script.
+	$(document).ready(function(){
+		$("#delete-are-you-sure.modal").on('show.bs.modal', function(event){
+			var button = $(event.relatedTarget);  // Button that triggered the modal
+			var titleData = button.data('title'); // Extract value from data-* attributes
+			var idData = button.data('id');
+			$(this).find('.event-name').text(titleData);
+			
+		});
+	});
+
+#delete-are-you-sure.modal.modal-danger.fade(tabindex='-1', role='dialog', aria-hidden='true', data-easein='tada', data-easeout='rollOut')
+	.modal-dialog.modal-md
+		.modal-content
+			.modal-header
+				button.close(type='button', data-dismiss='modal')
+					span(aria-hidden='true')
+						i.fa.fa-times
+					span.sr-only Close
+				h4.modal-title
+					i.fa.fa-trash-o(aria-hidden='true')&nbsp;&nbsp;
+					| Confirm Delete
+			.modal-body
+				h4
+					| Are you sure you want to delete "
+					span.event-name
+					| ?"
+				p
+					| This action cannot be undone!
+			.modal-footer
+					button#delete-button.btn.btn-danger(data-dismiss='modal', type='submit', aria-hidden='true', ng-click='deleteEvent(activeEventId)') Delete
+					button.btn.btn-modal(type='button', data-dismiss='modal') Close
+
+#email-modal.modal.modal-success(data-easein='fadeInRight', data-easeout='fadeOutRight', tabindex='-1', role='dialog', aria-labelledby='sendTranscriptViaEmailModal', aria-hidden='true')
+			.modal-dialog
+				.modal-content
+					.modal-header
+						a.close(type='button', data-dismiss='modal')
+							span(aria-hidden='true')
+								i.fa.fa-times
+							span.sr-only Close
+						h4.modal-title Send Transcription File via Email
+					.modal-body
+						p Enter the email address of the recipient of this file.
+						form(method='post', action='/send')
+							.input-group
+								span.input-group-addon @
+								input#transcript_recipient.form-control(type='email', name='transcript_recipient', placeholder='Email', required='', data-parsley-required='', data-parsley-type='email')
+							input#transcript_send_subject.form-control(type='text', name='transcript_send_subject', placeholder='Subject Line', required='', value='Transcription file for {{activeEventTitle}}')
+							input.hidden-stuff(name='active_event_url', value='{{activeEventURL}}')
+							input.hidden-stuff(name='active_event_title', value='{{activeEventTitle}}')
+							textarea#transcript_send_message.form-control(name='transcript_send_message', rows='11')
+								| Hi there!
+								| 
+								| #{user.firstname} #{user.lastname} has sent you the transcription file for {{activeEventTitle}}. A copy is attached to this email.
+								| 
+								| If you have any questions regarding the file or the event, please contact your stenographer, #{user.firstname}, at #{user.email}. Please don't respond directly to this email as it is automated.
+								| 
+								| Thanks!
+								| Aloft Support
+							p.attachment
+								i.fa.fa-paperclip(aria-hidden='true') &nbsp;
+								| {{activeEventURL}}.txt
+							.modal-footer
+								button.btn.btn-default(data-dismiss='modal')
+									i.fa.fa-remove(aria-hidden='true') &nbsp;
+									| Close
+								button.btn.btn-success(type='submit')
+									i.fa.fa-paper-plane(aria-hidden='true') &nbsp;
+									| Send

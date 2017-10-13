@@ -1,5 +1,5 @@
 
-var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors'])
+var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'angularUtils.directives.dirPagination'])
 	.service('configService', function ($userSettings) {
 		this.setConfig = function (prefs) {
 			$userSettings.set('editorFontFamily', prefs.editorFontFamily);
@@ -17,7 +17,9 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors'])
 			$userSettings.set(name, settings)
 		}
 	})
-	.controller('DashboardController', function ($scope, $userSettings, configService) {
+	.controller('DashboardController', function ($scope, $http, $filter, $userSettings, configService) {
+		$scope.currentPage;
+		$scope.pageSize = 6;
 		var defaults = {
 			editorFontFamily: {name: 'Sintony', id: 'Sintony'},
 			editorFontSize: '30',
@@ -56,6 +58,53 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors'])
   		};
 
 		$scope.confMode = false;
+		$scope.$watch('username', function () {
+			$http({
+				method: 'GET',
+				url: window.location.origin + '/getJobs/' + $scope.username + '?perPage=' + $scope.pageSize + '&page=' + $scope.currentPage
+			}).then(function (success) {
+				$scope.events = success.data.events;
+				$scope.total = success.data.total;
+			}, function (err) {
+
+			});
+		});
+		$scope.getEvents = function () {
+			$http({
+				method: 'GET',
+				url: window.location.origin + '/getJobs/' + $scope.username + '?perPage=' + $scope.pageSize + '&page=' + $scope.currentPage
+			}).then(function (success) {
+				$scope.events = success.data.events;
+				$scope.total = success.data.total;
+			}, function (err) {
+				if (err) throw err;
+			});
+		}
+		$scope.setEventId = function (id) {
+			$scope.activeEventId = id;
+		}
+		$scope.deleteEvent = function (id) {
+			console.log('hey this works!');
+			$http({
+				method: 'POST',
+				url: window.location.origin + '/editor/' + id.toString() + '?_method=DELETE'
+			}).then(function (success) {
+				console.log('Success!');
+				$scope.getEvents();
+			}, function (err) {
+				if (err) throw err;
+			});
+		}
+		$scope.pageChangeHandler = function (num) {
+			console.log('Page changed to ' + num + '!!');
+			$scope.getEvents();
+		}
+		
+		$scope.startEditor = function (url, title) {
+			$scope.activeEventURL = url;
+			$scope.activeEventTitle = title;
+			startEditor(url);
+		}
 
 		$scope.generateURL = function (url, conference) {
 			let newURL = conference + '_' + url;
@@ -96,6 +145,26 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors'])
   		// Saves font
   		$scope.saveFontFamily = function () {
   			configService.saveConfig('editorFontFamily', $scope.editorFontFamily);
+  		}
+
+  		$scope.addDate = function (w) {
+  			if ($scope.rawEventUrl) {
+  				let date = new Date();
+  				let formattedDate = $filter('date')(date, 'yyyy-M-d');
+  				let formattedTime = $filter('date')(date, 'HHmm');
+  				let dateAndTime = formattedDate + '-' + formattedTime;
+  				if (w === 'd') {
+  					$scope.rawEventUrl = $scope.rawEventUrl + '-' + formattedDate;
+  				}
+  				if (w === 't') {
+  					$scope.rawEventUrl = $scope.rawEventUrl + '-' + formattedTime;
+  				}
+  				if (w === 'dt') {
+  					$scope.rawEventUrl = $scope.rawEventUrl + '-' + dateAndTime;
+  				}
+  			} else {
+  				$scope.urlMessage = 'You must type in a URL before trying to add a timestamp.'
+  			}
   		}
 
 		if ($userSettings.get('editorHasBeenHere')) {

@@ -1,8 +1,8 @@
 doctype html
-html(lang='en')
+html(lang='en', ng-app='AloftDash')
 	head
 		meta(charset='utf-8')
-		title Error
+		title Public Listing: #{firstname} #{lastname}
 		link(rel='stylesheet', href='/node/bootstrap/dist/css/bootstrap.min.css')
 		link(href='/themes/yummy/css/overlay-effects/overlay-effects.css', rel='stylesheet', type='text/css')
 		link(href='/themes/yummy/css/font-awesome.min.css', rel='stylesheet', type='text/css')
@@ -15,68 +15,67 @@ html(lang='en')
 		link(rel='stylesheet', href='/css/annotator.min.css')
 		link(rel='stylesheet', href='/css/fonts.css')
 		link(rel='stylesheet', href='/css/standalonepage.css')
-		link(rel='stylesheet', href='/css/sidebar.css')
+		link(rel='stylesheet', href='/css/listing.css')
 		script(src='/node/jquery/dist/jquery.min.js')
 		script(src='/js/packages/moment.js')
 	body
-		.standalone-page-wrapper.image-background-3
-			.center-wrapper
-				.container
-					h2 Public Event Listing
-						small for #{firstname} #{lastname}
-					//- .row
-						each event, i in events
-							.col-md-8
-								.col-md-6
-									.panel.panel-default.panel-filled.prev-panel
-										.panel-heading
-											.panel-title
-												script.
-													var event_title = '#{event.title}';
-
-													if (event_title.length >= 67) {
-														event_title = String(event_title).substr(0, 66);
-														event_title += '...';
-													}
-													document.write(event_title);
-												br
-												small
-													script.
-															var d = moment(new Date('#{event.created}'));
-															document.write(d.format('MM-DD-YYYY (HH:mm)'));
-										.panel-body
-											script.
-													$.ajax({
-														url: window.location.origin + '/text/#{event.user}/#{event.url}',
-														dataType: 'text',
-														success: function (data) {
-															if (data && data.length <= 120) {
-																document.getElementById('preview_#{event.url}').innerHTML = data;
-															} else {
-																data = data.substr(0, 120);
-																data += '...';
-																document.getElementById('preview_#{event.url}').innerHTML = data;
-															}
-														}
-													});
-											p.snippet(id='preview_#{event.url}')
-										.panel-footer
-											ul.list-inline
-												li
-													a.btn.btn-success.btn-circle-sm(type='button', ng-click='activeEventURL = "#{event.url}"; activeEventTitle = "#{event.title}"', onclick='startEditor("#{event.url}")')
-														i.dripicons-media-play
-												li
-													button.btn.btn-warning.btn-circle-sm.cbcopy(type='button', data-clipboard-text='aloft.nu/#{user.username}/#{event.url}')
-														i.dripicons-link
-												li
-													form(action='/editor/#{event.id}?_method=DELETE', method='post')
-														button.btn.btn-danger.btn-circle-sm(type='submit')
-															i.dripicons-trash
+		.container(ng-controller='ListingController', ng-init="username='#{user}'")
+			.panel.panel-default
+				.panel-body(style='background-color: #f2f3f5')
+					h2.breadcrumbs Public Event Listing for #{firstname} #{lastname} {{pageSize}} {{currentPage}}
+					.row(style='padding-left: 10px; padding-right: 10px;')
+						.col-md-8
+							.form-group
+								.input-group
+									span.input-group-addon
+										i.fa.fa-search(aria-hidden='true')
+									input.form-control(ng-model='q', id='eventSearch', class='form-control', placeholder='Search for Events.')
+						.col-md-4
+							.form-group
+								.input-group
+									span.input-group-addon
+										i.fa.fa-th(aria-hidden='true')
+									input.form-control(type='number', min='1', max='50', class='form-control', ng-model='pageSize')
+						h4.breadcrumbs(ng-hide='events.length', ng-cloak='') No events found
+					.col-md-6.prev-panel(dir-paginate='e in events | filter: q | itemsPerPage: pageSize', total-items='total', current-page='currentPage')
+						.overlay-wrapper.overlay-wrapper-panel
+							#overlay-panel-6.panel.panel-default.panel-overlay.panel-filled
+								.panel-heading
+									.panel-title.truncate
+										| {{e.title}}
+										br
+										small {{e.url}}
+								.panel-body(style='min-height: 90px; max-height: 90px;')
+									p
+										small
+											| {{e.snapshot}}
+								.panel-footer
+									{{e.formattedDate}}
+								.overlayStyleH
+								.StyleV
+									span.WhiteRounded
+										a(href='#{user}/{{e.url}}', target='_blank')
+											i.dripicons-media-play
+									span.WhiteRounded
+										a.cbcopy(data-clipboard-text='aloft.nu/#{user}/{{e.url}}')
+											i.dripicons-link
+					.row.breadcrumbs
+						dir-pagination-controls(boundary-links='true', on-page-change='pageChangeHandler(newPageNumber)', max-size='6', template-url='html/navcontrols.html')
+		//- Angular
+		script(src='/node/angular/angular.min.js')
 		//- Angular User Settings
+		script(src='/js/angular/dirPagination.js')
+		script(src='/js/angular/listing-controller.js')
 		//- Bootstrap scripts
 		script(src='/node/bootstrap/dist/js/bootstrap.min.js')
 		//- Angular controller
 		//- jQuery UI Touch
 		script(src='/js/jquery-ui-touch.js')
+		//- Clipboard.js
+		script(src='/js/packages/clipboard.min.js')
 		//- jQuery
 		script(src='/node/jquery/dist/jquery.min.js')
+		script.
+			$(document).ready(function () {
+				new Clipboard('.cbcopy');
+			});

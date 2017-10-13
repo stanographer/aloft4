@@ -2,6 +2,7 @@
 
 const async = require('async')
 	, crypto = require('crypto')
+	, dateformat = require('dateformat')
 	, nodemailer = require('nodemailer')
 	, mailerConfig = require('../config/mailer.js')
 	, send = require('../controllers/send')
@@ -51,7 +52,9 @@ module.exports = function(app, passport, db) {
 	});
 
 	app.get('/dashboard', isLoggedIn, function (req, res) {
-		let perPage = 9, page = req.query.page > 0 ? req.query.page : 0
+		let perPage = 9
+			, page = req.query.page > 0 ? req.query.page : 0
+		let maxBreadcrumbs = 6;
 
 		res.locals.createPagination = function (pages, page) {
 						var url = require('url')
@@ -61,16 +64,20 @@ module.exports = function(app, passport, db) {
 
 						params.page = 0
 						var clas = page == 0 ? "active" : "no"
+						console.log('str one: ' + str);
 						str += '<div class="btn-group" role="group" aria-label="...">'
 						str += '<a class="btn btn-default ' + clas + '" href="?'+qs.stringify(params)+'#repo">First</a>'
+						console.log('str 1.5: ' + str);
 						for (var p = 1; p < pages; p++) {
 							params.page = p
 							clas = page == p ? "active" : "no"
 							str += '<a class="btn btn-default ' + clas + '" href="?'+qs.stringify(params)+'#repo">'+ p +'</a>'
+							console.log('str two: ' + str);
 						}
 						params.page = --p
 						clas = page == params.page ? "active" : "no"
 						str += '<a class="btn btn-default ' + clas + '" href="?'+qs.stringify(params)+'#repo">Last</a></div>'
+						console.log('str three: ' + str);
 
 						return str
 					}
@@ -148,9 +155,9 @@ module.exports = function(app, passport, db) {
 		});
 	});
 
-	// app.get('/first-user', function (req, res) {
-	// 	res.render('first-user');
-	// });
+	app.get('/first-user', function (req, res) {
+		res.render('first-user');
+	});
 
 	app.get('/invite-member', isLoggedIn, function (req, res) {
 		if (req.user.local.role === 'admin') {
@@ -158,6 +165,139 @@ module.exports = function(app, passport, db) {
 		} else {
 			res.redirect('admin-only');
 		}
+	});
+
+	app.get('/getJobs/:user', isLoggedIn, function (req, res) {
+		let perPage = parseInt(req.query.perPage);
+		let page = req.query.page > 0 ? req.query.page - 1 : 0
+		let maxBreadcrumbs = 6;
+
+		Event.find({user: req.params.user})
+				.select(['url', 'user', 'title', 'created', '_id'])
+				.limit(perPage)
+				.skip(perPage * page)
+				.sort({created: -1})
+				.exec(function (err, events) {
+					let i = 0;
+					async.parallel([function (callback) {
+						async.forEachLimit(events, 3, function (e, next) {
+							e.position = i;
+
+							let date = new Date(e.created);
+
+							db.getSnapshot(e.user, e.url, null, null, function (err, snapshot) {
+								let snap = snapshot.data;
+
+								if (!err) {
+
+									if (snap && snap.length >= 200) {
+										snap = snapshot.data.substring(0, 200);
+										snap += '...';
+									}
+									if (!snap || snap.length < 1) {
+										snap = 'Preview for this event not available.'
+									}
+
+									e.snapshot = snap;
+									e.formattedDate = dateformat(date, 'yyyy-m-d (H:MM)').toString();
+
+									i++;
+									next();
+
+								} else {
+									snap = 'Preview for this event not available.';
+									i++;
+									next();
+								}
+							});
+
+						}, function (err) {
+							if (!err) {
+								callback();
+							} else {
+								throw err;
+							}
+						});
+					}], function () {
+						Event.count().exec(function (err, count) {
+							let data = {
+								events: events,
+								page: page,
+								perPage: perPage,
+								total: count
+							}
+							res.json(data);
+						});
+					})
+					
+				});
+	});
+
+	app.get('/publicJobs/:user', function (req, res) {
+		let perPage = parseInt(req.query.perPage);
+		let page = req.query.page > 0 ? req.query.page - 1 : 0
+		let maxBreadcrumbs = 6;
+
+		// Event.find({$or: [{'user': req.params.user}, {'hidden': null}, {'hidden': {$exists: false}}, {'hidden': false}]})
+		Event.find({'user': req.params.user})
+				.select(['url', 'user', 'title', 'created', '_id'])
+				.limit(perPage)
+				.skip(perPage * page)
+				.sort({created: -1})
+				.exec(function (err, events) {
+					let i = 0;
+					async.parallel([function (callback) {
+						async.forEachLimit(events, 3, function (e, next) {
+							e.position = i;
+
+							let date = new Date(e.created);
+
+							db.getSnapshot(e.user, e.url, null, null, function (err, snapshot) {
+								let snap = snapshot.data;
+
+								if (!err) {
+
+									if (snap && snap.length >= 200) {
+										snap = snapshot.data.substring(0, 200);
+										snap += '...';
+									}
+									if (!snap || snap.length < 1) {
+										snap = 'Preview for this event not available.'
+									}
+
+									e.snapshot = snap;
+									e.formattedDate = dateformat(date, 'yyyy-m-d (H:MM)').toString();
+
+									i++;
+									next();
+
+								} else {
+									snap = 'Preview for this event not available.';
+									i++;
+									next();
+								}
+							});
+
+						}, function (err) {
+							if (!err) {
+								callback();
+							} else {
+								throw err;
+							}
+						});
+					}], function () {
+						Event.count().exec(function (err, count) {
+							let data = {
+								events: events,
+								page: page,
+								perPage: perPage,
+								total: count
+							}
+							res.json(data);
+						});
+					})
+					
+				});
 	});
 
 	app.get('/:user/:event', function (req, res, next) {
@@ -218,7 +358,8 @@ module.exports = function(app, passport, db) {
 													conf_slug: conf.url,
 													event: conf.plannedEvents[p].slug,
 													speaker: conf.plannedEvents[p].speaker,
-													title: conf.plannedEvents[p].title
+													title: conf.plannedEvents[p].title,
+													streamtext: conf.plannedEvents[p].streamtext
 												}
 												
 												console.log('event DATATAT 2222222' + JSON.stringify(eventData))
@@ -232,7 +373,10 @@ module.exports = function(app, passport, db) {
 										console.log('planned DATATAT 3333333' + JSON.stringify(plannedData))
 										// console.log(eventData.user, eventData.slug, eventData.speaker)
 
-										if (eventData || eventData && plannedData) {
+										if (plannedData.streamtext && plannedData.streamtext.length > 0) {
+											console.log('REDIRECT!')
+											res.redirect('http://streamtext.net/player?event=' + plannedData.streamtext);
+										} else if (eventData || eventData && plannedData) {
 											res.render('watch', {
 												user: eventData.user,
 												event: eventData.event,
@@ -327,11 +471,11 @@ module.exports = function(app, passport, db) {
 			});
 		}], function (err) {
 			if (err) {
-				req.flash('error', 'The email could not be sent. Please try again.');
+				req.flash('error_message', 'The email could not be sent. Please try again.');
 				res.redirect('/');
 				return console.log(err);
 			} else {
-				req.flash('message', 'An email with the link to this event has been sent successfully to ' + req.body.newmemberemail + '.');
+				req.flash('success_message', 'An email with the link to this event has been sent successfully to ' + req.body.newmemberemail + '.');
 				res.redirect('/dashboard');
 			}
 		});
@@ -351,7 +495,7 @@ module.exports = function(app, passport, db) {
 	}));
 
 	app.post('/send', isLoggedIn, function (req, res) {
-		let mailer = send(req.body.transcript_recipient, req.user, req.body.active_event_title, req.body.active_event_url, req.body.transcript_send_subject, req.body.transcript_send_message);
+		let mailer = send(req.body.transcript_recipient, req.user, req.body.active_event_title, req.body.active_event_url, req.body.transcript_send_subject, req.body.transcript_send_message, req.protocol + '://' + req.get('Host'));
 		if (mailer.send === true) {
 			req.flash('success_message', 'Email was sent successfully!');
 			res.redirect('/dashboard#repo');

@@ -22,7 +22,14 @@ $('.dropdown-menu').click(function (event) {
 
 function jumpToBottom () {
 	var textarea = document.getElementById('pad');
-	textarea.scrollTop = textarea.scrollHeight;
+    $('#pad').animate({ scrollTop: textarea.scrollHeight }, 'slow');
+}
+
+// Scroll to top of editor
+
+
+function jumpToTop () {
+    $('#pad').animate({ scrollTop: 0 }, 'slow');
 }
 
 // Clipboard
@@ -50,5 +57,6 @@ $(document).ready(function () {
             $this.children('i').addClass('fa-compress');
         }
         $('.editor-wrapper').toggleClass('panel-fullscreen');
+        $('body, html').toggleClass('overflow-hidden overflow-scroll');
     });
 });

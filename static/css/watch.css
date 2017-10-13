@@ -1,7 +1,8 @@
 body {
   font-family: 'Sintony';
   height: 100%;
-  -moz-user-select: auto !important;
+  /*-moz-user-select: auto !important;*/
+  /*-webkit-overflow-scrolling: touch;*/
   cursor: auto !important;
   /*background-image: url("/themes/yummy/images/backgrounds/10.png");*/
   background-repeat: no-repeat;
@@ -9,14 +10,14 @@ body {
 }
 header {
   top: 0;
-  transition: top 0.2s ease-in-out;
+  /*transition: top 0.2s ease-in-out;*/
   height: 100%;
   position: absolute;
   z-index: 1;
 }
 .arrow:after {
-  position:absolute;
-  content:'';
+  position: absolute;
+  content: '';
   top: -60px;
   right: -60px;
   left: -60px;
@@ -131,7 +132,7 @@ header {
 .invisible {
   visibility: hidden;
   opacity: 0;
-  transition: visibility 0s .4s, opacity .4s linear;
+  /*transition: visibility 0s .4s, opacity .4s linear;*/
 }
 .indented {
   text-indent: 10em;
@@ -139,13 +140,21 @@ header {
 .label {
   font-weight: 600;
 }
+.sartalics {
+  -webkit-transform:skew(21deg);
+  -moz-transform: skew(21deg);
+  -ms- transform: skew(21deg);
+  -o-transform: skew(21deg);
+  transform: skew(21deg);
+  display: inline-block;
+}
 .slider-value {
   margin-left: 5px;
 }
 .visible {
   visibility: visible;
   opacity: 1;
-  transition: opacity .4s linear;
+  /*transition: opacity .4s linear;*/
 }
 .scrollToTop {
   position: fixed;
@@ -159,7 +168,7 @@ header {
   line-height: 75px;
   color: #fff;
   text-decoration: none;
-  transition: all 0.4s;
+  /*transition: all 0.4s;*/
 }
 .scrollToTop:hover,
 .scrollToTop:active,
@@ -178,12 +187,12 @@ header {
 }
 .status-bar.connected {
   border-top: 5px solid #9ab946;
-  transition: 1s;
+  /*transition: 1s;*/
   left: 0;
 }
 .status-bar.disconnected {
   border-top: 5px solid #e74958;
-  transition: 1s;
+  /*transition: 1s;*/
   left: 0;
 }
 .ui-slider {
@@ -202,14 +211,14 @@ header {
   width: 9em;
 }
 #header {
-  transition: left 0.2s ease-in-out;
+  /*transition: left 0.2s ease-in-out;*/
   height: 100%;
 }
 #main-content {
   padding-left: 10em;
   padding-right: 10em;
 }
-@-webkit-keyframes fadeIn {
+/*@-webkit-keyframes fadeIn {
   0% {opacity: 0;}
   100% {opacity: 1;}
 }
@@ -217,4 +226,4 @@ header {
 @keyframes fadeIn {
   0% {opacity: 0;}
   100% {opacity: 1;}
-}
+}*/

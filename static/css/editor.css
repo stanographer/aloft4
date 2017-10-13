@@ -31,6 +31,15 @@
 	width: inherit !important;
 	height: inherit !important;
 }
+.overflow-hidden {
+    overflow: hidden;
+}
+.overflow-hidden::-webkit-scrollbar {
+    width: 0 !important
+}
+.overflow-scroll {
+    overflow: scroll;
+}
 .panel-body {
     padding: 0px;
 }
@@ -50,7 +59,7 @@
     right: 0;
     left: 0;
     bottom: 0;
-    overflow: auto;
+    overflow: hidden;
     padding: 0px;
 }
 .panel-fullscreen textarea {

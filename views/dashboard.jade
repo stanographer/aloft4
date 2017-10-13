@@ -29,6 +29,10 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 				a.navbar-brand(href='#')
 					i.fa.fa-cloud(aria-hidden='true')
 					| &nbsp;&nbsp;Aloft
+				form.navbar-form.navbar-left(role='search')
+					.form-group
+						input.form-control(type='text', placeholder='Search')
+					button.btn.btn-default(type='submit') Submit
 			#navbar-default-collapse.collapse.navbar-collapse
 				ul.nav.navbar-nav.navbar-right
 					li.dropdown.full-width
@@ -54,6 +58,8 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 							.textedit.panel-body
 								button.btn.btn-primary(type='button', onclick='jumpToBottom()')
 									i.fa.fa-arrow-down(aria-hidden='true') &nbsp;
+								button.btn.btn-primary(type='button', onclick='jumpToTop()')
+									i.fa.fa-arrow-up(aria-hidden='true') &nbsp;
 								.butt-group
 									button#eventURL.btn.btn-default.cbcopy(type='button', data-clipboard-text='{{ host }}/#{user.username}/{{ activeEventURL }}')
 										i.fa.fa-link(aria-hidden='true') &nbsp;
@@ -142,7 +148,6 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 								i.fa.fa-times
 						h4 Yay!
 						| !{success_message}
-
 				ul#create-tab.nav.nav-tabs.nav-justified(role='tablist')
 					li.active
 						a(href='#create', data-toggle='tab')
@@ -197,17 +202,30 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 										button.btn.btn-success.ng-cloak(type='button', ng-cloak, ng-click='toggleConfMode()')
 											| {{ confMode === true ? "Conference Mode" : "Normal Event Mode" }}
 						.row
-							.col-md-2
-							.col-md-8
+							.col-md-1
+							.col-md-10
 								.padding-10px.bg-white
 									form#basic-wizard.margin-bottom-10px(data-parsley-validate='', action='/editor', method='post', ng-cloak, ng-hide='confMode')
 										.first.block1.show
-											.col-md-12
+											.col-md-12.z-index-2
 												.form-group.has-feedback
 													label.control-label(for='url') URL
-												.input-group.input-group-lg
+												.input-group.input-group-lg.btn-group
 													span#basic-addon3.input-group-addon {{ host }}/#{user.username}/
-													input#url.form-control.lowercase(type='text', name='event[url]', aria-describedby='url-field', placeholder='i.e. makebetterplugins')
+													input#url.form-control.lowercase(type='text', name='event[url]', aria-describedby='url-field', placeholder='i.e. makebetterplugins', ng-model='rawEventUrl')
+													.input-group-btn
+														button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+															i.fa.fa-calendar(aria-hidden='true')
+															span.caret
+														ul.dropdown-menu
+															li
+																a(href='#', ng-click='addDate("d");') Add Date
+															li
+																a(href='#', ng-click='addDate("t");') Add Time
+															li
+																a(href='#', ng-click='addDate("dt");') Add Date &amp; Time
+												p
+													{{ urlMessage }}
 											.form-group.has-feedback
 												.col-md-6
 													label.control-label.make-room(for='title') Title
@@ -274,61 +292,58 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 											//- 	i.fa.fa-paper-plane(aria-hidden='true')
 											//- button.btn.btn-info.btn-circle.btn-lg.tooltiped(type='button', data-toggle='tooltip', data-placement='bottom', title='Tweet: Share this event via Twitter post.')
 											//- 	i.fa.fa-twitter(aria-hidden='true')											
-							.col-md-2
+							.col-md-1
 					#repo.tab-pane.bar-primary(role='tabpanel')
 						h2.tab-header-left-justified(style='text-align: center') Event Repository
-						.row.breadcrumbs
-							if (pages > 1)
-								.pagination
-									ul
-										!= createPagination(pages, page)
-						.row
-							each event, i in events
-								.col-md-4
-									.panel.panel-default.panel-filled.prev-panel
-										.panel-heading
-											.panel-title
-												script.
-													var event_title = '#{event.title}';
+							//- #{pages}
 
-													if (event_title.length >= 67) {
-														event_title = String(event_title).substr(0, 66);
-														event_title += '...';
-													}
-													document.write(event_title);
-												br
-												small
-													script.
-															var d = moment(new Date('#{event.created}'));
-															document.write(d.format('MM-DD-YYYY (HH:mm)'));
-										.panel-body
-											script.
-													$.ajax({
-														url: window.location.origin + '/text/#{event.user}/#{event.url}',
-														dataType: 'text',
-														success: function (data) {
-															if (data && data.length <= 120) {
-																document.getElementById('preview_#{event.url}').innerHTML = data;
-															} else {
-																data = data.substr(0, 120);
-																data += '...';
-																document.getElementById('preview_#{event.url}').innerHTML = data;
-															}
-														}
-													});
-											p.snippet(id='preview_#{event.url}')
-										.panel-footer
-											ul.list-inline
-												li
-													a.btn.btn-success.btn-circle-sm(type='button', ng-click='activeEventURL = "#{event.url}"; activeEventTitle = "#{event.title}"', onclick='startEditor("#{event.url}")')
-														i.dripicons-media-play
-												li
-													button.btn.btn-warning.btn-circle-sm.cbcopy(type='button', data-clipboard-text='aloft.nu/#{user.username}/#{event.url}')
-														i.dripicons-link
-												li
-													form(action='/editor/#{event.id}?_method=DELETE', method='post')
-														button.btn.btn-danger.btn-circle-sm(type='submit')
-															i.dripicons-trash
+						.container-fluid(ng-init="username='#{user.username}'")
+								.panel.panel-default
+									.panel-body.prev-panel(style='background-color: #f2f3f5')
+										.row(style='padding-left: 10px; padding-right: 10px;')
+											.col-md-8
+												.form-group
+													.input-group
+														span.input-group-addon
+															i.fa.fa-search(aria-hidden='true')
+														input.form-control(ng-model='q', id='eventSearch', class='form-control', placeholder='Search for Events.')
+											.col-md-4
+												.form-group
+													.input-group
+														span.input-group-addon
+															i.fa.fa-th(aria-hidden='true')
+														input.form-control(type='number', min='1', max='50', class='form-control', ng-model='pageSize')
+										.col-md-6.prev-panel(dir-paginate='e in events | filter: q | itemsPerPage: pageSize', total-items='total', current-page='currentPage')
+											.overlay-wrapper.overlay-wrapper-panel
+												#overlay-panel-6.panel.panel-default.panel-overlay.panel-filled
+													.panel-heading
+														.panel-title.truncate
+															| {{e.title}}
+															br
+															small {{e.url}}
+													.panel-body(style='min-height: 90px; max-height: 90px;')
+														p
+															small
+																| {{e.snapshot}}
+													.panel-footer
+														{{e.formattedDate}}
+														//- script.
+														//- 	var d = moment(new Date('{{e.created}}'));
+														//- 	document.write(d.format('M-D-YYYY (HH:mm)'));
+													.overlayStyleH
+													.StyleV
+														span.WhiteRounded
+															a(ng-click='startEditor(e.url, e.title)')
+																i.dripicons-media-play
+														span.WhiteRounded
+															a.cbcopy(data-clipboard-text='aloft.nu/#{user.username}/{{e.url}}')
+																i.dripicons-link
+														span.WhiteRounded
+															a(data-toggle='modal', data-target='#delete-are-you-sure', data-title='{{e.title}}', ng-click='setEventId(e._id)')
+																i.dripicons-trash
+										dir-pagination-controls(boundary-links='true', on-page-change='pageChangeHandler(newPageNumber)', max-size='6', template-url='html/navcontrols.html')
+
+						
 					#conference.tab-pane.bar-success(role='tabpanel')
 						.col-md-2.col-lg-2
 						.col-md-8.col-lg-8
@@ -506,45 +521,11 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 							p
 								| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ipsum lectus, dapibus sed sollicitudin vitae, maximus sit amet tortor.
 						.panel-footer Panel footer
-		#email-modal.modal.modal-success(data-easein='fadeInRight', data-easeout='fadeOutRight', tabindex='-1', role='dialog', aria-labelledby='sendTranscriptViaEmailModal', aria-hidden='true')
-			.modal-dialog
-				.modal-content
-					.modal-header
-						a.close(type='button', data-dismiss='modal')
-							span(aria-hidden='true')
-								i.fa.fa-times
-							span.sr-only Close
-						h4.modal-title Send Transcription File via Email
-					.modal-body
-						p Enter the email address of the recipient of this file.
-						form(method='post', action='/send')
-							.input-group
-								span.input-group-addon @
-								input#transcript_recipient.form-control(type='email', name='transcript_recipient', placeholder='Email', required='', data-parsley-required='', data-parsley-type='email')
-							input#transcript_send_subject.form-control(type='text', name='transcript_send_subject', placeholder='Subject Line', required='', value='Transcription file for {{activeEventTitle}}')
-							input.hidden-stuff(name='active_event_url', value='{{activeEventURL}}')
-							input.hidden-stuff(name='active_event_title', value='{{activeEventTitle}}')
-							textarea#transcript_send_message.form-control(name='transcript_send_message', rows='11')
-								| Hi there!
-								| 
-								| #{user.firstname} #{user.lastname} has sent you the transcription file for {{activeEventTitle}}. A copy is attached to this email.
-								| 
-								| If you have any questions regarding the file or the event, please contact your stenographer, #{user.firstname}, at #{user.email}. Please don't respond directly to this email as it is automated.
-								| 
-								| Thanks!
-								| Aloft Support
-							p.attachment
-								i.fa.fa-paperclip(aria-hidden='true') &nbsp;
-								| {{activeEventURL}}.txt
-							.modal-footer
-								button.btn.btn-default(data-dismiss='modal')
-									i.fa.fa-remove(aria-hidden='true') &nbsp;
-									| Close
-								button.btn.btn-success(type='submit')
-									i.fa.fa-paper-plane(aria-hidden='true') &nbsp;
-									| Send
+		
 	a.scrollToTop.pull-right.tooltiped(href='#', data-toggle='tooltip', data-placement='left', title='To Top')
 		i.fa.fa-arrow-up
+
+	include partials/modals
 
 		//- Angular
 		script(src='/node/angular/angular.min.js')
@@ -568,6 +549,7 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 		script(src='/node/angular-minicolors/angular-minicolors.js')
 		//- Angular controller
 		script(src='/js/angular/dashboard-controller.js')
+		script(src='/js/angular/dirPagination.js')
 		//- My scripts
 		script(src='/js/general.js')
 		//- Save text function
@@ -598,16 +580,18 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 				}
 			});
 			
-			function openEditor() {
+			function openEditor () {
 				document.getElementById('editor-pane').style.width = "100%";
 			}
 
-			function closeEditor() {
+			function closeEditor () {
 				document.getElementById('editor-pane').style.width = "0%";
 			}
 
-			function startEditor(event) {
-				var user = !{JSON.stringify(user.username)};
+			function startEditor (event) {
+				event = event.toString();
+				let user = !{JSON.stringify(user.username)};
+
 				assignEventInfo(user, event);
 				openEditor();
 			}

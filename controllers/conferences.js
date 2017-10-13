@@ -321,13 +321,15 @@ function processPlannedEvents (string, callback) {
 		for (var i = 0; i < list.length; i++) {
 			var split = list[i].split('::');
 			console.log('SPLITTTTTTTTTT ' + split)
-			var pair  = {
-				slug: split[0].toString(),
-				title: split[1].toString(),
-				speaker: split[2].toString()
-				// .replace(/['"]+/g, '')
+			if (split[0].toString() && split[1].toString() && split[2].toString()) {
+				var pair  = {
+					slug: split[0].toString(),
+					title: split[1].toString(),
+					speaker: split[2].toString()
+					// .replace(/['"]+/g, '')
+				}
+				pairs.push(pair);
 			}
-			pairs.push(pair);
 		}
 		callback(pairs);
 	}

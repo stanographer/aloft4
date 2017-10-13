@@ -11,14 +11,15 @@ var Autoscroll = (function () {
 	let idle = true;
 
 	var scroll = function() {
+		zenscroll.toY($(document).height(), 500);
 		// $(document).scrollTop($(document).height());
-		$('html, body').animate({
-        	scrollTop: $(document).height()
-    	}, 'slow');
+		// $('#main-content').animate({
+  //       	scrollTop: $(document).height()
+  //   	}, 'slow');
 	}
-	var startScroll = function() {
-		clearTimeout(scrollLoop);
-		scrollLoop = setInterval(scroll, 1200);
+	var startScroll = function () {
+		clearInterval(scrollLoop);
+		scrollLoop = setInterval(scroll, 800);
 		console.log('scrolling has started!');
 	}
 	var stopScroll = function() {
@@ -69,36 +70,13 @@ function scroller () {
 		follow();
 	});
 
-	$('body').on('touchend mousewheel click', function () {
+	$('body').on('touchend wheel click', function () {
 		if (fired === false) {
 			Autoscroll.pause();
 			pause();
 			fired = true;
 		}
 	});
-
-	// $(window).scroll(function(e) {
- //    	var body = $('body')[0];
- //    	var scrollTop = body.scrollTop;
-
-	//     if (scrollTop > lastScrollTop) {
-	//         if (scrollTop >= (body.scrollHeight - window.innerHeight - tolerance)) {
-	//         	if (!window.innerHeight < body.scrollTop) {
-	//         		if (idle === false) {
-	//         			follow();
-	//         			idle = true;
-	//         		}
-	//         	}
-	//         }
-	//     } else if (scrollTop < (body.scrollHeight - window.innerHeight - tolerance)) {
- //           		if (idle === true) {
- //           			pause();
- //           			idle = false;
- //           		}
-        	
- //    	}
- //    	lastScrollTop = scrollTop;
-	// });
 }
 
 
@@ -106,12 +84,12 @@ $(document).ready(function() {
     $('.navbar-nav [data-toggle="tooltip"]').tooltip();
     
     //Toggle for Sidebar
-    $('.navbar-twitch-toggle').on('click', function(event) {
+    $('.navbar-twitch-toggle').on('click', function (event) {
         event.preventDefault();
         $('.navbar-twitch').toggleClass('open');
     });
     
-    $('.nav-style-toggle').on('click', function(event) {
+    $('.nav-style-toggle').on('click', function (event) {
         event.preventDefault();
         var $current = $('.nav-style-toggle.disabled');
         $(this).addClass('disabled');

@@ -79,7 +79,7 @@ function ShareRest (app, db) {
 	// }
 
 	let send200 = function (res, message) {
-		if (message == null) message = "OK\n";
+		if (message == null) message = "Nothing here yet.\n";
 			res.writeHead(200, {'Content-Type': 'text/plain; charset=utf-8'});
 			res.end(message);
 	};

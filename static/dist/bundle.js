@@ -4191,6 +4191,13 @@ function startShareDb () {
 					.replace(/\r\n|\n|\r/g, '<br />')
 					// Remove the invisible marker
 					.replace(RegExp(invisibleChar(marker), 'g'), '')
+          .replace(RegExp('<SARTALICS>', 'g'), '<span class="sartalics">')
+          .replace(RegExp('</SARTALICS>', 'g'), '</span>')
+          .replace(RegExp('<BOLD>', 'g'), '<strong>')
+          .replace(RegExp('</BOLD>', 'g'), '</strong>')
+          .replace(RegExp('<DOGE>', 'g'), '<img src="/img/doge.jpg" height="100" width="100">')
+          .replace(RegExp('<CONFUSE>', 'g'), '<img src="/img/confuse.gif" height="100" width="100">')
+          .replace(RegExp('<SARCASTICLAP>', 'g'), '<img src="/img/sarcasticlap.jpg" height="100" width="100">')
 				} else {
 					return '';
 		}

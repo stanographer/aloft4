@@ -22,7 +22,7 @@ const userSchema = mongoose.Schema({
 		prefs: {},
 		role: {
 			type: String,
-			enum: ['admin', 'trial', 'member'],
+			enum: ['admin', 'trial', 'member', 'consumer'],
 			default: 'member'
 		},
 		locale: {
