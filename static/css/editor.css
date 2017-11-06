@@ -1,12 +1,27 @@
-/*body {
-	background-color: #f2f3f5;
+@media screen and (max-width: 1200px) {
+    .mini-control {
+        display: inherit;
+    }
+    .normal-control {
+        display: none;
+    }
 }
-*/
+@media screen and (min-width: 1200px) {
+    .mini-control {
+        display: none;
+    }
+    .normal-control {
+        display: inherit;
+    }
+}
 .active-event {
 	margin-bottom: 0px;
 }
 .attachment {
     margin-top: 10px;
+}
+.btn-big-icon i {
+    margin-bottom: 1.5rem;
 }
 .cell {
 	display: table-cell;
@@ -43,6 +58,14 @@
 .panel-body {
     padding: 0px;
 }
+.editor-toolbar {
+	width: 100%;
+	top: 0px;
+	position: inherit;
+	border-bottom: 1px solid;
+	background-color: #fff;
+	height: 100px;
+}
 .editor-wrapper textarea {
      height: 30vw;
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
@@ -73,7 +96,7 @@
     font-size: 1em;
 }
 .textedit {
-	background-color: #caced6;
+	background-color: #9099aa;
 	border-top-right-radius: 4px;
 	border-top-left-radius: 4px;
 }
@@ -130,7 +153,6 @@ ol, ul {
 
 /*==========*/
 
-/* The Overlay (background) */
 .overlay {
     /* Height & width depends on how you want to reveal the overlay (see JS below) */    
     height: 100%;
@@ -141,18 +163,33 @@ ol, ul {
     top: 0;
     background-color: rgb(0,0,0); /* Black fallback color */
     background-color: #F2F3F3; /* Black w/opacity */
+    background-attachment: fixed;
+    background-size: cover;
     overflow-x: hidden; /* Disable horizontal scroll */
     overflow-y: hidden;
     transition: 0.5s; /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
 }
 
+.overlay-content > .btn-group > .btn-default {
+    color: #9099aa;
+    background-color: #F2F3F3;
+    border-color: #F2F3F3; 
+}
 /* Position the content inside the overlay */
 .overlay-content {
     position: relative;
-    top: 7%; 
+    top: 0; 
     width: 100%; /* 100% width */
     height: 100%;
-    margin-top: 20px;/* 30px top margin to avoid conflict with the close button on smaller screens */
+    margin-top: 0px;/* 30px top margin to avoid conflict with the close button on smaller screens */
+    text-align: center;
+}
+.overlay-header {
+	padding: 10em 0 30px;
+    color: #000;
+    text-align: left;
+    background: #fff;
+    margin-bottom: 20px;
 }
 
 /* The navigation links inside the overlay */
@@ -161,7 +198,7 @@ ol, ul {
     text-decoration: none;
     font-size: 36px;
     color: #818181;
-    display: block; /* Display block instead of inline */
+	display: block; /* Display block instead of inline */
     transition: 0.3s; /* Transition effects on hover (color) */
 }
 

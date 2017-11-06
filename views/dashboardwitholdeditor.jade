@@ -41,7 +41,96 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 								a(href='/logout')
 									i.fa.fa-sign-out(aria-hidden='true')
 									| Log out							
-		include partials/dashboard/editor
+		#editor-pane.overlay
+			a.closebtn(href='javascript:void(0)', onclick='stopEditor()') ×
+			.overlay-content
+				.container
+					.row
+						.col-md-12.col-xs-12.col-sm-12
+							h1 {{ activeEventTitle }}
+								small.user-info #{user.firstname} #{user.lastname}
+
+						.col-md-12.col-xs-12.col-sm-12.editor-wrapper
+							.textedit.panel-body
+								button.btn.btn-primary(type='button', onclick='jumpToBottom()')
+									i.fa.fa-arrow-down(aria-hidden='true') &nbsp;
+								button.btn.btn-primary(type='button', onclick='jumpToTop()')
+									i.fa.fa-arrow-up(aria-hidden='true') &nbsp;
+								.butt-group
+									button#eventURL.btn.btn-default.cbcopy(type='button', data-clipboard-text='{{ host }}/#{user.username}/{{ activeEventURL }}')
+										i.fa.fa-link(aria-hidden='true')
+									a.btn.btn-default(ng-href='{{ host }}/#{user.username}/{{ activeEventURL }}', target='projector')
+										i.fa.fa-share-square-o(aria-hidden='true')
+									//- button#eventURL.btn.btn-default.cbcopy.normal-control(type='button', data-clipboard-text='{{ host }}/#{user.username}/{{ activeEventURL }}')
+										i.fa.fa-link(aria-hidden='true') &nbsp;
+										| {{ host }}/#{user.username}/{{ activeEventURL }}
+								.butt-group
+									button.btn.btn-success(type='button', href='#email-modal', role='button', data-toggle='modal')
+										i.fa.fa-paper-plane(aria-hidden='true') &nbsp;
+									button.btn.btn-info(type='button', onclick='jumpToBottom()')
+										i.fa.fa-twitter(aria-hidden='true') &nbsp;
+									.btn-group
+										button.btn.btn-warning.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+											i.fa.fa-download(aria-hidden='true') &nbsp;
+											span.caret
+										ul.dropdown-menu.absolute-right-dropdown-menu.editor-menu(role='menu')
+											li
+												h4.margin-top-0.margin-bottom-20px Download Text
+												.form-group
+													.input-group
+														input#filename-id.form-control(name='filename-id' placeholder='filename.txt', type='text', value='{{ activeEventURL }}')
+														span.input-group-addon.save-group .txt
+													button.input-group-btn.btn.btn-success.save-group(type='submit', ng-click='grabTranscript("#{user.username}", activeEventURL)') Save
+								.butt-group
+									.btn-group
+										button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+											i.fa.fa-font(aria-hidden='true') &nbsp;
+											span.caret
+										ul.dropdown-menu.absolute-right-dropdown-menu.editor-menu(role='menu')
+											li
+												h4.margin-top-0.margin-bottom-20px Font Style
+												.form-group
+														.col-md-8
+															select(ng-model='editorFontFamily', ng-options='f as f.name group by f.type for f in editorFonts track by f.name' ng-change='saveFontFamily()')
+									.btn-group
+										button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+											i.fa.fa-text-height(aria-hidden='true') &nbsp;
+											span.caret
+										ul.dropdown-menu.editor-menu
+											li
+												h4.margin-top-0.margin-bottom-20px Text Size
+												span.label.label-info.slider-value
+															span#font-size-value {{editorFontSize}}
+														#font-size(model='editorFontSize', setting-slider, min="1", max="120")
+									.btn-group
+										button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+											i.fa.fa-align-justify(aria-hidden='true') &nbsp;
+											span.caret
+										ul.dropdown-menu.absolute-right-dropdown-menu.editor-menu(role='menu')
+											li
+												h4.margin-top-0.margin-bottom-20px Line Height
+												span.label.label-info.slider-value
+															span#line-height-value {{editorLineHeight}}
+														#line-height(model='editorLineHeight', setting-slider, min='1', max='200', click='save()')
+									.btn-group
+										button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+											i.fa.fa-tint(aria-hidden='true') &nbsp;
+											span.caret
+										ul.dropdown-menu.absolute-right-dropdown-menu.editor-menu(role='menu')
+											li
+												h4.margin-top-0.margin-bottom-20px Colors
+												.row
+													h5 Text Color
+													.form-group
+														input#fgColor.form-control(ng-model='editorFgColor', ng-change='saveFg()' minicolors="minicolorsSettings")
+												.row
+													h5 Background Color
+													.form-group
+														input#bgColor.form-control(ng-model='editorBgColor', ng-change='saveBg()' minicolors='minicolorsSettings')
+									button#panel-fullscreen.btn.btn-default(type='button')
+										i.fa.fa-expand(aria-hidden='true') &nbsp;
+
+							textarea#pad(autofocus='', spellcheck='false', ng-style="{'fontSize': editorFontSize + 'px', 'lineHeight': editorLineHeight + '%', 'color': editorFgColor, 'backgroundColor': editorBgColor, 'font-family': editorFontFamily.id}")
 
 		.container
 			.col-md-12
@@ -435,7 +524,7 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 	a.scrollToTop.pull-right.tooltiped(href='#', data-toggle='tooltip', data-placement='left', title='To Top')
 		i.fa.fa-arrow-up
 
-	include partials/dashboard/modals
+	include partials/modals
 
 		//- Angular
 		script(src='/node/angular/angular.min.js')

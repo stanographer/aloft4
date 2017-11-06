@@ -63,3 +63,9 @@
        url('/fonts/Montserrat-regular/Montserrat-regular.ttf') format('truetype'),
        url('/fonts/Montserrat-regular/Montserrat-regular.svg#Montserrat') format('svg');
 }
+@font-face {
+  font-family: 'Input Mono';
+  font-weight: 400;
+  font-style: normal;
+  src: url('/fonts/Input/InputMono-Light.ttf');
+}

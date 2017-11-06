@@ -4184,6 +4184,13 @@ function startShareDb () {
 	// Filters the text for formatting.
 	var textToHtml = function (text) {
 		if (text) {
+      // var soundbar = document.getElementById('defaultCanvas0');
+      // if ((text.match(/&SOUNDBAR/g) || []).length - (text.match(/!SOUNDBAR/g) || []).length === 0)  {
+      //   console.log('FUCK')
+      //   soundbar.style.display = 'none';
+      // } else {
+      //   soundbar.style.display = 'inherit';
+      // }
 			return text
 					// Add intentation
 					.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;')
@@ -4191,6 +4198,8 @@ function startShareDb () {
 					.replace(/\r\n|\n|\r/g, '<br />')
 					// Remove the invisible marker
 					.replace(RegExp(invisibleChar(marker), 'g'), '')
+          .replace(RegExp('&SOUNDBAR', 'g'), '')
+          .replace(RegExp('!SOUNDBAR', 'g'), '')
           .replace(RegExp('<SARTALICS>', 'g'), '<span class="sartalics">')
           .replace(RegExp('</SARTALICS>', 'g'), '</span>')
           .replace(RegExp('<BOLD>', 'g'), '<strong>')
