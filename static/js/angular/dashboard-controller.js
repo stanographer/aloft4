@@ -17,7 +17,7 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 			$userSettings.set(name, settings)
 		}
 	})
-	.controller('DashboardController', function ($scope, $http, $filter, $userSettings, configService) {
+	.controller('DashboardController', function ($scope, $rootScope, $http, $filter, $userSettings, configService) {
 		$scope.currentPage;
 		$scope.pageSize = 6;
 		var defaults = {
@@ -34,9 +34,9 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 			]
 		};
 
-		$scope.activeEventURL = '';
-		$scope.activeEventTitle = '';
-		$scope.host = window.location.origin;
+		$rootScope.activeEventURL = '';
+		$rootScope.activeEventTitle = '';
+		$rootScope.host = window.location.origin;
 		$scope.eventCreator = {
 			url: '',
 			slug: '',
@@ -100,10 +100,9 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 			$scope.getEvents();
 		}
 		
-		$scope.startEditor = function (url, title) {
-			$scope.activeEventURL = url;
-			$scope.activeEventTitle = title;
-			startEditor(url);
+		$scope.startEditor = function (e) {
+			$rootScope.activeEvent = e;
+			startEditor(e.url);
 		}
 
 		$scope.generateURL = function (url, conference) {

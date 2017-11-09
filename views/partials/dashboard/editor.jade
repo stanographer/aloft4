@@ -1,31 +1,90 @@
 #editor-pane.overlay
-	a.closebtn(href='javascript:void(0)', onclick='stopEditor()') ×
 	.overlay-content
-		.overlay-header
-		.btn-group
-			button.btn.btn-default.btn-big-icon(type='button')
-				i.fa.fa-font(aria-hidden='true')
-				| Font Style
-			button.btn.btn-default.btn-big-icon(type='button')
-				i.fa.fa-text-height(aria-hidden='true')
-				| Font Size
-			button.btn.btn-default.btn-big-icon(type='button')
-				i.fa.fa-align-justify(aria-hidden='true')
-				| Line Height
-			button.btn.btn-default.btn-big-icon(type='button')
-				i.fa.fa-tint(aria-hidden='true')
-				| Colors
-		.btn-group
-			button.btn.btn-default.btn-big-icon(type='button')
-				i.fa.fa-link(aria-hidden='true')
-				| Copy Link
-			button.btn.btn-default.btn-big-icon(type='button')
-				i.fa.fa-download(aria-hidden='true')
-				| Download Text
-			button.btn.btn-default.btn-big-icon(type='button')
-				i.fa.fa-paper-plane(aria-hidden='true')
-				| Email Text
-			button.btn.btn-default.btn-big-icon(type='button')
-				i.fa.fa-twitter(aria-hidden='true')
-				| Tweet Link
-				
+		a.scrollToTop.pull-right.compress-button.fullscreen-button.tooltiped(href='#', data-toggle='tooltip', title='Unmaximize Editor')
+			i.fa.fa-compress
+		.editor-toolbar
+			.editor-header
+				h3 {{activeEvent.title}}
+				h5(ng-show='activeEvent.speaker') {{activeEvent.speaker}}
+				a#eventURL.cbcopy.tooltiped(type='button', data-clipboard-text='{{ host }}/#{user.username}/{{activeEvent.url}}', data-toggle='tooltip', data-placement='bottom', title='Click to copy URL to clipboard.')
+					i.fa.fa-link(aria-hidden='true')&nbsp;&nbsp;
+					| {{ host }}/#{user.username}/{{activeEvent.url}}
+				//- small.float-right #{user.firstname} #{user.lastname}
+				//- h5 {{activeEventSpeaker}}
+			.btn-group.editor-buttons
+				button.btn.btn-default.btn-big-icon.tooltiped.dropdown-toggle(type='button', title='Change Editor font style.', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+					i.fa.fa-font(aria-hidden='true')
+					| Font Style
+					span.caret
+				ul.dropdown-menu.absolute-right-dropdown-menu.editor-menu(role='menu')
+					li
+						h4.margin-top-0.margin-bottom-20px Font Style
+						.form-group
+								.col-md-8
+									select(ng-model='editorFontFamily', ng-options='f as f.name group by f.type for f in editorFonts track by f.name' ng-change='saveFontFamily()')
+			.btn-group.editor-buttons
+				button.btn.btn-default.btn-big-icon.tooltiped.dropdown-toggle(type='button', title='Change Editor font size.', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+					i.fa.fa-text-height(aria-hidden='true')
+					| Font Size
+					span.caret
+				ul.dropdown-menu.editor-menu
+					li
+						h4.margin-top-0.margin-bottom-20px Text Size
+						span.label.label-info.slider-value
+									span#font-size-value {{editorFontSize}}
+								#font-size(model='editorFontSize', setting-slider, min="1", max="500")
+			.btn-group.editor-buttons
+				button.btn.btn-default.btn-big-icon.tooltiped.dropdown-toggle(type='button', data-toggle='dropdown', title='Change Editor line height.', aria-haspopup='true', aria-expanded='false')
+					i.fa.fa-align-justify(aria-hidden='true')
+					| Line Height
+					span.caret
+				ul.dropdown-menu.absolute-right-dropdown-menu.editor-menu(role='menu')
+					li
+						h4.margin-top-0.margin-bottom-20px Line Height
+						span.label.label-info.slider-value
+									span#line-height-value {{editorLineHeight}}
+								#line-height(model='editorLineHeight', setting-slider, min='1', max='200', click='save()')
+				button.btn.btn-default.btn-big-icon.tooltiped.dropdown-toggle(type='button', title='Change Editor color scheme.', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+					i.fa.fa-tint(aria-hidden='true')
+					| Colors
+					span.caret
+				ul.dropdown-menu.absolute-right-dropdown-menu.editor-menu(role='menu')
+					li
+						h4.margin-top-0.margin-bottom-20px Colors
+						.row
+							h5 Text Color
+							.form-group
+								input#fgColor.form-control(ng-model='editorFgColor', ng-change='saveFg()' minicolors="minicolorsSettings")
+						.row
+							h5 Background Color
+							.form-group
+								input#bgColor.form-control(ng-model='editorBgColor', ng-change='saveBg()' minicolors='minicolorsSettings')
+			.btn-group.editor-buttons
+				button.btn.btn-default.btn-big-icon.tooltiped.dropdown-toggle(type='submit', data-toggle='dropdown', title='Download transcription text.', aria-haspopup='true', aria-expanded='false')
+					i.fa.fa-download(aria-hidden='true')
+					| Download Text
+					span.caret
+				ul.dropdown-menu.absolute-right-dropdown-menu.editor-menu(role='menu')
+					li
+						h4.margin-top-0.margin-bottom-20px Download Text
+						form
+							.form-group
+								.input-group
+									input#filename-id.form-control(name='filename-id' placeholder='filename.txt', type='text', value='{{ activeEvent.url }}')
+									span.input-group-addon.save-group .txt
+								button.input-group-btn.btn.btn-success.save-group(type='submit', ng-click='grabTranscript("#{user.username}", activeEventURL)') Save
+				button.btn.btn-default.btn-big-icon.tooltiped(type='button', href='#email-modal', role='button', data-toggle='modal', title='Send transcription file via email.')
+					i.fa.fa-paper-plane(aria-hidden='true')
+					| Email Text
+				button.fullscreen-button.btn.btn-default.btn-big-icon.tooltiped(type='button', data-toggle='tooltip', title='Maximize Editor.')
+					i.fa.fa-expand(aria-hidden='true')
+					| Maximize
+				a.btn.btn-default.btn-big-icon.tooltiped(type='button', ng-href='{{ host }}/#{user.username}/{{activeEvent.url}}', target='popout', data-toggle='tooltip', title='Opens captions in a new window to fullscreen on extended desktop.')
+					i.fa.fa-share-square-o(aria-hidden='true')
+					| Pop Out
+				button.btn.btn-default.btn-big-icon.tooltiped(type='button', data-toggle='tooltip', title='End event.', onclick='stopEditor();')
+					i.fa.fa-times(aria-hidden='true')
+					| End
+		//- textarea#pad(autofocus='', spellcheck='false', ng-style="{'fontSize': editorFontSize + 'px', 'lineHeight': editorLineHeight + '%', 'color': editorFgColor, 'backgroundColor': editorBgColor, 'font-family': editorFontFamily.id}")
+		.editor-wrapper
+			textarea#pad(autofocus='', spellcheck='false', ng-style="{'fontSize': editorFontSize + 'px', 'lineHeight': editorLineHeight + '%', 'color': editorFgColor, 'backgroundColor': editorBgColor, 'font-family': editorFontFamily.id}")

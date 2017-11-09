@@ -1,7 +1,9 @@
 // Tooltips
 
 if ($('.tooltiped').length) {
-	$('.tooltiped').tooltip();
+	$('.tooltiped').tooltip({
+        trigger : 'hover'
+    });
 }
 
 // Popover
@@ -47,16 +49,14 @@ $(document).ready(function () {
 
  $(document).ready(function () {
     //Toggle fullscreen
-    $("#panel-fullscreen").click(function (e) {
+    $(".fullscreen-button").click(function (e) {
         e.preventDefault();
-        
-        var $this = $(this);
-    
-        if ($this.children('i').hasClass('fa-expand')) {
-            $this.children('i').removeClass('fa-expand');
-            $this.children('i').addClass('fa-compress');
-        }
-        $('.editor-wrapper').toggleClass('panel-fullscreen');
-        $('body, html').toggleClass('overflow-hidden overflow-scroll');
+        $('.editor-wrapper').addClass('panel-fullscreen');
+        $('.compress-button').css('visibility', 'visible');
+    });
+    $(".compress-button").click(function (e) {
+        e.preventDefault();
+        $('.editor-wrapper').removeClass('panel-fullscreen');
+        $('.compress-button').css('visibility', 'hidden');
     });
 });

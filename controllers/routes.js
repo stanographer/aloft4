@@ -173,7 +173,7 @@ module.exports = function(app, passport, db) {
 		let maxBreadcrumbs = 6;
 
 		Event.find({user: req.params.user})
-				.select(['url', 'user', 'title', 'created', '_id'])
+				.select(['url', 'user', 'title', 'created', '_id', 'hidden', 'completed', 'speaker', 'viewCount'])
 				.limit(perPage)
 				.skip(perPage * page)
 				.sort({created: -1})
