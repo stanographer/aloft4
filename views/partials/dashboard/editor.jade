@@ -4,7 +4,7 @@
 			i.fa.fa-compress
 		.editor-toolbar
 			.editor-header
-				h3 {{activeEvent.title}}
+				h3.tooltiped(data-toggle='tooltip', title='Click to insert header to the top.', data-placement='bottom', ng-click='addHeader()') {{activeEvent.title}}
 				h5(ng-show='activeEvent.speaker') {{activeEvent.speaker}}
 				a#eventURL.cbcopy.tooltiped(type='button', data-clipboard-text='{{ host }}/#{user.username}/{{activeEvent.url}}', data-toggle='tooltip', data-placement='bottom', title='Click to copy URL to clipboard.')
 					i.fa.fa-link(aria-hidden='true')&nbsp;&nbsp;
@@ -72,7 +72,7 @@
 								.input-group
 									input#filename-id.form-control(name='filename-id' placeholder='filename.txt', type='text', value='{{ activeEvent.url }}')
 									span.input-group-addon.save-group .txt
-								button.input-group-btn.btn.btn-success.save-group(type='submit', ng-click='grabTranscript("#{user.username}", activeEventURL)') Save
+								button.input-group-btn.btn.btn-success.save-group(type='submit', ng-click='grabTranscript("#{user.username}", activeEvent.url)') Save
 				button.btn.btn-default.btn-big-icon.tooltiped(type='button', href='#email-modal', role='button', data-toggle='modal', title='Send transcription file via email.')
 					i.fa.fa-paper-plane(aria-hidden='true')
 					| Email Text

@@ -2,9 +2,10 @@
 
 function grabTranscript (user, event) {
     $.ajax({
-        url: 'http://' + window.location.hostname + ':' + window.location.port + '/text/' + user + '/' + event,
+        url: window.location.origin + '/text/' + user + '/' + event,
         success: function (data) {
             saveForm(user, event, data);
+            console.log('save executed! ' + window.location.origin + '/text/' + user + '/' + event)
         }
     });
 }

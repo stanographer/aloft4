@@ -41,26 +41,30 @@ html(lang='en', ng-app='AloftDash')
 						h4.breadcrumbs(ng-hide='events.length', ng-cloak='') No events found
 					.col-md-6.prev-panel(dir-paginate='e in events | filter: q | itemsPerPage: pageSize', total-items='total', current-page='currentPage')
 						.overlay-wrapper.overlay-wrapper-panel
-							#overlay-panel-6.panel.panel-default.panel-overlay.panel-filled
+							#overlay-panel-6.panel.panel-primary.panel-overlay.panel-filled
 								.panel-heading
 									.panel-title.truncate
 										| {{e.title}}
 										br
 										small {{e.url}}
-								.panel-body(style='min-height: 90px; max-height: 90px;')
+								.panel-body(style='min-height: 11em; max-height: 11em;')
 									p
 										small
 											| {{e.snapshot}}
+									ul.list-inline(style='text-align: center;')
+										li
+											a.btn.btn-success(href='#{user}/{{e.url}}', target='_blank')
+												//- i.dripicons-media-play
+												| Watch
+										li
+											a.btn.btn-info.cbcopy(data-clipboard-text='aloft.nu/#{user}/{{e.url}}')
+												//- i.dripicons-link
+												| Copy Link
+									
+									
 								.panel-footer
-									{{e.formattedDate}}
-								.overlayStyleH
-								.StyleV
-									span.WhiteRounded
-										a(href='#{user}/{{e.url}}', target='_blank')
-											i.dripicons-media-play
-									span.WhiteRounded
-										a.cbcopy(data-clipboard-text='aloft.nu/#{user}/{{e.url}}')
-											i.dripicons-link
+									| {{e.formattedDate}}
+								
 					.row.breadcrumbs
 						dir-pagination-controls(boundary-links='true', on-page-change='pageChangeHandler(newPageNumber)', max-size='6', template-url='html/navcontrols.html')
 		//- Angular

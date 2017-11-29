@@ -69,6 +69,9 @@ html, body {
 .overflow-scroll {
     overflow: scroll;
 }
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+	z-index: 0;
+}
 .panel-body {
     padding: 0px;
 }
@@ -226,7 +229,7 @@ ol, ul {
     background-size: cover;
     overflow-x: hidden; /* Disable horizontal scroll */
     overflow-y: hidden;
-    transition: 0.5s; /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
+    transition: 0.5s;  /*0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
 }
 
 /* Position the content inside the overlay */

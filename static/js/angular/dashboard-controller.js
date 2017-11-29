@@ -87,7 +87,7 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 			console.log('hey this works!');
 			$http({
 				method: 'POST',
-				url: window.location.origin + '/editor/' + id.toString() + '?_method=DELETE'
+				url: window.location.origin + '/editor/' + id + '?_method=DELETE'
 			}).then(function (success) {
 				console.log('Success!');
 				$scope.getEvents();
@@ -181,12 +181,18 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 		}
 		$scope.grabTranscript = function (user, event) {
 			$.ajax({
-				url: 'http://' + window.location.hostname + ':' + window.location.port + '/text/' + user + '/' + event,
+				url: window.location.origin + '/text/' + user + '/' + event,
 				success: function (data) {
 					saveForm(user, event, data);
 				}
 			});
 		}
+		$scope.addHeader = function () {
+			let box = document.getElementById('pad');
+			let text = box.value;
+			let newText = $scope.activeEvent.title + '\n' + $scope.activeEvent.speaker + '\n\n' + text;
+			box.value = newText;
+ 		}
 	})
 	.directive('settingSlider', ['configService', function (configService) {
 		return {

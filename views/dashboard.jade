@@ -51,7 +51,7 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 						p
 							| This action cannot be undone!
 					.modal-footer
-							button#delete-button.btn.btn-danger(data-dismiss='modal', type='submit', aria-hidden='true', ng-click='deleteEvent(activeEvent.id)') Delete
+							button#delete-button.btn.btn-danger(data-dismiss='modal', type='submit', aria-hidden='true', ng-click='deleteEvent(activeEventId)') Delete
 							button.btn.btn-modal(type='button', data-dismiss='modal') Close
 
 		#email-modal.modal.modal-success(data-easein='fadeInRight', data-easeout='fadeOutRight', tabindex='-1', role='dialog', aria-labelledby='sendTranscriptViaEmailModal', aria-hidden='true')
