@@ -231,6 +231,7 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 												if (conference && conference.plannedEvents)
 													.input-group.input-group-lg
 														select.selectpicker#url-select(data-container='body', ng-change='pickEvent("#{conference.url}")', ng-model='planned', title='(Choose from scheduled events)')
+															option
 															each plannedEvent in conference.plannedEvents
 																option(value='#{plannedEvent.slug}::#{plannedEvent.title}::#{plannedEvent.speaker}') #{plannedEvent.title}
 												.form-group.has-feedback

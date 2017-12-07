@@ -75,7 +75,7 @@ router.post('/set', isLoggedIn, function (req, res) {
 router.post('/plan-events', function (req, res) {
 	let event_list = req.body.event_list;
 
-	processPlannedEvents(event_list, proceed);
+	processPlannedEvents(req, res, event_list, proceed);
 
 	function proceed (pairs) {
 		Conference.findOne({url: req.user.conference.url}, function (err, conf) {
@@ -312,7 +312,7 @@ function deleteShareDbDoc (user, title) {
 	});
 }
 
-function processPlannedEvents (string, callback) {
+function processPlannedEvents (req, res, string, callback) {
 	let pairs = [];
 
 	if (string && string.length > 0) {
@@ -321,7 +321,7 @@ function processPlannedEvents (string, callback) {
 		for (var i = 0; i < list.length; i++) {
 			var split = list[i].split('::');
 			console.log('SPLITTTTTTTTTT ' + split)
-			if (split[0].toString() && split[1].toString() && split[2].toString()) {
+			if (split[0] && split[1] && split[2]) {
 				var pair  = {
 					slug: split[0].toString(),
 					title: split[1].toString(),
@@ -329,9 +329,12 @@ function processPlannedEvents (string, callback) {
 					// .replace(/['"]+/g, '')
 				}
 				pairs.push(pair);
+				callback(pairs);
+			} else {
+				req.flash('error_message', 'Planned events could not be saved! Please make sure they are in the format URL::EVENT TITLE::EVENT SPEAKER(S) (i.e. srcconwork-2017-thursday-talks-sydette::SRCCON:WORK Talks: Sydette Harry::Sydette Harry');
+				res.redirect('/dashboard#conference');
 			}
 		}
-		callback(pairs);
 	}
 }
 
