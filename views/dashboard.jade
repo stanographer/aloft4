@@ -325,6 +325,7 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 														span.WhiteRounded
 															a(data-toggle='modal', data-target='#delete-are-you-sure', data-title='{{e.title}}', ng-click='setEventId(e._id)')
 																i.dripicons-trash
+
 										dir-pagination-controls(boundary-links='true', on-page-change='pageChangeHandler(newPageNumber)', max-size='6', template-url='html/navcontrols.html')
 
 						

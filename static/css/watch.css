@@ -215,8 +215,8 @@ header {
   height: 100%;
 }
 #main-content {
-  padding-left: 10em;
-  padding-right: 10em;
+  padding-left: 6em;
+  padding-right: 6em;
 }
 /*@-webkit-keyframes fadeIn {
   0% {opacity: 0;}

@@ -155,6 +155,54 @@ module.exports = function(app, passport, db) {
 		});
 	});
 
+	app.get('/toggleComplete/:id', function(req, res) {
+		var query = req.query.var;
+
+		Event.findById(req.params.id, function(err, event) {
+			if (err) {
+				res.send(err);
+			} else {
+				if (query && query.length != 0) {
+					res.send(event + ' ' + query);
+				} else {
+					res.send(event);
+				}
+			}
+		});
+	});
+
+	app.post('/toggleComplete/:id', function(req, res) {
+		Event.findById(req.params.id, function (err, event) {
+			if (err) {
+				throw err;
+			} else {
+				if (event.completed === false) {
+					event.update({$set: {'completed': true}}, {upsert: true},
+						function(err, updated) {
+							if (err) {
+								return err;
+							} else {
+								req.flash('success_message', 'Successfully changed event status to completed.');
+								res.send('is false ' + event);
+							}
+		 	  		});
+		 	  	} else {
+		 	  		event.update({$set: {'completed': false}}, {upsert: true},
+						function(err, updated) {
+							if (err) {
+								return err;
+							} else {
+								req.flash('success_message', 'Successfully changed event status to completed.');
+								res.send('is true ' + event);
+							}
+		 	  		});
+		 	  	}
+		 	}
+		 });
+	});
+
+
+
 	app.get('/first-user', function (req, res) {
 		res.render('first-user');
 	});
@@ -314,12 +362,16 @@ module.exports = function(app, passport, db) {
 						fontFace: 'Inconsolata',
 						lineHeight: '130'
 					}
-					res.render('watch', {
-						user: req.params.user,
-						event: req.params.event,
-						prefs: prefs,
-						marker: '≈'
-					});
+					if (event.completed) {
+						res.redirect('/text/' + req.params.user + '/' + req.params.event);
+					} else {
+						res.render('watch', {
+							user: req.params.user,
+							event: req.params.event,
+							prefs: prefs,
+							marker: '≈'
+						});
+					}
 				} else {
 					Conference.findOne({'url': req.params.user}, function (err, conf) {
 						let isAnEvent;

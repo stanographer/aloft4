@@ -69,6 +69,21 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 
 			});
 		});
+
+		$scope.toggleComplete = function (id) {
+			$scope.eventCompleted = $scope.eventCompleted === false ? true: false;
+			$http({
+				method: 'POST',
+				url: window.location.origin + '/toggleComplete/' + id
+			}).then(function (success) {
+				console.log('it was a success! ' + JSON.stringify(success) + ' ' + window.location.origin + '/toggleComplete/' + id);
+			}, function(err) {
+				if (err) {
+					console.log('there was an error! ' + err);
+				}
+			});
+		}
+
 		$scope.getEvents = function () {
 			$http({
 				method: 'GET',
@@ -102,6 +117,7 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 		
 		$scope.startEditor = function (e) {
 			$rootScope.activeEvent = e;
+			$scope.eventCompleted = e.completed;
 			startEditor(e.url);
 		}
 
@@ -190,7 +206,21 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 		$scope.addHeader = function () {
 			let box = document.getElementById('pad');
 			let text = box.value;
-			let newText = $scope.activeEvent.title + '\n' + $scope.activeEvent.speaker + '\n\n' + text;
+			let newText;
+
+			if (text) {
+				if ($scope.activeEvent.speaker && $scope.activeEvent.speaker != '') {
+					newText = '\"' + $scope.activeEvent.title + '\"' + '\n' + $scope.activeEvent.speaker + '\n\n' + text;
+				} else {
+					newText = '\"' + $scope.activeEvent.title + '\"' + '\n\n' + text;
+				}
+			} else {
+				if ($scope.activeEvent.speaker && $scope.activeEvent.speaker != '') {
+					newText = '\"' + $scope.activeEvent.title + '\"' + '\n' + $scope.activeEvent.speaker + '\n\n' + text;
+				} else {
+					newText = '\"' + $scope.activeEvent.title + '\n\n' + text;
+				}
+			}
 			box.value = newText;
  		}
 	})

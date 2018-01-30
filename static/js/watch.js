@@ -11,15 +11,15 @@ var Autoscroll = (function () {
 	let idle = true;
 
 	var scroll = function() {
-		zenscroll.toY($(document).height(), 500);
-		// $(document).scrollTop($(document).height());
-		// $('#main-content').animate({
-  //       	scrollTop: $(document).height()
-  //   	}, 'slow');
+		// zenscroll.toY($(document).height(), 500);
+		$(document).scrollTop($(document).height());
+		$('#main-content').animate({
+        	scrollTop: $(document).height()
+    	}, 'slow');
 	}
 	var startScroll = function () {
 		clearInterval(scrollLoop);
-		scrollLoop = setInterval(scroll, 800);
+		scrollLoop = setInterval(scroll, 300);
 		console.log('scrolling has started!');
 	}
 	var stopScroll = function() {

@@ -128,35 +128,36 @@ html(lang='en')
 			.row
 				#caption-area(ng-style="{'fontSize': fontSize + 'px', 'lineHeight': lineHeight + '%', 'color': fgColor, 'backgroundColor': bgColor, 'font-family': fontFamily.id}")
 			//- script.
-				var mic, fft;
+			//- 	var mic, fft;
 
-				function setup() {
-					createCanvas(3000, 300);
-					noFill();
+			//- 	function setup() {
+			//- 		createCanvas(3000, 300);
+			//- 		noFill();
 
-					mic = new p5.AudioIn();
-					mic.start();
-					fft = new p5.FFT();
-					fft.setInput(mic);
-				}
+			//- 		mic = new p5.AudioIn();
+			//- 		mic.start();
+			//- 		fft = new p5.FFT();
+			//- 		fft.setInput(mic);
+			//- 	}
 
-				function draw() {
-						background(48, 53, 62);
-						stroke('#fffff')
+			//- 	function draw() {
+			//- 			//- background(48, 53, 62);
+			//- 			background(0, 0, 0);
+			//- 			stroke('#fffff')
 
-					var spectrum = fft.analyze();
+			//- 		var spectrum = fft.analyze();
 
-				beginShape();
+			//- 	beginShape();
 
-				for (i = 0; i<spectrum.length; i++) {
-					vertex(i, map(spectrum[i], 0, 255, height, 0) );
-				}
-					endShape();
-				}
+			//- 	for (i = 0; i<spectrum.length; i++) {
+			//- 		vertex(i, map(spectrum[i], 0, 255, height, 0) );
+			//- 	}
+			//- 		endShape();
+			//- 	}
 				//- #waveform
 				//- p(align='center')
-					//- button.btn.btn-primary.btn-lg(onclick='microphone.start()')
-						//- | Start the mic
+				//- 	button.btn.btn-primary.btn-lg(onclick='microphone.start()')
+				//- 		| Start the mic
 
 
 		//- .row
@@ -184,7 +185,7 @@ html(lang='en')
 		//- Node Minicolors
 		script(src='/node/angular-minicolors/angular-minicolors.js')
 		//- Jump
-		script(src='/js/packages/zenscroll-min.js')
+		//- script(src='/js/packages/zenscroll-min.js')
 		//- Angular controller
 		script(src='/js/controller.js')
 		//- My shit
@@ -195,6 +196,8 @@ html(lang='en')
 		script(src='/js/jquery-ui-touch.js')
 		//- My scripts
 		script(src='/dist/bundle.js' defer)
+		//- p5 for realtime sound
+
 		//- script(src='/js/packages/p5.min.js')
 		//- script(src='/js/packages/p5.sound.min.js')
 		//- main wavesurfer.js lib
@@ -227,19 +230,19 @@ html(lang='en')
 			//- });
 
 			//- // pause rendering
-			//- //microphone.pause();
+			//- microphone.pause();
 
 			//- // resume rendering
-			//- //microphone.play();
+			//- microphone.play();
 
 			//- // stop visualization and disconnect microphone
-			//- //microphone.stopDevice();
+			//- microphone.stopDevice();
 
 			//- // same as stopDevice() but also clears the wavesurfer canvas
-			//- //microphone.stop();
+			//- microphone.stop();
 
-			//- // destroy the plugin
-			//- //microphone.destroy();
+			// destroy the plugin
+			//microphone.destroy();
 			//- var wavesurfer = WaveSurfer.create({
 			//- 	container: '#waveform',
 			//- 	waveColor: 'violet',

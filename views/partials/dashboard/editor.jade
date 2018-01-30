@@ -9,8 +9,8 @@
 				a#eventURL.cbcopy.tooltiped(type='button', data-clipboard-text='{{ host }}/#{user.username}/{{activeEvent.url}}', data-toggle='tooltip', data-placement='bottom', title='Click to copy URL to clipboard.')
 					i.fa.fa-link(aria-hidden='true')&nbsp;&nbsp;
 					| {{ host }}/#{user.username}/{{activeEvent.url}}
-				//- small.float-right #{user.firstname} #{user.lastname}
-				//- h5 {{activeEventSpeaker}}
+				button.btn.btn-success(type='button', ng-cloak, ng-click='toggleComplete(activeEvent._id)')
+					| {{ eventCompleted === false ? "Event In Progress" : "Event Completed" }}
 			.btn-group.editor-buttons
 				button.btn.btn-default.btn-big-icon.tooltiped.dropdown-toggle(type='button', title='Change Editor font style.', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
 					i.fa.fa-font(aria-hidden='true')

@@ -4183,14 +4183,14 @@ function startShareDb () {
 
 	// Filters the text for formatting.
 	var textToHtml = function (text) {
-		if (text) {
-      // var soundbar = document.getElementById('defaultCanvas0');
-      // if ((text.match(/&SOUNDBAR/g) || []).length - (text.match(/!SOUNDBAR/g) || []).length === 0)  {
-      //   console.log('FUCK')
-      //   soundbar.style.display = 'none';
-      // } else {
-      //   soundbar.style.display = 'inherit';
-      // }
+		// if (text) {
+  //     var soundbar = document.getElementById('defaultCanvas0');
+  //     if ((text.match(/&SOUNDBAR/g) || []).length - (text.match(/!SOUNDBAR/g) || []).length === 0)  {
+  //       console.log('FUCK')
+  //       soundbar.style.display = 'none';
+  //     } else {
+  //       soundbar.style.display = 'inherit';
+  //     }
 			return text
 					// Add intentation
 					.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;')
@@ -4207,9 +4207,9 @@ function startShareDb () {
           .replace(RegExp('<DOGE>', 'g'), '<img src="/img/doge.jpg" height="100" width="100">')
           .replace(RegExp('<CONFUSE>', 'g'), '<img src="/img/confuse.gif" height="100" width="100">')
           .replace(RegExp('<SARCASTICLAP>', 'g'), '<img src="/img/sarcasticlap.jpg" height="100" width="100">')
-				} else {
+				// } else {
 					return '';
-		}
+		// }
 	}
 
 	// Connection status bar turns green when connected, red when disconnected.
