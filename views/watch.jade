@@ -17,7 +17,11 @@ html(lang='en')
 		link(rel='stylesheet', href='/css/fonts.css')
 		link(rel='stylesheet', href='/css/sidebar.css')
 		link(rel='stylesheet', href='/css/watch.css')
-	
+		meta(name='mobile-web-app-capable', content='yes')
+		meta(name='apple-mobile-web-app-capable', content='yes')
+		meta(name='apple-mobile-web-app-status-bar-style', content='black')
+		meta(name='apple-mobile-web-app-title', content='#{event} Captions')
+
 	body(ng-app='Aloft', ng-controller='AloftController' ng-style="{'backgroundColor': bgColor}")
 		.status-bar.connected
 		header.nav-down
