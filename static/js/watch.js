@@ -19,7 +19,7 @@ var Autoscroll = (function () {
 	}
 	var startScroll = function () {
 		clearInterval(scrollLoop);
-		scrollLoop = setInterval(scroll, 300);
+		scrollLoop = setInterval(scroll, 200);
 		console.log('scrolling has started!');
 	}
 	var stopScroll = function() {
@@ -48,12 +48,14 @@ function scroller () {
 		$('#header').removeClass('nav-down').addClass('nav-up');
 		$('.dropdown').removeClass('open');
 		$('#autoscroll').addClass('invisible').removeClass('visible');
+		$('#main-content').css('margin-left', '0rem');
 	}
 
 	function pause () {
 		console.log('pause pause pause!');
 		$('#header').removeClass('nav-up').addClass('nav-down');
 		$('#autoscroll').addClass('visible').removeClass('invisible');
+		$('#main-content').css('margin-left', '3rem');
 		// Autoscroll.pause();
 	}
 

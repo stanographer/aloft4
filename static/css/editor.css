@@ -269,6 +269,10 @@ ol, ul {
     font-size: 60px;
 }
 
+.navbar-brand {
+    padding: 0.7em 0.8em 0.8em 1.5em;
+}
+
 .ui-slider a {
 	padding: unset;
 }

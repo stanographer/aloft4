@@ -5,15 +5,31 @@ const async = require('async')
 	, dateformat = require('dateformat')
 	, nodemailer = require('nodemailer')
 	, mailerConfig = require('../config/mailer.js')
+	, multer = require('multer')
 	, send = require('../controllers/send')
 	, ShareRest = require('../controllers/share-rest')
 	, User = require('../models/user')
+	, upload = multer({
+		dest: 'uploads'
+	})
 	, Event = require('../models/event')
 	, Conference = require('../models/conference');
 
+const storage = multer.diskStorage({
+	destination: '../static/uploads',
+	filename: function (req, file, callback) {
+		crypto.pseudoRandomBytes(16, function(err, raw) {
+			if (err) return callback(err);
+			callback(null, raw.toString('hex') + path.extname(file.originalname));
+		})
+	}
+});
+
 module.exports = function(app, passport, db) {
 
-	let Rest = new ShareRest(app, db);
+	const Rest = new ShareRest(app, db);
+
+	// Related to the main routes in Aloft.
 
 	app.get('/', function (req, res) {
 		if (req.user) {
@@ -155,6 +171,8 @@ module.exports = function(app, passport, db) {
 		});
 	});
 
+	// Related to user and job states.
+
 	app.get('/toggleComplete/:id', function(req, res) {
 		var query = req.query.var;
 
@@ -201,8 +219,6 @@ module.exports = function(app, passport, db) {
 		 });
 	});
 
-
-
 	app.get('/first-user', function (req, res) {
 		res.render('first-user');
 	});
@@ -213,6 +229,34 @@ module.exports = function(app, passport, db) {
 		} else {
 			res.redirect('admin-only');
 		}
+	});
+
+	app.get('/soundbar/:user/:event', function(req, res) {
+		 Event.findOne({'user': req.params.user, 'event': req.params.event}, function(err, event) {
+		 	if(err) {
+		 		throw err
+		 	} else {
+		 		res.render('watch-soundbar', {
+		 			user: req.params.user,
+					event: req.params.event,
+					marker: '≈'
+		 		});
+		 	}
+		 });
+	});
+
+	app.get('/spectrogram/:user/:event', function(req, res) {
+		 Event.findOne({'user': req.params.user, 'event': req.params.event}, function(err, event) {
+		 	if(err) {
+		 		throw err
+		 	} else {
+		 		res.render('watch-spectrogram', {
+		 			user: req.params.user,
+					event: req.params.event,
+					marker: '≈'
+		 		});
+		 	}
+		 });
 	});
 
 	app.get('/getJobs/:user', isLoggedIn, function (req, res) {
@@ -559,6 +603,29 @@ module.exports = function(app, passport, db) {
 		}
 	});
 
+	app.post('/', isLoggedIn, upload.single('avatar-picture'), (req, res) => {
+
+	});
+
+	app.patch('/:user', function (req, res) {
+		let parameters = req.query;
+		let username = req.params.user;
+
+		User.findOne({'local.username': username}, function (err, user) {
+			 if (err) {
+			 	throw err;
+			 } else {
+			 	user.update(parameters, function (err, updatedUser) {
+			 		if (err) {
+			 			console.log('There was an error updating.');
+			 		} else {
+			 			
+			 		}
+			 	});
+			 }
+		});
+	});
+
 	app.get('/:user', function (req, res) {
 		User.findOne({'local.username': req.params.user}, function (err, user) {
 			if (err) {
@@ -600,6 +667,8 @@ module.exports = function(app, passport, db) {
 			}
 		})
 	});
+
+	// 404 and misc.
 
 	app.use(function (req, res, next) {
 		req.flash('404', 'Sorry. We couldn\'t find what you were looking for.');

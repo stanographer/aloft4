@@ -4183,33 +4183,54 @@ function startShareDb () {
 
 	// Filters the text for formatting.
 	var textToHtml = function (text) {
-		// if (text) {
-  //     var soundbar = document.getElementById('defaultCanvas0');
-  //     if ((text.match(/&SOUNDBAR/g) || []).length - (text.match(/!SOUNDBAR/g) || []).length === 0)  {
-  //       console.log('FUCK')
-  //       soundbar.style.display = 'none';
-  //     } else {
-  //       soundbar.style.display = 'inherit';
-  //     }
-			return text
-					// Add intentation
-					.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;')
-					// Add line breaks
-					.replace(/\r\n|\n|\r/g, '<br />')
-					// Remove the invisible marker
-					.replace(RegExp(invisibleChar(marker), 'g'), '')
-          .replace(RegExp('&SOUNDBAR', 'g'), '')
-          .replace(RegExp('!SOUNDBAR', 'g'), '')
-          .replace(RegExp('<SARTALICS>', 'g'), '<span class="sartalics">')
-          .replace(RegExp('</SARTALICS>', 'g'), '</span>')
-          .replace(RegExp('<BOLD>', 'g'), '<strong>')
-          .replace(RegExp('</BOLD>', 'g'), '</strong>')
-          .replace(RegExp('<DOGE>', 'g'), '<img src="/img/doge.jpg" height="100" width="100">')
-          .replace(RegExp('<CONFUSE>', 'g'), '<img src="/img/confuse.gif" height="100" width="100">')
-          .replace(RegExp('<SARCASTICLAP>', 'g'), '<img src="/img/sarcasticlap.jpg" height="100" width="100">')
-				// } else {
-					return '';
-		// }
+		if (text) {
+      // Checks to see if there's a waveform to make sure there's no null reference errors.
+      if (document.getElementById('waveform')) {
+        let soundbar = document.getElementById('waveform');
+        let captionArea = document.getElementById('caption-area');
+
+        // If the number of &SOUNDBARs is even, toggle between show and hide.
+        
+        if ((text.match(/&SOUNDBAR/g) || []).length % 2 === 0)  {
+          soundbar.style.display = 'none';
+          captionArea.style.paddingBottom = '4rem';
+        } else {
+          soundbar.style.display = 'inherit';
+          captionArea.style.paddingBottom = '0rem';
+        }
+      }
+      if (document.getElementById('spectrogram')) {
+        let spectrogram = document.getElementById('spectrogram');
+        let captionArea = document.getElementById('caption-area');
+
+        // If the number of &SPECTROGRAMs is even, toggle between show and hide.
+
+        if ((text.match(/&SPECTROGRAM/g) || []).length % 2 === 0)  {
+          captionArea.style.display = 'inherit';
+          spectrogram.style.opacity = '0.5';
+        } else {
+          captionArea.style.display = 'none';
+          spectrogram.style.opacity = '1';
+        }
+      }
+    }
+		return text
+				// Add intentation
+				.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;')
+				// Add line breaks
+				.replace(/\r\n|\n|\r/g, '<br />')
+				// Remove the invisible marker
+        .replace(RegExp(invisibleChar(marker), 'g'), '')
+        .replace(RegExp('&SOUNDBAR', 'g'), '')
+        .replace(RegExp('&SPECTROGRAM', 'g'), '')
+        .replace(RegExp('<SARTALICS>', 'g'), '<span class="sartalics">')
+        .replace(RegExp('</SARTALICS>', 'g'), '</span>')
+        .replace(RegExp('<BOLD>', 'g'), '<strong>')
+        .replace(RegExp('</BOLD>', 'g'), '</strong>')
+        .replace(RegExp('<DOGE>', 'g'), '<img src="/img/doge.jpg" height="100" width="100">')
+        .replace(RegExp('<CONFUSE>', 'g'), '<img src="/img/confuse.gif" height="100" width="100">')
+        .replace(RegExp('<SARCASTICLAP>', 'g'), '<img src="/img/sarcasticlap.jpg" height="100" width="130">')
+				return '';
 	}
 
 	// Connection status bar turns green when connected, red when disconnected.

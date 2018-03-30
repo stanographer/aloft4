@@ -1,0 +1,18 @@
+body {
+	font-family: 'Chivo Regular', sans-serif !important;
+	/*background-color: #cfe6f6;*/
+	background-color: #fff;
+	/*height: 100%;*/
+/*	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: cover;*/
+	/*background: repeating-linear-gradient(-45deg, #cfe6f6, #cfe6f6 1px, rgba(255, 255, 255, 0.6) 2px, rgba(255, 255, 255, 0.6) 3px);*/
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, code, kbd, .pager, .tooltip, .pagination, pre, samp, .panel-heading, .btn, .nav, dt, .dropcap, .badge, .label, .input-group-addon, ul.timeline-comments li.timeline-comment:last-child a, .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tfoot > tr > td, .easy-pie-chart-container .percent, .copyrights, form legend, .progress-bar, .circle-nums {
+	font-family: 'Chivo Regular', sans-serif !important;
+}
+
+h1, h2, h3 {
+	letter-spacing: unset;
+}

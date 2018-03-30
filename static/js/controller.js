@@ -24,9 +24,12 @@ var app = angular.module('Aloft', ['angularUserSettings', 'minicolors'])
 			fgColor: '#e1edeb',
 			bgColor: '#30353e',
 			fonts: [
+				{name: 'Open SansRegular', id: 'OpenSans-Regular', type: 'default'},
+				{name: 'Chivo Light', id: 'Chivo Light', type: 'default'},
 				{name: 'Inconsolata', id: 'Inconsolata', type: 'default'},
 				{name: 'Lato', id: 'Lato', type: 'default'},
 				{name: 'Roboto', id: 'Roboto', type: 'default'},
+				{name: 'Raleway-Regular', id: 'Raleway-Regular', type: 'default'},
 				{name: 'Sintony', id: 'Sintony', type: 'default'}
 			]
 		};

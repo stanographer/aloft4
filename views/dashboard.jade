@@ -3,6 +3,7 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 	head
 		meta(charset='utf-8')
 		title Aloft Dashboard
+		link(rel='icon', type='image/png', href='/favicons/aloft16x16.png')
 		link(rel='stylesheet', href='/node/bootstrap/dist/css/bootstrap.min.css')
 		link(href='/themes/yummy/css/font-awesome.min.css', rel='stylesheet', type='text/css')
 		link(href='/themes/yummy/css/dripicons.min.css', rel='stylesheet', type='text/css')
@@ -16,6 +17,7 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 		link(rel='stylesheet', href='/css/packages/bootstrap-select.min.css')
 		link(rel='stylesheet', href='/css/general.css')
 		link(rel='stylesheet', href='/css/editor.css')
+		link(rel='stylesheet', href='/css/dashboard.css')
 		//- jQuery
 		script(src='/node/jquery/dist/jquery.min.js')
 		//- Moment.js
@@ -79,10 +81,10 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 										| 
 										| #{user.firstname} #{user.lastname} has sent you the transcription file for "{{activeEvent.title}}." The file is attached to this email.
 										| 
-										| If you have any questions regarding the file or the event, please contact your stenographer, #{user.firstname}, at #{user.email}. Please don't respond directly to this email as it is automated.
+										| This is an automated message. If you have any questions regarding the file or the event, please contact your stenographer, #{user.firstname} #{user.lastname}, at #{user.email}.
 										| 
 										| Thanks!
-										| Aloft Support
+										| #{user.firstname} #{user.lastname}
 									p.attachment
 										i.fa.fa-paperclip(aria-hidden='true') &nbsp;
 										| {{activeEvent.url}}.txt
@@ -93,14 +95,13 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 										button.btn.btn-success(type='submit')
 											i.fa.fa-paper-plane(aria-hidden='true') &nbsp;
 											| Send
-		nav.navbar.navbar-inverse
+		nav.navbar.navbar-default
 			.navbar-header
 				button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar-default-collapse')
 					span.sr-only Toggle navigation
 					span.fa.fa-bars
 				a.navbar-brand(href='#')
-					i.fa.fa-cloud(aria-hidden='true')
-					| &nbsp;&nbsp;Aloft
+					img.img-responsive(src='/img/logos/aloftlogoblack.png', height='34', width='93')
 			#navbar-default-collapse.collapse.navbar-collapse
 				ul.nav.navbar-nav.navbar-right
 					li.dropdown.full-width
@@ -408,8 +409,32 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 											button.btn.btn-primary(type='submit') Add Events
 	
 					#preferences.tab-pane.bar-info(role='tabpanel')
-						p
-							| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.
+						.col-md-2.col-lg-2
+						.col-md-8.col-lg-8
+							h2.tab-header-left-justified(style='text-align: center;') User Preferences
+							.container-fluid
+								.form-group.row
+										label.col-sm-2.col-form-label(for='conf-title') Avatar
+										.col-sm-10
+											input#avatar-input(type='file', name='uploads[]')
+								.form-group.row
+											label.col-sm-2.col-form-label(for='newmemberemail') Username
+											.col-sm-10
+												input#flag-character.form-control(type='text', name='username', placeholder='Username', required='', value='#{user.username}', disabled='')
+											label.col-sm-2.col-form-label(for='newmemberemail') First Name
+											.col-sm-10
+												input#flag-character.form-control(type='first-name', name='first-name', placeholder='First name', required='', value='#{user.firstname}')
+											label.col-sm-2.col-form-label(for='newmemberemail') Last Name
+											.col-sm-10
+												input#flag-character.form-control(type='last-name', name='last-name', placeholder='Last name', required='', value='#{user.lastname}')
+								.form-group.row
+											label.col-sm-2.col-form-label(for='newmemberemail') Flag Character
+											.col-sm-10
+												input#flag-character.form-control(type='text', name='flag-character', placeholder='≈', required='')
+									p
+										small
+											| Character used to flag certain areas of the transcript. This character is invisible to the captioning consumer. Default character is ≈.
+						.col-md-2.col-lg-2
 					#help.tab-pane.bar-warning(role='tabpanel')
 						p
 							| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sed elit non arcu gravida cursus. Ut non porttitor augue. Sed ornare diam ac tortor molestie, ut vestibulum nibh placerat. In hac habitasse platea dictumst. Vivamus pharetra pretium purus, ut suscipit magna malesuada at.

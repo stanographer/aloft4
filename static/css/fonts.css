@@ -1,4 +1,14 @@
 @font-face {
+  font-family: 'Chivo Regular';
+  font-style: normal;
+  src: url('/fonts/Chivo/Chivo-Regular.ttf');
+}
+@font-face {
+  font-family: 'Chivo Light';
+  font-style: normal;
+  src: url('/fonts/Chivo/Chivo-Light.otf');
+}
+@font-face {
   font-family: 'Sintony';
   font-weight: 400;
   font-style: normal;

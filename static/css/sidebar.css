@@ -2,10 +2,11 @@
 .absolute-right-dropdown-menu {
     position: absolute;
     top: 0;
-    left: 6em;
+    left: 7em;
     /* Note opposite values */
     right: -20rem;
     width: 10rem;
+    overflow-y: scroll;
 }
 .navbar-nav > li > .dropdown-menu {
   width: 30em;
@@ -14,14 +15,14 @@
     position: fixed;
     top: 0px;
     left: 0px;
-    width: 5em;
+    width: 6.2em;
     height: 100%;
     border-radius: 0px;
     border: 0px;
     z-index: 1030;
 }
 .navbar-twitch.open {
-    width: 240px;
+    width: 6rem;
 }
 .navbar-twitch > .container {
     padding: 0px;
@@ -49,15 +50,15 @@
     display: block;
     font-weight: bold;
     padding: 1em 1em 1em 1em;
-    font-size: 18pt;
+    font-size: 1.2em;
 }
 .navbar-twitch.open > .container .navbar-brand {
     width: 100%;
-    padding: 15px 15px 60px;
+    padding: 1em 1em 6em;
     text-align: center;
 }
 .navbar-twitch.navbar-inverse > .container .navbar-brand > .small-nav > span.logo {
-    /*color: rgb(255, 255, 255);*/
+    color: rgb(255, 255, 255);
 }
 .navbar-twitch .navbar-nav > li {
     float: none;
@@ -84,7 +85,7 @@
 .navbar-twitch .navbar-nav > li > a > span {
     display: block;
     font-size: 16pt;
-    padding: 1em 1em 1em 1em;
+    padding: 1em 1em 1em 1.5em;
 }
 .navbar-twitch .tooltip,
 .navbar-twitch .tooltip .tooltip-inner {

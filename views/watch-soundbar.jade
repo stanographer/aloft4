@@ -17,6 +17,7 @@ html(lang='en')
 		link(rel='stylesheet', href='/css/fonts.css')
 		link(rel='stylesheet', href='/css/sidebar.css')
 		link(rel='stylesheet', href='/css/watch.css')
+		link(rel='stylesheet', href='/css/watch-soundbar.css')
 	
 	body(ng-app='Aloft', ng-controller='AloftController' ng-style="{'backgroundColor': bgColor}")
 		.status-bar.connected
@@ -90,11 +91,17 @@ html(lang='en')
 										.row
 											h5 Text Color
 											.form-group
-												input#fgColor.form-control(type='hidden', ng-model='fgColor', ng-change='saveFg()' minicolors="minicolorsSettings")
+												input#fgColor.form-control(ng-model='fgColor', ng-change='saveFg()' minicolors="minicolorsSettings")
 										.row
 											h5 Background Color
 											.form-group
-												input#bgColor.form-control(type='hidden', ng-model='bgColor', ng-change='saveBg()' minicolors='minicolorsSettings')
+												input#bgColor.form-control(ng-model='bgColor', ng-change='saveBg()' minicolors='minicolorsSettings')
+										.row
+											h5 Toolbar color
+											.btn-group(role='group', aria-label='toolbar color changer')
+												button.btn.btn-inverse.nav-style-toggle.disabled(type='button', data-type='inverse')  Inverse
+												button.btn.btn-default.nav-style-toggle(type='button', data-type='default')  Default
+												button.btn.btn-purple.nav-style-toggle(type='button', data-type='purple')  Purple
 							li.dropdown.third-width
 								a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
 									span.small-nav
@@ -128,37 +135,8 @@ html(lang='en')
 		#main-content
 			.row
 				#caption-area(ng-style="{'fontSize': fontSize + 'px', 'lineHeight': lineHeight + '%', 'color': fgColor, 'backgroundColor': bgColor, 'font-family': fontFamily.id}")
-			//- script.
-			//- 	var mic, fft;
 
-			//- 	function setup() {
-			//- 		createCanvas(3000, 300);
-			//- 		noFill();
-
-			//- 		mic = new p5.AudioIn();
-			//- 		mic.start();
-			//- 		fft = new p5.FFT();
-			//- 		fft.setInput(mic);
-			//- 	}
-
-			//- 	function draw() {
-			//- 			//- background(48, 53, 62);
-			//- 			background(0, 0, 0);
-			//- 			stroke('#fffff')
-
-			//- 		var spectrum = fft.analyze();
-
-			//- 	beginShape();
-
-			//- 	for (i = 0; i<spectrum.length; i++) {
-			//- 		vertex(i, map(spectrum[i], 0, 255, height, 0) );
-			//- 	}
-			//- 		endShape();
-			//- 	}
-				//- #waveform
-				//- p(align='center')
-				//- 	button.btn.btn-primary.btn-lg(onclick='microphone.start()')
-				//- 		| Start the mic
+				#waveform(style='margin-bottom: 2em;')
 
 
 		//- .row
@@ -185,8 +163,6 @@ html(lang='en')
 		script(type='text/javascript', src='/themes/yummy/js/vendors/minicolors/jquery.minicolors.min.js')
 		//- Node Minicolors
 		script(src='/node/angular-minicolors/angular-minicolors.js')
-		//- Jump
-		//- script(src='/js/packages/zenscroll-min.js')
 		//- Angular controller
 		script(src='/js/controller.js')
 		//- My shit
@@ -198,13 +174,8 @@ html(lang='en')
 		//- My scripts
 		script(src='/dist/bundle.js' defer)
 		//- p5 for realtime sound
-
-		//- script(src='/js/packages/p5.min.js')
-		//- script(src='/js/packages/p5.sound.min.js')
-		//- main wavesurfer.js lib
-		//- script(src='https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.2.3/wavesurfer.min.js')
-		//- wavesurfer.js microphone
-		//- script(src='https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.2.3/plugin/wavesurfer.microphone.min.js')
+		script(src='/js/packages/p5.min.js')
+		script(src='/js/packages/p5.sound.min.js')
 
 		script.
 			$('.dropdown-menu').click(function (e) {
@@ -214,39 +185,36 @@ html(lang='en')
 			var user = !{JSON.stringify(user)};
 			var event = !{JSON.stringify(event)};
 			var marker = !{JSON.stringify(marker)};
+		script.
+			var mic, fft;
 
-			//- var wavesurfer = WaveSurfer.create({ container: '#waveform', waveColor: 'violet' });
+			function setup() {
+			   let canvas = createCanvas(windowWidth, 250);
+			   canvas.parent('waveform');
 
-			//- var microphone = Object.create(WaveSurfer.Microphone);
+			   noFill();
 
-			//- microphone.init({
-			//-     wavesurfer: wavesurfer
-			//- });
+			   mic = new p5.AudioIn();
+			   mic.start();
+			   mic.amp(4);
+			   fft = new p5.FFT();
+			   fft.setInput(mic);
+			}
 
-			//- microphone.on('deviceReady', function(stream) {
-			//-     console.log('Device ready!', stream);
-			//- });
-			//- microphone.on('deviceError', function(code) {
-			//-     console.warn('Device error: ' + code);
-			//- });
+			function draw() {
+			   background('rgba(39,37,46,0.5)');
+			   stroke('#fff');
+			   strokeWeight(3);
 
-			//- // pause rendering
-			//- microphone.pause();
+			   var spectrum = fft.analyze();
 
-			//- // resume rendering
-			//- microphone.play();
+			   beginShape();
+			   for (i = 0; i<spectrum.length; i++) {
+			    vertex(i, map(spectrum[i], 0, 255, height, 100) );
+			   }
+			   endShape();
+			}
 
-			//- // stop visualization and disconnect microphone
-			//- microphone.stopDevice();
-
-			//- // same as stopDevice() but also clears the wavesurfer canvas
-			//- microphone.stop();
-
-			// destroy the plugin
-			//microphone.destroy();
-			//- var wavesurfer = WaveSurfer.create({
-			//- 	container: '#waveform',
-			//- 	waveColor: 'violet',
-			//- 	progressColor: 'purple',
-			//- 	barWidth: 120
-			//- });
+			function windowResized() {
+				resizeCanvas(windowWidth, 250);
+			}

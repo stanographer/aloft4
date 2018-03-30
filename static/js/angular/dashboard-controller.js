@@ -27,6 +27,7 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 			editorFgColor: '#fff',
 			editorBgColor: '#30353e',
 			editorFonts: [
+				{name: 'Chivo Light', id: 'Chivo Light', type: 'default'},
 				{name: 'Inconsolata', id: 'Inconsolata', type: 'default'},
 				{name: 'Lato', id: 'Lato', type: 'default'},
 				{name: 'Roboto', id: 'Roboto', type: 'default'},
@@ -117,7 +118,7 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 		
 		$scope.startEditor = function (e) {
 			$rootScope.activeEvent = e;
-			$scope.eventCompleted = e.completed;
+			$rootScope.eventCompleted = e.completed;
 			startEditor(e.url);
 		}
 
@@ -218,7 +219,7 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 				if ($scope.activeEvent.speaker && $scope.activeEvent.speaker != '') {
 					newText = '\"' + $scope.activeEvent.title + '\"' + '\n' + $scope.activeEvent.speaker + '\n\n' + text;
 				} else {
-					newText = '\"' + $scope.activeEvent.title + '\n\n' + text;
+					newText = '\"' + $scope.activeEvent.title + '\"' + '\n\n' + text;
 				}
 			}
 			box.value = newText;

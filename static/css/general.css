@@ -3,19 +3,6 @@
 		height: 95% !important;
 	}
 }
-body, html {
-	background-color: #30353e;
-	height: 100%;
-	/*background-color: #bdaed3;*/
-	/*background-image: url("/img/grasshorizon.jpg");*/
-	background-image: url("/img/jellybean.jpg");
-	/*background-image: url("/img/purporange.jpg");*/
-	/*background-image: url("/img/bwpoly.png");*/
-	background-repeat: no-repeat;
-	background-attachment: fixed;
-	background-size: cover;
-	/*background: repeating-linear-gradient(-45deg, #caced6, #caced6 1px, rgba(255, 255, 255, 0.6) 2px, rgba(255, 255, 255, 0.6) 3px);*/
-}
 .image-background-1 {
   background-image: url(/themes/yummy/images/backgrounds/1.png);
   background-size: cover;

@@ -13,7 +13,7 @@ module.exports = function (recipient, user, title, url, subject, message, locati
 
 	let mailOptions = {
 		to: recipient,
-		from: '"Aloft Transcripts" <admin@aloft.nu>',
+		from: '\"' + user.local.firstname + ' ' + user.local.lastname + '\"' + ' <admin@aloft.nu>',
 		subject: subject,
 		text: message,
 		attachments: [

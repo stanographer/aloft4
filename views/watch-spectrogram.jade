@@ -17,11 +17,14 @@ html(lang='en')
 		link(rel='stylesheet', href='/css/fonts.css')
 		link(rel='stylesheet', href='/css/sidebar.css')
 		link(rel='stylesheet', href='/css/watch.css')
-	
-	body(ng-app='Aloft', ng-controller='AloftController' ng-style="{'backgroundColor': bgColor}")
+		link(rel='stylesheet', href='/css/watch-spectrogram.css')
+
+	canvas#spectrogram(height='400', hidden='', width='500')
+
+	body(ng-app='Aloft', ng-controller='AloftController')
 		.status-bar.connected
 		header.nav-down
-			#header.navbar.navbar-default.navbar-twitch(role='navigation')
+			#header.navbar.navbar-inverse.navbar-twitch(role='navigation')
 				.container
 					.navbar-header
 						a.navbar-brand(href='#')
@@ -95,6 +98,12 @@ html(lang='en')
 											h5 Background Color
 											.form-group
 												input#bgColor.form-control(type='hidden', ng-model='bgColor', ng-change='saveBg()' minicolors='minicolorsSettings')
+										.row
+											h5 Toolbar color
+											.btn-group(role='group', aria-label='toolbar color changer')
+												button.btn.btn-inverse.nav-style-toggle.disabled(type='button', data-type='inverse')  Inverse
+												button.btn.btn-default.nav-style-toggle(type='button', data-type='default')  Default
+												button.btn.btn-purple.nav-style-toggle(type='button', data-type='purple')  Purple
 							li.dropdown.third-width
 								a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
 									span.small-nav
@@ -121,55 +130,23 @@ html(lang='en')
 												input#filename-id.form-control(name='filename-id', placeholder='someone@email.com', type='text')
 												span.input-group-addon @
 											a.input-group-btn.btn.btn-success.inline(type='submit', onclick='grabTranscript()') Send
+							li.dropdown.third-width
+								a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+									span.small-nav
+										span.fa.fa-barcode(aria-hidden='true')
+									span.full-nav  Live Audio Spectrogram
+								ul.dropdown-menu.absolute-right-dropdown-menu(role='menu')
+									li
+										h4.margin-top-0.margin-bottom-20px Live Audio Spectrogram
+										button#micSelection.btn.btn-primary Start microphone
+										
 					// /.nav-collapse
 		button.btn.btn-default.btn-xs.navbar-twitch-toggle(type='button')
 			span.glyphicon.glyphicon-chevron-right.nav-open
 			span.glyphicon.glyphicon-chevron-left.nav-close
 		#main-content
 			.row
-				#caption-area(ng-style="{'fontSize': fontSize + 'px', 'lineHeight': lineHeight + '%', 'color': fgColor, 'backgroundColor': bgColor, 'font-family': fontFamily.id}")
-			//- script.
-			//- 	var mic, fft;
-
-			//- 	function setup() {
-			//- 		createCanvas(3000, 300);
-			//- 		noFill();
-
-			//- 		mic = new p5.AudioIn();
-			//- 		mic.start();
-			//- 		fft = new p5.FFT();
-			//- 		fft.setInput(mic);
-			//- 	}
-
-			//- 	function draw() {
-			//- 			//- background(48, 53, 62);
-			//- 			background(0, 0, 0);
-			//- 			stroke('#fffff')
-
-			//- 		var spectrum = fft.analyze();
-
-			//- 	beginShape();
-
-			//- 	for (i = 0; i<spectrum.length; i++) {
-			//- 		vertex(i, map(spectrum[i], 0, 255, height, 0) );
-			//- 	}
-			//- 		endShape();
-			//- 	}
-				//- #waveform
-				//- p(align='center')
-				//- 	button.btn.btn-primary.btn-lg(onclick='microphone.start()')
-				//- 		| Start the mic
-
-
-		//- .row
-		//- 		h2 Navbar Styles
-		//- 		p Just to show off how easy it is to theme!
-		//- 		button.btn.btn-inverse.nav-style-toggle.disabled(type='button', data-type='inverse')  Inverse
-		//- 		button.btn.btn-default.nav-style-toggle(type='button', data-type='default')  Default
-		//- 		button.btn.btn-purple.nav-style-toggle(type='button', data-type='purple')  Purple
-
-		//- a.scrollToTop.pull-right.tooltiped(href='#', data-toggle='tooltip', data-placement='left', title='To Top')
-		//- 	i.fa.fa-arrow-up
+				#caption-area(ng-style="{'fontSize': fontSize + 'px', 'lineHeight': lineHeight + '%', 'color': fgColor, 'font-family': fontFamily.id}")
 
 		a#autoscroll.arrow.bounce
 		//- jQuery
@@ -185,8 +162,6 @@ html(lang='en')
 		script(type='text/javascript', src='/themes/yummy/js/vendors/minicolors/jquery.minicolors.min.js')
 		//- Node Minicolors
 		script(src='/node/angular-minicolors/angular-minicolors.js')
-		//- Jump
-		//- script(src='/js/packages/zenscroll-min.js')
 		//- Angular controller
 		script(src='/js/controller.js')
 		//- My shit
@@ -197,15 +172,8 @@ html(lang='en')
 		script(src='/js/jquery-ui-touch.js')
 		//- My scripts
 		script(src='/dist/bundle.js' defer)
-		//- p5 for realtime sound
-
-		//- script(src='/js/packages/p5.min.js')
-		//- script(src='/js/packages/p5.sound.min.js')
-		//- main wavesurfer.js lib
-		//- script(src='https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.2.3/wavesurfer.min.js')
-		//- wavesurfer.js microphone
-		//- script(src='https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.2.3/plugin/wavesurfer.microphone.min.js')
-
+		//- Will Brickner's spectrogram
+		script(src='/js/sound/spectrogram-will-brickner.js')
 		script.
 			$('.dropdown-menu').click(function (e) {
 				e.stopPropagation();
@@ -214,39 +182,3 @@ html(lang='en')
 			var user = !{JSON.stringify(user)};
 			var event = !{JSON.stringify(event)};
 			var marker = !{JSON.stringify(marker)};
-
-			//- var wavesurfer = WaveSurfer.create({ container: '#waveform', waveColor: 'violet' });
-
-			//- var microphone = Object.create(WaveSurfer.Microphone);
-
-			//- microphone.init({
-			//-     wavesurfer: wavesurfer
-			//- });
-
-			//- microphone.on('deviceReady', function(stream) {
-			//-     console.log('Device ready!', stream);
-			//- });
-			//- microphone.on('deviceError', function(code) {
-			//-     console.warn('Device error: ' + code);
-			//- });
-
-			//- // pause rendering
-			//- microphone.pause();
-
-			//- // resume rendering
-			//- microphone.play();
-
-			//- // stop visualization and disconnect microphone
-			//- microphone.stopDevice();
-
-			//- // same as stopDevice() but also clears the wavesurfer canvas
-			//- microphone.stop();
-
-			// destroy the plugin
-			//microphone.destroy();
-			//- var wavesurfer = WaveSurfer.create({
-			//- 	container: '#waveform',
-			//- 	waveColor: 'violet',
-			//- 	progressColor: 'purple',
-			//- 	barWidth: 120
-			//- });

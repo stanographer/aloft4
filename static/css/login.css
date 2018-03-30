@@ -1,0 +1,24 @@
+.col-md-9 {
+	width: 100%;
+}
+body, html {
+	font-family: 'Chivo Regular';
+	/*background-color: #cfe6f6;*/
+	background-color: #5eace5;
+	/*height: 100%;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: cover;
+	background: repeat*/ing-linear-gradient(-45deg, #cfe6f6, #cfe6f6 1px, rgba(255, 255, 255, 0.6) 2px, rgba(255, 255, 255, 0.6) 3px);
+}
+.copyrights {
+	color: unset;
+}
+
+.login-header {
+	margin: 0em;
+}
+.login-header img {
+	max-height: 4em;
+	max-width: unset;
+}

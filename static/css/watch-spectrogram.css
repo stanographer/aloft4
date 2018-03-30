@@ -1,0 +1,19 @@
+ body {
+ 	background-color: #000;
+ }
+ #spectrogram {
+ 	height: 100%;
+ 	width: 100%;
+ 	color: #fff;
+ 	left: 0;
+ 	top: 0;
+ 	z-index: -1;
+ 	position: fixed;
+ 	opacity: 0.7;
+ }
+ #caption-area {
+ 	background-color: unset;
+ }
+ #micSelection {
+ 	margin-bottom: 3rem;
+ }
