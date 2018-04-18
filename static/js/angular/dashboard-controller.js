@@ -28,9 +28,16 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 			editorBgColor: '#30353e',
 			editorFonts: [
 				{name: 'Chivo Light', id: 'Chivo Light', type: 'default'},
+				{name: 'Fira Sans Light', id: 'Fira Sans Light', type: 'default'},
+				{name: 'Fira Sans Regular', id: 'Fira Sans Regular', type: 'default'},
+				{name: 'Fira Sans Medium', id: 'Fira Sans Medium', type: 'default'},
+				{name: 'Fira Sans SemiBold', id: 'Fira Sans SemiBold', type: 'default'},
 				{name: 'Inconsolata', id: 'Inconsolata', type: 'default'},
 				{name: 'Lato', id: 'Lato', type: 'default'},
+				{name: 'Noway Regular', id: 'Noway Regular', type: 'default'},
+				{name: 'Open SansRegular', id: 'OpenSans-Regular', type: 'default'},
 				{name: 'Roboto', id: 'Roboto', type: 'default'},
+				{name: 'Raleway-Regular', id: 'Raleway-Regular', type: 'default'},
 				{name: 'Sintony', id: 'Sintony', type: 'default'}
 			]
 		};
