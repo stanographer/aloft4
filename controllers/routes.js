@@ -223,7 +223,7 @@ module.exports = function(app, passport, db) {
 		res.render('first-user');
 	});
 
-	app.get('/invite-member', isLoggedIn, function (req, res) {
+	app.get('/invite-member', function (req, res) {
 		if (req.user.local.role === 'admin') {
 			res.render('invite-user');
 		} else {

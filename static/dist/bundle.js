@@ -4190,7 +4190,6 @@ function startShareDb () {
         let captionArea = document.getElementById('caption-area');
 
         // If the number of &SOUNDBARs is even, toggle between show and hide.
-        
         if ((text.match(/&SOUNDBAR/g) || []).length % 2 === 0)  {
           soundbar.style.display = 'none';
           captionArea.style.paddingBottom = '4rem';
@@ -4221,7 +4220,9 @@ function startShareDb () {
 				.replace(/\r\n|\n|\r/g, '<br />')
 				// Remove the invisible marker
         .replace(RegExp(invisibleChar(marker), 'g'), '')
+        // Turn the sound bar on or off.
         .replace(RegExp('&SOUNDBAR', 'g'), '')
+        // Turn the spectrogram on or off.
         .replace(RegExp('&SPECTROGRAM', 'g'), '')
         .replace(RegExp('<SARTALICS>', 'g'), '<span class="sartalics">')
         .replace(RegExp('</SARTALICS>', 'g'), '</span>')

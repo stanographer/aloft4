@@ -189,14 +189,14 @@ html(lang='en')
 			var mic, fft;
 
 			function setup() {
-			   let canvas = createCanvas(windowWidth, 250);
+			   let canvas = createCanvas(windowWidth, windowWidth/5);
 			   canvas.parent('waveform');
 
 			   noFill();
 
 			   mic = new p5.AudioIn();
 			   mic.start();
-			   mic.amp(4);
+			   mic.amp(10);
 			   fft = new p5.FFT();
 			   fft.setInput(mic);
 			}
