@@ -1,4 +1,4 @@
- 'use strict';
+'use strict';
 
 // Dependencies
 const async = require('async')
@@ -47,12 +47,6 @@ function startServer() {
  	var udb = mongoose.connection;
  	udb.on('error', function () {
   		console.log('Database error.');
-	});
-
-	udb.once('open', function () {
- 		server.listen(3030, function () {
-    		console.log('Users server UP & running on port 3030.');
-  		});
 	});
 
  	// Passport
