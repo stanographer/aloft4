@@ -338,7 +338,6 @@ var attachTextarea = function (elem, doc) {
   // Replace the content of the text area with newText, and transform the
   // current cursor by the specified function.
   var replaceText = function (newText, transformCursor) {
-    console.log('replaceText', newText);
     if (transformCursor) {
       var newSelection = [transformCursor(elem.selectionStart), transformCursor(elem.selectionEnd)];
     }
@@ -400,7 +399,6 @@ var attachTextarea = function (elem, doc) {
   }
 
   doc.on('op', function (op, localContext) {
-    console.log('on op', op, localContext);
     if (localContext === true) {
       return;
     }
@@ -420,9 +418,6 @@ var attachTextarea = function (elem, doc) {
       onRemove(fields.pos, fields.delNum);
     }
   });
-
-
-
 
   // *** local -> remote changes
 
