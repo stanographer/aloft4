@@ -21,12 +21,12 @@ const otText = require('ot-text')
 	, sharedbmongo = require('sharedb-mongo')
 	, shareRest = require('./controllers/share-rest')
 	, redisPubSub = require('sharedb-redis-pubsub')
+	, RedisStore = require('connect-redis')(session)
 	, types = require('sharedb/lib/types')
 	, WebSocket = require('ws')
 	, WebSocketJSONStream = require('websocket-json-stream');
 
 // Modules
-// const routes = require('./controllers/routes')
 const config = require('./config/aloft-config');
 
 module.exports.run = function() {
@@ -37,13 +37,13 @@ module.exports.run = function() {
 	const db = sharedbmongo(config.mongo);
 	const backend = new ShareDB({
 		db: db,
-		pubsub: redisPubSub('redis://localhost:6379/')
+		pubsub: redisPubSub(process.env.REDIS_URL || 'redis://localhost:6379/')
 	});
 	const connection = backend.connect();
 
 	// Mongoose
  	mongoose.connect(config.users);
- 	mongoose.Promise = require('bluebird');
+ 	mongoose.Promise = global.Promise;
  	var udb = mongoose.connection;
  	udb.on('error', function () {
   		console.log('Database error.');
@@ -68,15 +68,11 @@ module.exports.run = function() {
 	app.set('views', __dirname + '/views');
  	app.use(express.static(__dirname + '/static'));
  	app.use('/node', express.static(__dirname + '/node_modules'));
-
 	app.use(session({
-		resave: true,
-		saveUninitialized: false,
-		secret: config.session,
-		cookie: {
-			maxAge: 24*60*60*1000,
-			secure: false
-		}
+		store: new RedisStore({url: 'redis://localhost:6379/'}),
+    	secret: config.session,
+    	resave: false,
+    	saveUninitialized: true
 	}));
 	
 	app.use(methodOverride('_method'));
