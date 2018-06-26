@@ -43,7 +43,7 @@ module.exports.run = function() {
 
 	// Mongoose
  	mongoose.connect(config.users);
- 	mongoose.Promise = global.Promise;
+ 	mongoose.Promise = require('bluebird');
  	var udb = mongoose.connection;
  	udb.on('error', function () {
   		console.log('Database error.');

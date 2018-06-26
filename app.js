@@ -10,7 +10,7 @@ if (cluster.isMaster) {
 }
 
 function masterProcess() {
-	console.log(`Master ${process.pid} is running`);
+	console.log(`Master ${process.pid} is running with ${numCPUs} cpus.`);
 
 	for (let i = 0; i < numCPUs; i++) {
 		console.log(`Forking process number ${i}...`);
