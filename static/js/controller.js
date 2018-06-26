@@ -35,7 +35,11 @@ var app = angular.module('Aloft', ['angularUserSettings', 'minicolors'])
 				{name: 'Open SansRegular', id: 'OpenSans-Regular', type: 'default'},
 				{name: 'Roboto', id: 'Roboto', type: 'default'},
 				{name: 'Raleway-Regular', id: 'Raleway-Regular', type: 'default'},
-				{name: 'Sintony', id: 'Sintony', type: 'default'}
+				{name: 'Sintony', id: 'Sintony', type: 'default'},
+				{name: 'Source Code Pro Light', id: 'Source Code Pro Light', type: 'default'},
+				{name: 'Source Code Pro Medium', id: 'Source Code Pro Medium', type: 'default'},
+				{name: 'Source Code Pro Regular', id: 'Source Code Pro Regular', type: 'default'},
+				{name: 'Source Code Pro Semibold', id: 'Source Code Pro Semibold', type: 'default'},
 			]
 		};
 

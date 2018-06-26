@@ -94,11 +94,11 @@ html(lang='en')
 										.row
 											h5 Text Color
 											.form-group
-												input#fgColor.form-control(type='hidden', ng-model='fgColor', ng-change='saveFg()' minicolors="minicolorsSettings")
+												input#fgColor.form-control(ng-model='fgColor', ng-change='saveFg()' minicolors="minicolorsSettings")
 										.row
 											h5 Background Color
 											.form-group
-												input#bgColor.form-control(type='hidden', ng-model='bgColor', ng-change='saveBg()' minicolors='minicolorsSettings')
+												input#bgColor.form-control(ng-model='bgColor', ng-change='saveBg()' minicolors='minicolorsSettings')
 							li.dropdown.third-width
 								a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
 									span.small-nav
@@ -147,8 +147,6 @@ html(lang='en')
 		script(type='text/javascript', src='/themes/yummy/js/vendors/minicolors/jquery.minicolors.min.js')
 		//- Node Minicolors
 		script(src='/node/angular-minicolors/angular-minicolors.js')
-		//- Jump
-		//- script(src='/js/packages/zenscroll-min.js')
 		//- Angular controller
 		script(src='/js/controller.js')
 		//- My shit

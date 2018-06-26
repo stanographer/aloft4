@@ -52,6 +52,26 @@
        url('/fonts/Sintony-regular/Sintony-regular.svg#Sintony') format('svg');
 }
 @font-face {
+  font-family: 'Source Code Pro Light';
+  font-style: normal;
+  src: url('/fonts/Source-Code-Pro/SourceCodePro-Light.ttf');
+}
+@font-face {
+  font-family: 'Source Code Pro Medium';
+  font-style: normal;
+  src: url('/fonts/Source-Code-Pro/SourceCodePro-Medium.ttf');
+}
+@font-face {
+  font-family: 'Source Code Pro Regular';
+  font-style: normal;
+  src: url('/fonts/Source-Code-Pro/SourceCodePro-Regular.ttf');
+}
+@font-face {
+  font-family: 'Source Code Pro Semibold';
+  font-style: normal;
+  src: url('/fonts/Source-Code-Pro/SourceCodePro-Semibold.ttf');
+}
+@font-face {
   font-family: 'Lato';
   font-weight: 400;
   font-style: normal;

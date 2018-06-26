@@ -83,6 +83,9 @@
 				a.btn.btn-default.btn-big-icon.tooltiped(type='button', ng-href='{{ host }}/#{user.username}/{{activeEvent.url}}', target='popout', data-toggle='tooltip', title='Opens captions in a new window to fullscreen on extended desktop.')
 					i.fa.fa-share-square-o(aria-hidden='true')
 					| Pop Out
+				a.btn.btn-default.btn-big-icon.tooltiped(type='button', ng-href='{{ host }}/soundbar/#{user.username}/{{activeEvent.url}}', target='popout', data-toggle='tooltip', title='Opens captions in a new window to fullscreen on extended desktop.')
+					i.fa.fa-share-square-o(aria-hidden='true')
+					| Pop Out Soundbar
 				button.btn.btn-default.btn-big-icon.tooltiped(type='button', data-toggle='tooltip', title='End event.', onclick='stopEditor();')
 					i.fa.fa-times(aria-hidden='true')
 					| End
