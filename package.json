@@ -9,7 +9,8 @@
     "build-watch": "browserify static/js/client.js -o static/dist/bundle.js",
     "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "make": "browserify static/dist/make-files/client.js --standalone sharedb,ot-text > static/sharedb/client-built.js",
+	"make": "browserify static/dist/make-files/client.js --standalone sharedb,ot-text > static/sharedb/client-built.js",
+	"makeserver": "cp ~/aloft-config.js ~/aloft4/config && cp ~/mailer.js ~/aloft4/config && node app.js",
     "start": "node app.js"
   },
   "keywords": [
