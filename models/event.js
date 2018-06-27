@@ -7,6 +7,7 @@ const eventSchema = mongoose.Schema({
 	user: String,
 	url: String,
 	title: String,
+	conf: String,
 	speaker: String,
 	alias: String,
 	collab: Boolean,
@@ -21,7 +22,6 @@ const eventSchema = mongoose.Schema({
 	formattedDate: String,
 	hidden: Boolean,
 	snapshot: String,
-	subdomain: String,
 	viewCount: String,
 	version: String
 });

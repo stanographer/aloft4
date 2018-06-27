@@ -52,7 +52,8 @@ module.exports.run = function() {
  	// Passport
  	require('./config/passport')(passport);
 
- 	// Extra routes
+	 // Extra routes
+	let apiController = require('./controllers/api');
  	let editorController = require('./controllers/editor');
  	let conferencesController = require('./controllers/conferences');
 
@@ -80,16 +81,17 @@ module.exports.run = function() {
  	app.use(passport.session());
  	app.use(flash());
  	app.use('/editor', editorController);
- 	app.use('/conferences', conferencesController);
- 	app.use(function (req, res, next) {
-	  console.log("======== REQ START =========");
-	  console.log("REQ DOT BODY\n", JSON.stringify(req.body));
-	  console.log("REQ DOT PARAMS\n", JSON.stringify(req.params));
-	  console.log("REQ DOT SESSION\n", JSON.stringify(req.session));
-	  console.log("REQ DOT USER\n", JSON.stringify(req.user));
-	  console.log("======== REQ END =========");
-	  next();
-	});
+	app.use('/conf', conferencesController);
+	app.use('/api', apiController);
+ 	// app.use(function (req, res, next) {
+	//   console.log("======== REQ START =========");
+	//   console.log("REQ DOT BODY\n", JSON.stringify(req.body));
+	//   console.log("REQ DOT PARAMS\n", JSON.stringify(req.params));
+	//   console.log("REQ DOT SESSION\n", JSON.stringify(req.session));
+	//   console.log("REQ DOT USER\n", JSON.stringify(req.user));
+	//   console.log("======== REQ END =========");
+	//   next();
+	// });
 
  	// Routes
  	require('./controllers/routes')(app, passport, db);

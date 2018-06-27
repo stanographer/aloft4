@@ -1,5 +1,3 @@
-'use strict';
-
 const async = require('async')
 	, crypto = require('crypto')
 	, dateformat = require('dateformat')
@@ -37,10 +35,6 @@ module.exports = function(app, passport, db) {
 		} else {
 			res.render('login');
 		}
-	});
-
-	app.get('/_sub/:address', function (req, res) {
-		res.send(req.params.address);
 	});
 
 	app.get('/admin-only', isLoggedIn, function (req, res) {
@@ -325,77 +319,7 @@ module.exports = function(app, passport, db) {
 				});
 	});
 
-	app.get('/publicJobs/:user', function (req, res) {
-		let perPage = parseInt(req.query.perPage);
-		let page = req.query.page > 0 ? req.query.page - 1 : 0
-		let maxBreadcrumbs = 6;
-
-		// Event.find({$or: [{'user': req.params.user}, {'hidden': null}, {'hidden': {$exists: false}}, {'hidden': false}]})
-		Event.find({'user': req.params.user})
-				.select(['url', 'user', 'title', 'created', '_id'])
-				.limit(perPage)
-				.skip(perPage * page)
-				.sort({created: -1})
-				.exec(function (err, events) {
-					let i = 0;
-					async.parallel([function (callback) {
-						async.forEachLimit(events, 3, function (e, next) {
-							e.position = i;
-
-							let date = new Date(e.created);
-
-							db.getSnapshot(e.user, e.url, null, null, function (err, snapshot) {
-								let snap = snapshot.data;
-
-								if (!err) {
-
-									if (snap && snap.length >= 200) {
-										snap = snapshot.data.substring(0, 200);
-										snap += '...';
-									}
-									if (!snap || snap.length < 1) {
-										snap = 'Preview for this event not available.'
-									}
-
-									e.snapshot = snap;
-									e.formattedDate = dateformat(date, 'yyyy-m-d (H:MM)').toString();
-
-									i++;
-									next();
-
-								} else {
-									snap = 'Preview for this event not available.';
-									i++;
-									next();
-								}
-							});
-
-						}, function (err) {
-							if (!err) {
-								callback();
-							} else {
-								throw err;
-							}
-						});
-					}], function () {
-						Event.count().exec(function (err, count) {
-							let data = {
-								events: events,
-								page: page,
-								perPage: perPage,
-								total: count
-							}
-							res.json(data);
-						});
-					})
-					
-				});
-	});
-
 	app.get('/:user/:event', function (req, res, next) {
-		let var1 = req.params.user;
-		let var2 = req.params.event;
-
 		Event.findOne({'user': req.params.user, 'url': req.params.event}, function (err, event) {
 			if (err) {
 				throw err;
@@ -405,110 +329,13 @@ module.exports = function(app, passport, db) {
 						fontSize: '35',
 						fontFace: 'Inconsolata',
 						lineHeight: '130'
-					}
-					if (event.completed) {
-						res.redirect('/text/' + req.params.user + '/' + req.params.event);
-					} else {
-						res.render('watch', {
-							user: req.params.user,
-							event: req.params.event,
-							prefs: prefs,
-							marker: '≈'
-						});
-					}
-				} else {
-					Conference.findOne({'url': req.params.user}, function (err, conf) {
-						let isAnEvent;
-						let isPlanned;
-
-						if (err) {
-							throw err;
-						} else {
-							console.log('fffooouuunnndddd the conffff' + conf)
-							if (conf) {
-								async.waterfall([
-									function (done) {
-										let eventData;
-										for (let e in conf.events) {
-											if (conf.events[e].slug === var2) {
-												eventData = {
-													is_event: true,
-													user: conf.events[e].user,
-													event: conf.events[e].url,
-													speaker: conf.events[e].speaker,
-													title: conf.events[e].title
-												}
-												// return done(err, eventData);
-												// console.log('event DATATAT' + JSON.stringify(eventData))
-											}
-										}
-										return done(err, eventData);
-									},
-									function (eventData, done) {
-										let plannedData;
-										for (let p in conf.plannedEvents) {
-											if (conf.plannedEvents[p].slug === var2) {
-												plannedData = {
-													is_planned: true,
-													conf_name: conf.title,
-													conf_slug: conf.url,
-													event: conf.plannedEvents[p].slug,
-													speaker: conf.plannedEvents[p].speaker,
-													title: conf.plannedEvents[p].title,
-													streamtext: conf.plannedEvents[p].streamtext
-												}
-												
-												console.log('event DATATAT 2222222' + JSON.stringify(eventData))
-												console.log('planned DATATAT' + JSON.stringify(plannedData))
-											}
-										}
-										return done(err, plannedData, eventData);
-									},
-									function (plannedData, eventData, done) {
-										console.log('event DATATAT 33333' + JSON.stringify(eventData))
-										console.log('planned DATATAT 3333333' + JSON.stringify(plannedData))
-										// console.log(eventData.user, eventData.slug, eventData.speaker)
-
-										if (plannedData.streamtext && plannedData.streamtext.length > 0) {
-											console.log('REDIRECT!')
-											res.redirect('http://streamtext.net/player?event=' + plannedData.streamtext);
-										} else if (eventData || eventData && plannedData) {
-											res.render('watch', {
-												user: eventData.user,
-												event: eventData.event,
-												speaker: eventData.speaker,
-												title: eventData,
-												marker: '≈'
-											});
-										} else if (plannedData && plannedData.is_planned === true) {
-											res.render('hasnt-started', {
-													conf_title: conf.title,
-													conf_slug: conf.url,
-													event: plannedData.slug,
-													speaker: plannedData.speaker,
-													title: plannedData.title
-											});
-										} else {
-											req.flash('error_message', 'Sorry. There was no matching event name found.')
-											res.render('error', {
-												message: req.flash('error_message')
-											});
-										}
-									}],
-									function (err, result) {
-										if (err) {
-											throw err;
-										} else {
-											console.log(result);
-										}
-									});
-							} else {
-								req.flash('error_message', 'Sorry. There was no matching conference found.')
-								res.render('error', {
-									message: req.flash('error_message')
-								});
-							}
-						}
+				}
+				if (event.completed) res.redirect('/text/' + req.params.user + '/' + req.params.event);
+					res.render('watch', {
+						user: req.params.user,
+						event: req.params.event,
+						prefs: prefs,
+						marker: '≈'
 					});
 				}
 			}
@@ -524,18 +351,22 @@ module.exports = function(app, passport, db) {
 		},
 		function (token, done) {
 			let cleanEmail = req.body.newmemberemail.trim().toLowerCase();
+			console.log(`entered function, got email! ${cleanEmail}`)
 			User.findOne({'local.email': cleanEmail}, function (err, user) {
 				if (err) {
 					throw err;
 				} else {
 					if (user) {
 						req.flash('adminMessage', 'That email is already registered.');
-						res.redirect('/dashboard#admin')
+						res.redirect('/dashboard#login');
 					} else {
 						let newUser = new User;
 						newUser.inviteToken = token;
 						newUser.trialPeriod = req.body.trialPeriod;
-						newUser.save (function (err) {
+						newUser.local.email = req.body.cleanEmail;
+						console.log(`we have a new user! ${newUser}`)
+						newUser.save(function (err) {
+							if (err) throw err;
 							done(err, token, user);
 						});
 					}
@@ -569,7 +400,6 @@ module.exports = function(app, passport, db) {
 			if (err) {
 				req.flash('error_message', 'The email could not be sent. Please try again.');
 				res.redirect('/');
-				return console.log(err);
 			} else {
 				req.flash('success_message', 'An email with the link to this event has been sent successfully to ' + req.body.newmemberemail + '.');
 				res.redirect('/dashboard');
@@ -582,7 +412,6 @@ module.exports = function(app, passport, db) {
 		failureRedirect: '/login',
 		failureFlash: true
 	}));
-
 
 	app.post('/signup', passport.authenticate('signup', {
 		successRedirect: '/dashboard',
@@ -642,25 +471,6 @@ module.exports = function(app, passport, db) {
 								lastname: user.local.lastname,
 								events: events
 							});
-						}
-					});
-				} else {
-					Conference.findOne({url: req.params.user}, function (err, conf) {
-						if (err) {
-							throw err;
-						} else {
-							if (conf) {
-								res.render('listing-conf', {
-									title: conf.title,
-									url: conf.url,
-									events: conf.events
-								});
-							} else {
-								req.flash('error_message', 'Sorry. There was no user or conference found with that name.');
-								res.render('error', {
-									message: req.flash('error_message')
-								});
-							}
 						}
 					});
 				}

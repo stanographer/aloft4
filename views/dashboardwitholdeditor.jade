@@ -239,7 +239,7 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 													label(for='hidden') Hidden Event
 											.col-md-6
 												button.next.btn.btn-info.pull-right(type='submit')
-													| Create Event
+													| Create Event {{planned}}
 									form#basic-wizard.margin-bottom-10px(data-parsley-validate='', action='/conferences/new-event', method='post', ng-cloak, ng-hide='!confMode')
 										.first.block1.show
 											.col-md-12

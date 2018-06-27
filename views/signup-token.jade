@@ -45,6 +45,17 @@ html(lang='en')
 							.col-sm-6
 								.form-group
 									input#password_confirmation.form-control.input-lg(type='password', name='password_confirmation', placeholder='Confirm Password', tabindex='6', required='')
+						.row
+							.col-sm-12
+								a.tooltiped(href='#', title="A sign-up token is required to create an account. To inquire, please email support@aloft.nu.", data-toggle='tooltip', data-placement='top') What's a sign-up token?
+
+						.row
+							.col-sm-12
+								.form-group
+									if (token)
+										input#email.form-control.input-lg(type='text', name='token', placeholder='Sign-up Token', tabindex='7', required='', value='#{token}')
+									else
+										input#email.form-control.input-lg(type='text', name='token', placeholder='Sign-up Token', tabindex='7', required='')
 						if (message.length > 0)
 							.row
 								.col-xs-12

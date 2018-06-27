@@ -7,6 +7,7 @@
     "build-rich": "mkdir -p static/dist/ && ./node_modules/.bin/browserify lib/richtext-client.js -o static/dist/richtext.js",
     "build-dashboard": "mkdir -p static/dist/ && ./node_modules/.bin/browserify lib/textarea-client.js -o static/dist/textarea.js",
     "build-watch": "browserify static/js/client.js -o static/dist/bundle.js",
+    "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "make": "browserify static/dist/make-files/client.js --standalone sharedb,ot-text > static/sharedb/client-built.js",
     "start": "node app.js"

@@ -1,13 +1,4 @@
-@font-face {
-  font-family: 'Chivo Regular';
-  font-style: normal;
-  src: url('/fonts/Chivo/Chivo-Regular.ttf');
-}
-@font-face {
-  font-family: 'Chivo Light';
-  font-style: normal;
-  src: url('/fonts/Chivo/Chivo-Light.otf');
-}
+@import url('https://fonts.googleapis.com/css?family=Chivo:300,400,400i,700');
 @font-face {
   font-family: 'Noway';
   font-style: normal;

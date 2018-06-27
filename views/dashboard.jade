@@ -225,25 +225,29 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 											.col-md-6
 												button.next.btn.btn-info.pull-right(type='submit')
 													| Create Event
-									form#basic-wizard.margin-bottom-10px(data-parsley-validate='', action='/conferences/new-event', method='post', ng-cloak, ng-hide='!confMode')
+									form#basic-wizard.margin-bottom-10px(data-parsley-validate='', action='/conf/new-event', method='post', ng-cloak, ng-hide='!confMode')
 										.first.block1.show
 											.col-md-12
 												.form-group.has-feedback
-												if (conference && conference.plannedEvents)
 													.input-group.input-group-lg
-														select.selectpicker#url-select(data-container='body', ng-change='pickEvent("#{conference.url}")', ng-model='planned', title='(Choose from scheduled events)')
-															option
-															each plannedEvent in conference.plannedEvents
-																option(value='#{plannedEvent.slug}::#{plannedEvent.title}::#{plannedEvent.speaker}') #{plannedEvent.title}
+														select.form-control.input-lg#url-select(data-container='body',
+																ng-options='plannedEvent as plannedEvent.title for plannedEvent in plannedEvents.data'
+																title='(Choose from scheduled events)'
+																ng-model='planned'
+																ng-change='pickEvent();')
+														//- select.form-control.input-lg#url-select(data-container='body',
+														//- 	title='(Choose from scheduled events)'
+														//- 	ng-model='planned'
+														//- 	ng-change='update();')
+														//- 	option(ng-repeat='plannedEvent in plannedEvents.data'){{plannedEvent.title}}
 												.form-group.has-feedback
 													label.control-label(for='url') Slug
 												.input-group.input-group-lg
 													if (conference)
-														span#basic-addon3.input-group-addon {{ host }}/#{conference.url}/
+														span#basic-addon3.input-group-addon {{ host }}/conf?name=#{conference.url}&session=
 													else
 														span#basic-addon3.input-group-addon {{ host }}/CONFERENCEURL/
 													input#slug.form-control.lowercase(type='text', ng-readonly='eventCreator.slug', name='conf[slug]', aria-describedby='url-field', placeholder='i.e. makebetterplugins', ng-model='eventCreator.slug')
-													input#url.form-control.lowercase(style='display: none;', type='text', ng-readonly='eventCreator.url', name='conf[url]', aria-describedby='url-field', placeholder='i.e. makebetterplugins', ng-model='eventCreator.url')
 											.form-group.has-feedback
 												.col-md-6
 													label.control-label.make-room(for='title') Title
@@ -337,7 +341,7 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 							p
 								| Use this form to create a new conference. Events created in conference mode will be accessible via the a dedicated subdomain (i.e. wordcampnyc.aloft.nu/track1).
 							.col-md-12
-								form#token-form.signup(action='/conferences/new', method='post')
+								form#token-form.signup(action='/conf/new', method='post')
 									.form-group.row
 										label.col-sm-2.col-form-label(for='conf[url]') Dedicated Subdomain
 										.col-sm-10
@@ -377,7 +381,7 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 							p
 								small
 									| All new events created via the Create Event tool will be added to this conference.
-							form#token-form.signup(action='/conferences/set', method='post')
+							form#token-form.signup(action='/conf/set', method='post')
 								.col-md-12
 									.form-group.row
 										label.col-md-4.control-label(for='selectbasic-normal') Set Active Conference
@@ -398,7 +402,7 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 								| Add your planned events in the following format: 
 								code
 									| making-wordpress-plugins, Making Wordpress Plugins
-							form#token-form.signup(action='/conferences/plan-events', method='post')
+							form#token-form.signup(action='/conf/plan-events', method='post')
 								.col-md-12
 									.form-group.row
 										label.col-md-4.control-label(for='textarea-normal') Add Planned Events

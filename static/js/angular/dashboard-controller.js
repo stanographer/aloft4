@@ -27,7 +27,7 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 			editorFgColor: '#fff',
 			editorBgColor: '#30353e',
 			editorFonts: [
-				{name: 'Chivo Light', id: 'Chivo Light', type: 'default'},
+				{name: 'Chivo Light', id: 'Chivo-Light', type: 'default'},
 				{name: 'Fira Sans Light', id: 'Fira Sans Light', type: 'default'},
 				{name: 'Fira Sans Regular', id: 'Fira Sans Regular', type: 'default'},
 				{name: 'Fira Sans Medium', id: 'Fira Sans Medium', type: 'default'},
@@ -51,11 +51,6 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 			title: '',
 			speaker: ''
 		}
-		$scope.planned = {
-			slug: '',
-			title: '',
-			speaker: ''
-		};
 
 		$scope.minicolorsSettings = {
     		control: 'hue',
@@ -91,6 +86,21 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 				}
 			});
 		}
+
+		function getPlannedEvents(conf) {
+			$http({
+				method: 'GET',
+				url: `/api/conf/plannedEvents?name=${conf}`})
+				.then((success) => {
+					$scope.plannedEvents = {
+						model: null,
+						data: success.data
+					}
+					console.log($scope.plannedEvents.data);
+				});
+		}
+
+		getPlannedEvents('sourcecon');
 
 		$scope.getEvents = function () {
 			$http({
@@ -134,20 +144,10 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 			return newURL;
 		}
 
-		$scope.pickEvent = function (conf_url) {
-			let split = $scope.planned.split('::');
-			let slug = split[0];
-			let title = split[1];
-			let speaker = split[2];
-
-			$scope.eventCreator.slug = slug;
-			$scope.eventCreator.title = title;
-			$scope.eventCreator.speaker = speaker;
-			$scope.eventCreator.url = conf_url + '_' + slug;
-
-			$scope.planned.slug = slug;
-			$scope.planned.title = title;
-			$scope.planned.speaker = speaker;
+		$scope.pickEvent = function(user) {
+			$scope.eventCreator.slug = $scope.planned.slug;
+			$scope.eventCreator.title = $scope.planned.title;
+			$scope.eventCreator.speaker = $scope.planned.speaker;
 		}
 
 		$scope.toggleConfMode = function() {
