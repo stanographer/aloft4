@@ -1,122 +1,124 @@
-@import url('https://fonts.googleapis.com/css?family=Chivo:300,400,400i,700');
 @font-face {
-  font-family: 'Noway';
-  font-style: normal;
-  src: url('/fonts/Noway/Noway-Regular.ttf');
+	font-family: 'Chivo Regular';
+	font-style: normal;
+	src: url('/fonts/Chivo/Chivo-Regular.ttf');
 }
+
 @font-face {
-  font-family: 'Fira Sans Light';
-  font-style: normal;
-  src: url('/fonts/Fira-Sans/FiraSans-Light.ttf');
+	font-family: 'Chivo';
+	font-style: normal;
+	src: url('/fonts/Chivo/Chivo-Regular.ttf');
 }
+
 @font-face {
-  font-family: 'Fira Sans Medium';
-  font-style: normal;
-  src: url('/fonts/Fira-Sans/FiraSans-Medium.ttf');
+	font-family: 'Noway';
+	font-style: normal;
+	src: url('/fonts/Noway/Noway-Regular.ttf');
 }
+
 @font-face {
-  font-family: 'Fira Sans Regular';
-  font-style: normal;
-  src: url('/fonts/Fira-Sans/FiraSans-Regular.ttf');
+	font-family: 'Europa Regular';
+	font-style: normal;
+	src: url('/fonts/Europa/EuropaRegular.otf');
 }
+
 @font-face {
-  font-family: 'Fira Sans Semibold';
-  font-style: normal;
-  src: url('/fonts/Fira-Sans/FiraSans-SemiBold.ttf');
+	font-family: 'Fira Sans Light';
+	font-style: normal;
+	src: url('/fonts/Fira-Sans/FiraSans-Light.ttf');
 }
+
 @font-face {
-  font-family: 'Noway Regular';
-  font-style: normal;
-  src: url('/fonts/Noway/Noway-Regular.otf');
+	font-family: 'Fira Sans Medium';
+	font-style: normal;
+	src: url('/fonts/Fira-Sans/FiraSans-Medium.ttf');
 }
+
 @font-face {
-  font-family: 'Sintony';
-  font-weight: 400;
-  font-style: normal;
-  src: url('/fonts/Sintony-regular/Sintony-regular.eot');
-  src: url('/fonts/Sintony-regular/Sintony-regular.eot?#iefix') format('embedded-opentype'),
-       local('Sintony'),
-       local('Sintony-regular'),
-       url('/fonts/Sintony-regular/Sintony-regular.woff2') format('woff2'),
-       url('/fonts/Sintony-regular/Sintony-regular.woff') format('woff'),
-       url('/fonts/Sintony-regular/Sintony-regular.ttf') format('truetype'),
-       url('/fonts/Sintony-regular/Sintony-regular.svg#Sintony') format('svg');
+	font-family: 'Fira Sans Regular';
+	font-style: normal;
+	src: url('/fonts/Fira-Sans/FiraSans-Regular.ttf');
 }
+
 @font-face {
-  font-family: 'Source Code Pro Light';
-  font-style: normal;
-  src: url('/fonts/Source-Code-Pro/SourceCodePro-Light.ttf');
+	font-family: 'Fira Sans Semibold';
+	font-style: normal;
+	src: url('/fonts/Fira-Sans/FiraSans-SemiBold.ttf');
 }
+
 @font-face {
-  font-family: 'Source Code Pro Medium';
-  font-style: normal;
-  src: url('/fonts/Source-Code-Pro/SourceCodePro-Medium.ttf');
+	font-family: 'Noway Regular';
+	font-style: normal;
+	src: url('/fonts/Noway/Noway-Regular.otf');
 }
+
 @font-face {
-  font-family: 'Source Code Pro Regular';
-  font-style: normal;
-  src: url('/fonts/Source-Code-Pro/SourceCodePro-Regular.ttf');
+	font-family: 'Sintony';
+	font-weight: 400;
+	font-style: normal;
+	src: url('/fonts/Sintony-regular/Sintony-regular.eot');
+	src: url('/fonts/Sintony-regular/Sintony-regular.eot?#iefix') format('embedded-opentype'), local('Sintony'), local('Sintony-regular'), url('/fonts/Sintony-regular/Sintony-regular.woff2') format('woff2'), url('/fonts/Sintony-regular/Sintony-regular.woff') format('woff'), url('/fonts/Sintony-regular/Sintony-regular.ttf') format('truetype'), url('/fonts/Sintony-regular/Sintony-regular.svg#Sintony') format('svg');
 }
+
 @font-face {
-  font-family: 'Source Code Pro Semibold';
-  font-style: normal;
-  src: url('/fonts/Source-Code-Pro/SourceCodePro-Semibold.ttf');
+	font-family: 'Source Code Pro Light';
+	font-style: normal;
+	src: url('/fonts/Source-Code-Pro/SourceCodePro-Light.ttf');
 }
+
 @font-face {
-  font-family: 'Lato';
-  font-weight: 400;
-  font-style: normal;
-  src: url('/fonts/Lato-regular/Lato-regular.eot');
-  src: url('/fonts/Lato-regular/Lato-regular.eot?#iefix') format('embedded-opentype'),
-       local('Lato Regular'),
-       local('Lato-regular'),
-       url('/fonts/Lato-regular/Lato-regular.woff2') format('woff2'),
-       url('/fonts/Lato-regular/Lato-regular.woff') format('woff'),
-       url('/fonts/Lato-regular/Lato-regular.ttf') format('truetype'),
-       url('/fonts/Lato-regular/Lato-regular.svg#Lato') format('svg');
+	font-family: 'Source Code Pro Medium';
+	font-style: normal;
+	src: url('/fonts/Source-Code-Pro/SourceCodePro-Medium.ttf');
 }
+
 @font-face {
-  font-family: 'Roboto';
-  font-weight: 400;
-  font-style: normal;
-  src: url('/fonts/Roboto-regular/Roboto-regular.eot');
-  src: url('/fonts/Roboto-regular/Roboto-regular.eot?#iefix') format('embedded-opentype'),
-       local('Roboto'),
-       local('Roboto-regular'),
-       url('/fonts/Roboto-regular/Roboto-regular.woff2') format('woff2'),
-       url('/fonts/Roboto-regular/Roboto-regular.woff') format('woff'),
-       url('/fonts/Roboto-regular/Roboto-regular.ttf') format('truetype'),
-       url('/fonts/Roboto-regular/Roboto-regular.svg#Roboto') format('svg');
+	font-family: 'Source Code Pro Regular';
+	font-style: normal;
+	src: url('/fonts/Source-Code-Pro/SourceCodePro-Regular.ttf');
 }
+
 @font-face {
-  font-family: 'Inconsolata';
-  font-weight: 400;
-  font-style: normal;
-  src: url('/fonts/Inconsolata-regular/Inconsolata-regular.eot');
-  src: url('/fonts/Inconsolata-regular/Inconsolata-regular.eot?#iefix') format('embedded-opentype'),
-       local('Inconsolata Regular'),
-       local('Inconsolata-regular'),
-       url('/fonts/Inconsolata-regular/Inconsolata-regular.woff2') format('woff2'),
-       url('/fonts/Inconsolata-regular/Inconsolata-regular.woff') format('woff'),
-       url('/fonts/Inconsolata-regular/Inconsolata-regular.ttf') format('truetype'),
-       url('/fonts/Inconsolata-regular/Inconsolata-regular.svg#Inconsolata') format('svg');
+	font-family: 'Source Code Pro Semibold';
+	font-style: normal;
+	src: url('/fonts/Source-Code-Pro/SourceCodePro-Semibold.ttf');
 }
+
 @font-face {
-  font-family: 'Montserrat';
-  font-weight: 400;
-  font-style: normal;
-  src: url('/fonts/Montserrat-regular/Montserrat-regular.eot');
-  src: url('/fonts/Montserrat-regular/Montserrat-regular.eot?#iefix') format('embedded-opentype'),
-       local('Montserrat Regular'),
-       local('Montserrat-regular'),
-       url('/fonts/Montserrat-regular/Montserrat-regular.woff2') format('woff2'),
-       url('/fonts/Montserrat-regular/Montserrat-regular.woff') format('woff'),
-       url('/fonts/Montserrat-regular/Montserrat-regular.ttf') format('truetype'),
-       url('/fonts/Montserrat-regular/Montserrat-regular.svg#Montserrat') format('svg');
+	font-family: 'Lato';
+	font-weight: 400;
+	font-style: normal;
+	src: url('/fonts/Lato-regular/Lato-regular.eot');
+	src: url('/fonts/Lato-regular/Lato-regular.eot?#iefix') format('embedded-opentype'), local('Lato Regular'), local('Lato-regular'), url('/fonts/Lato-regular/Lato-regular.woff2') format('woff2'), url('/fonts/Lato-regular/Lato-regular.woff') format('woff'), url('/fonts/Lato-regular/Lato-regular.ttf') format('truetype'), url('/fonts/Lato-regular/Lato-regular.svg#Lato') format('svg');
 }
+
 @font-face {
-  font-family: 'Input Mono';
-  font-weight: 400;
-  font-style: normal;
-  src: url('/fonts/Input/InputMono-Light.ttf');
+	font-family: 'Roboto';
+	font-weight: 400;
+	font-style: normal;
+	src: url('/fonts/Roboto-regular/Roboto-regular.eot');
+	src: url('/fonts/Roboto-regular/Roboto-regular.eot?#iefix') format('embedded-opentype'), local('Roboto'), local('Roboto-regular'), url('/fonts/Roboto-regular/Roboto-regular.woff2') format('woff2'), url('/fonts/Roboto-regular/Roboto-regular.woff') format('woff'), url('/fonts/Roboto-regular/Roboto-regular.ttf') format('truetype'), url('/fonts/Roboto-regular/Roboto-regular.svg#Roboto') format('svg');
+}
+
+@font-face {
+	font-family: 'Inconsolata';
+	font-weight: 400;
+	font-style: normal;
+	src: url('/fonts/Inconsolata-regular/Inconsolata-regular.eot');
+	src: url('/fonts/Inconsolata-regular/Inconsolata-regular.eot?#iefix') format('embedded-opentype'), local('Inconsolata Regular'), local('Inconsolata-regular'), url('/fonts/Inconsolata-regular/Inconsolata-regular.woff2') format('woff2'), url('/fonts/Inconsolata-regular/Inconsolata-regular.woff') format('woff'), url('/fonts/Inconsolata-regular/Inconsolata-regular.ttf') format('truetype'), url('/fonts/Inconsolata-regular/Inconsolata-regular.svg#Inconsolata') format('svg');
+}
+
+@font-face {
+	font-family: 'Montserrat';
+	font-weight: 400;
+	font-style: normal;
+	src: url('/fonts/Montserrat-regular/Montserrat-regular.eot');
+	src: url('/fonts/Montserrat-regular/Montserrat-regular.eot?#iefix') format('embedded-opentype'), local('Montserrat Regular'), local('Montserrat-regular'), url('/fonts/Montserrat-regular/Montserrat-regular.woff2') format('woff2'), url('/fonts/Montserrat-regular/Montserrat-regular.woff') format('woff'), url('/fonts/Montserrat-regular/Montserrat-regular.ttf') format('truetype'), url('/fonts/Montserrat-regular/Montserrat-regular.svg#Montserrat') format('svg');
+}
+
+@font-face {
+	font-family: 'Input Mono';
+	font-weight: 400;
+	font-style: normal;
+	src: url('/fonts/Input/InputMono-Light.ttf');
 }

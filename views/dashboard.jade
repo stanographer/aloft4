@@ -232,22 +232,18 @@ html(lang='en', ng-app='AloftDash', ng-controller='DashboardController')
 													.input-group.input-group-lg
 														select.form-control.input-lg#url-select(data-container='body',
 																ng-options='plannedEvent as plannedEvent.title for plannedEvent in plannedEvents.data'
-																title='(Choose from scheduled events)'
 																ng-model='planned'
 																ng-change='pickEvent();')
-														//- select.form-control.input-lg#url-select(data-container='body',
-														//- 	title='(Choose from scheduled events)'
-														//- 	ng-model='planned'
-														//- 	ng-change='update();')
-														//- 	option(ng-repeat='plannedEvent in plannedEvents.data'){{plannedEvent.title}}
+															option(value="")
+																| (Select an event)
 												.form-group.has-feedback
-													label.control-label(for='url') Slug
+													label.control-label(for='url' name='url') Slug
 												.input-group.input-group-lg
 													if (conference)
 														span#basic-addon3.input-group-addon {{ host }}/conf?name=#{conference.url}&session=
 													else
 														span#basic-addon3.input-group-addon {{ host }}/CONFERENCEURL/
-													input#slug.form-control.lowercase(type='text', ng-readonly='eventCreator.slug', name='conf[slug]', aria-describedby='url-field', placeholder='i.e. makebetterplugins', ng-model='eventCreator.slug')
+													input#slug.form-control.lowercase(type='text', ng-readonly='eventCreator.url', name='conf[url]', aria-describedby='url-field', placeholder='i.e. makebetterplugins', ng-model='eventCreator.url')
 											.form-group.has-feedback
 												.col-md-6
 													label.control-label.make-room(for='title') Title

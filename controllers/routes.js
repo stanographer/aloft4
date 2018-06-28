@@ -28,7 +28,6 @@ module.exports = function(app, passport, db) {
 	const Rest = new ShareRest(app, db);
 
 	// Related to the main routes in Aloft.
-
 	app.get('/', function (req, res) {
 		if (req.user) {
 			res.redirect('/dashboard');
@@ -321,23 +320,21 @@ module.exports = function(app, passport, db) {
 
 	app.get('/:user/:event', function (req, res, next) {
 		Event.findOne({'user': req.params.user, 'url': req.params.event}, function (err, event) {
-			if (err) {
-				throw err;
-			} else {
-				if (event) {
-					let prefs = {
-						fontSize: '35',
-						fontFace: 'Inconsolata',
-						lineHeight: '130'
-				}
-				if (event.completed) res.redirect('/text/' + req.params.user + '/' + req.params.event);
-					res.render('watch', {
+			if (err) return next(err);
+			if (event) {
+				if (event.completed) {
+					return res.redirect('/text/' + req.params.user + '/' + req.params.event);
+				} else {
+					return res.render('watch', {
 						user: req.params.user,
 						event: req.params.event,
-						prefs: prefs,
 						marker: '≈'
 					});
 				}
+			} else {
+				req.flash('404', 'Sorry. That event doesn\'t exist or could not be found.');
+				res.render('error', { message: req.flash('404')});
+				res.end();
 			}
 		});
 	});
@@ -487,7 +484,7 @@ module.exports = function(app, passport, db) {
 	});
 
 	function isLoggedIn(req, res, next) {
-			if(req.isAuthenticated()) {
+			if (req.isAuthenticated()) {
 				return next();
 	  		}
 	  		req.flash('loginMessage', 'You must be logged in to do that!');

@@ -9,8 +9,10 @@ const eventSchema = mongoose.Schema({
 	title: String,
 	conf: String,
 	speaker: String,
-	alias: String,
-	collab: Boolean,
+	collab: {
+		type: Boolean,
+		default: false
+	},
 	completed: {
 		type: Boolean,
 		default: false

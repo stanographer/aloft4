@@ -50,7 +50,7 @@ module.exports.run = function() {
 	});
 
  	// Passport
- 	require('./config/passport')(passport);
+ 	require('./config/passport-token')(passport);
 
 	 // Extra routes
 	let apiController = require('./controllers/api');

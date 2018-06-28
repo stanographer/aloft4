@@ -47,7 +47,6 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 		$rootScope.host = window.location.origin;
 		$scope.eventCreator = {
 			url: '',
-			slug: '',
 			title: '',
 			speaker: ''
 		}
@@ -100,7 +99,7 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 				});
 		}
 
-		getPlannedEvents('sourcecon');
+		getPlannedEvents('srccon');
 
 		$scope.getEvents = function () {
 			$http({
@@ -145,7 +144,7 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 		}
 
 		$scope.pickEvent = function(user) {
-			$scope.eventCreator.slug = $scope.planned.slug;
+			$scope.eventCreator.url = $scope.planned.url;
 			$scope.eventCreator.title = $scope.planned.title;
 			$scope.eventCreator.speaker = $scope.planned.speaker;
 		}
