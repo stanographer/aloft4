@@ -18,13 +18,14 @@ var app = angular.module('Aloft', ['angularUserSettings', 'minicolors'])
 	})
 	.controller('AloftController', function ($scope, $http, $userSettings, configService) {
 		var defaults = {
-			fontFamily: {name: 'Sintony', id: 'Sintony'},
-			fontSize: '33',
+			fontFamily: {name: 'Europa Regular', id: 'Europa Regular'},
+			fontSize: '4.5',
 			lineHeight: '150',
-			fgColor: '#e1edeb',
-			bgColor: '#30353e',
+			fgColor: '#261242',
+			bgColor: '#faffff',
 			fonts: [
-				{name: 'Chivo-Light', id: 'Chivo-Light', type: 'default'},
+				{name: 'Chivo', id: 'Chivo', type: 'default'},
+				{name: 'Europa Regular', id: 'Europa Regular', type: 'default'},
 				{name: 'Fira Sans Light', id: 'Fira Sans Light', type: 'default'},
 				{name: 'Fira Sans Regular', id: 'Fira Sans Regular', type: 'default'},
 				{name: 'Fira Sans Medium', id: 'Fira Sans Medium', type: 'default'},

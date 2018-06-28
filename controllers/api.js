@@ -6,36 +6,36 @@ const express = require('express')
 
 const router = express.Router();
 
-function schedule(conf, plannedEvent) {
-	plannedEvent.user = req.user.local.username;
+// function schedule(conf, plannedEvent) {
+// 	plannedEvent.user = req.user.local.username;
 
-	conf.update({
-		$push: {
-			events: plannedEvent
-		},
-		$pull: {
-			plannedEvents: plannedEvent
-		}
-	}, {
-		upsert: true
-	}, (err) => {
-		if (err) throw err;
-		let event = new Event({
-			title: plannedEvent.title,
-			speaker: plannedEvent.speaker,
-			url: req.body.session,
-			conf: req.body.name
-		});
-		// Give it a title if none.
-		if (!event.title) {
-			event.title = event.url;
-		}
-		checkForDuplicateEvent(event);
-	});
-}
+// 	conf.update({
+// 		$push: {
+// 			events: plannedEvent
+// 		},
+// 		$pull: {
+// 			plannedEvents: plannedEvent
+// 		}
+// 	}, {
+// 		upsert: true
+// 	}, (err) => {
+// 		if (err) throw err;
+// 		let event = new Event({
+// 			title: plannedEvent.title,
+// 			speaker: plannedEvent.speaker,
+// 			url: plannedEvent.slug,
+// 			conf: confUrl
+// 		});
+// 		// Give it a title if none.
+// 		if (!event.title) {
+// 			event.title = event.url;
+// 		}
+// 		checkForDuplicateEvent(event);
+// 	});
+// }
 
 router.get('/conf', (req, res) => {
-	Conference.findOne({'url': req.body.name}, (err, conf) => {
+	Conference.findOne({'url': req.query.name}, (err, conf) => {
 		if (err) throw err;
 		if (conf) {
 			res.json(conf);
@@ -45,19 +45,17 @@ router.get('/conf', (req, res) => {
 	});
 });
 
-router.get('/conf/plannedEvents', (req, res) => {
-	Conference.findOne({'url': req.body.name}, (err, conf) => {
-		if (err) throw err;
-		if (conf) {
-			res.json(conf.plannedEvents);
-		} else {
-			res.json('');
-		}
+router.get('/conf/plannedEvents', (req, res, next) => {
+	Conference.findOne({url: req.query.name}, (err, conf) => {
+		if (err) return next(err);
+		console.log(conf);
+		if (conf && conf.plannedEvents) return res.json(conf.plannedEvents);
+		return next();
 	});
 });
 
 router.get('/conf/events', (req, res) => {
-	Conference.findOne({'url': req.body.name}, (err, conf) => {
+	Conference.findOne({'url': req.query.name}, (err, conf) => {
 		if (err) throw err;
 		if (conf) {
 			res.json(conf.events);
@@ -67,97 +65,40 @@ router.get('/conf/events', (req, res) => {
 	});
 });
 
-router.post('/conf/schedule', (req, res, next) => {
-	function checkIfDuplicate(username, event) {
-		let isDupe = false;
-		Event.findOne({'user': username, 'url': event.url}, (err, event) => {
-			if (err) return next(err);
-			if (event) isDupe = true;
-		});
-		return proceed(isDupe, event);
-	}
-
-	function proceed (isDup, event) {
-		if (isDup) {
-			return res.json({
-				success: false,
-				message: 'IS DUPLICATE'
-			});
-		} else {
-			let newEvent = new Event(event);
-			newEvent.save(function (err, event) {
-				if (err) {
-					return res.json({
-						success: false,
-						message: 'ERROR SAVING TO DATABASE'
-					});
-				} else {
-					return res.json({
-						success: false,
-						message: 'IS DUPLICATE',
-						ob: event
-					});
-				}
-			});
-		}
-	}
-
-	Conference.findOne({
-		'url': req.body.name
-	}, function (err, conf) {
+router.post('/conf/schedule', (req, res) => {
+	Conference.findOne({'url': req.query.name}, (err, conf) => {
 		if (err) throw err;
-		if (conf) {
-			let plannedEvent = conf.plannedEvents.find((element) => {
-				return element.url === req.body.session;
-			});
-			let startedEvent = conf.events.find((element) => {
-				return element.url === req.body.session;
-			});
-			 console.log(plannedEvent);
-			 console.log(startedEvent);
-			if (plannedEvent && !startedEvent) {
-				let newEvent = {
-					url: plannedEvent.url,
-					title: plannedEvent.title,
-					speaker: plannedEvent.speaker,
-					user: req.query.user,
-					conf: req.body.session
-				}
+		let plannedEvent = conf.plannedEvents.find((element) => {
+			return element.slug === req.query.session;
+		});
 
-				conf.update({
-					$pull: {
-						plannedEvents: plannedEvent
-					},
-					$push: {
-						events: newEvent
-					}
-				}, {
-					upsert: true
-				}, (err) => {
-					if (err) return next(err);
-				});
+		let startedEvent = conf.events.find((element) => {
+			return element.slug ===  req.query.session;
+		});
 
-				checkIfDuplicate(req.query.user, newEvent);
-			}
+		if (plannedEvent && !startedEvent) {
+			res.json(plannedEvent);
+		} else {
+			res.json('');
 		}
 	});
 });
 
 router.post('/conf/unschedule', (req, res) => {
-	Conference.findOne({'url': req.body.name}, (err, conf) => {
+	Conference.findOne({'url': req.query.name}, (err, conf) => {
 		if (err) throw err;
 		let plannedEvent = conf.plannedEvents.find((element) => {
-			return element.slug === req.body.session;
+			return element.slug === req.query.session;
 		});
 
 		let startedEvent = conf.events.find((element) => {
-			return element.slug === req.body.session;
+			return element.slug ===  req.query.session;
 		});
 
 		if (!plannedEvent && startedEvent) {
-			res.json(startedEvent);
+			res.json(plannedEvent);
 		} else {
-			res.json('ACTIVE');
+			res.json('');
 		}
 	});
 });

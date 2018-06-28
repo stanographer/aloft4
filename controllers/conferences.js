@@ -25,7 +25,7 @@ router.get('/', (req, res, next) => {
 			});
 
 			if (startedEvent) {
-				reDirect(startedEvent.user, startedEvent.url);
+				return reDirect(startedEvent.user, startedEvent.url);
 			} else if (plannedEvent) {
 				console.log(plannedEvent);
 				return res.render('hasnt-started', {

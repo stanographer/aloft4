@@ -11,6 +11,12 @@
 }
 
 @font-face {
+	font-family: 'Chivo Light';
+	font-style: normal;
+	src: url('/fonts/Chivo/Chivo-Light.ttf');
+}
+
+@font-face {
 	font-family: 'Noway';
 	font-style: normal;
 	src: url('/fonts/Noway/Noway-Regular.ttf');

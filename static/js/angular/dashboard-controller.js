@@ -21,13 +21,14 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 		$scope.currentPage;
 		$scope.pageSize = 6;
 		var defaults = {
-			editorFontFamily: {name: 'Sintony', id: 'Sintony'},
+			editorFontFamily: {name: 'Europa Regular', id: 'Europa Regular'},
 			editorFontSize: '30',
 			editorLineHeight: '130',
-			editorFgColor: '#fff',
-			editorBgColor: '#30353e',
+			editorFgColor: '#f4f4f4',
+			editorBgColor: '#141f33',
 			editorFonts: [
-				{name: 'Chivo Light', id: 'Chivo-Light', type: 'default'},
+				{name: 'Chivo', id: 'Chivo', type: 'default'},
+				{name: 'Europa Regular', id: 'Europa Regular', type: 'default'},
 				{name: 'Fira Sans Light', id: 'Fira Sans Light', type: 'default'},
 				{name: 'Fira Sans Regular', id: 'Fira Sans Regular', type: 'default'},
 				{name: 'Fira Sans Medium', id: 'Fira Sans Medium', type: 'default'},
@@ -57,7 +58,22 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
     		position: 'bottom right',
     		changeDelay: 200,
     		hide: null
-  		};
+		  };
+		  
+		  function getPlannedEvents(conf) {
+			$http({
+				method: 'GET',
+				url: `/api/conf/plannedEvents?name=${conf}`})
+				.then((success) => {
+					$scope.plannedEvents = {
+						model: null,
+						data: success.data
+					}
+					console.log($scope.plannedEvents.data);
+				});
+		}
+
+		getPlannedEvents('srccon');
 
 		$scope.confMode = false;
 		$scope.$watch('username', function () {
@@ -85,21 +101,6 @@ var app = angular.module('AloftDash', ['angularUserSettings', 'minicolors', 'ang
 				}
 			});
 		}
-
-		function getPlannedEvents(conf) {
-			$http({
-				method: 'GET',
-				url: `/api/conf/plannedEvents?name=${conf}`})
-				.then((success) => {
-					$scope.plannedEvents = {
-						model: null,
-						data: success.data
-					}
-					console.log($scope.plannedEvents.data);
-				});
-		}
-
-		getPlannedEvents('srccon');
 
 		$scope.getEvents = function () {
 			$http({
